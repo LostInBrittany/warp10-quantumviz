@@ -100,14 +100,16 @@
        */
       width: {
         type: Number,
-        value: -1
+        value: -1,        
+        observer: 'dimensionsChanged'
       },
       /**
        * The chart height, in pixels
        */
       height: {
         type: Number,
-        value: -1
+        value: -1,
+        observer: 'dimensionsChanged'
       },
       /**
        * The data of the chart
@@ -191,8 +193,7 @@
       // console.debug("[warp10-display-chart] created");
     },
     ready: function() {
-      // console.debug("[warp10-display-chart] attached");
-      console.debug("[warp10-quantumviz] ready - inner ready begin");
+      console.debug("[warp10-display-chart] ready - begin", {width: this.width, height: this.height});
       this.configure();
       this.isReady = true;
       if (this.data != null) {
@@ -201,9 +202,18 @@
       // tooltip key width       
       this.customStyle['--tooltip-width'] = Math.max(400,this.$.chart.getBoundingClientRect().width * 2 / 3).toString()+"px";
       this.updateStyles();
-      console.debug("[warp10-quantumviz] ready - inner ready end");
+      console.debug("[warp10-display-chart] ready - end");
     },
-
+    attached: function(){
+      if (this.chart && this._resizeChart){     
+        console.debug("[warp10-display-chart] attached - dimensionsChanged, resizing");   
+        this.configure();  
+        this.chart.resize();
+        // tooltip key width       
+        this.customStyle['--tooltip-width'] = Math.max(400,this.$.chart.getBoundingClientRect().width * 2 / 3).toString()+"px";
+        this.updateStyles();
+      }
+    },
     // Observers
     dataChanged: function() {
       if (!this.isReady) {
@@ -216,6 +226,16 @@
       } else {
         this._removeChartData();
       }
+    },
+    dimensionsChanged: function() {
+      if (!this.isReady) {
+        // Component not ready yet
+        return;
+      }
+      console.debug("[warp10-display-chart] dimensionsChanged");
+      
+      this._resizeChart = true;
+      
     },
     currentValuesChanged: function() {
       if (null != this.isReady) {
