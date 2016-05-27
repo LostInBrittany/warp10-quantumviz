@@ -50,12 +50,12 @@ NEWGTS
 
 
 NEWGTS
-100000000 NaN NaN NaN 10 ADDVALUE
-200000000 NaN NaN NaN 9 ADDVALUE
-300000000 NaN NaN NaN 8 ADDVALUE
-400000000 NaN NaN NaN 7 ADDVALUE
-500000000 NaN NaN NaN 6 ADDVALUE
-600000000 NaN NaN NaN 8 ADDVALUE
+100000000 NaN NaN NaN 1000 ADDVALUE
+200000000 NaN NaN NaN 900 ADDVALUE
+300000000 NaN NaN NaN 800 ADDVALUE
+400000000 NaN NaN NaN 700 ADDVALUE
+500000000 NaN NaN NaN 600 ADDVALUE
+600000000 NaN NaN NaN 800 ADDVALUE
 
 
 2 ->LIST
@@ -131,23 +131,6 @@ NEWGTS
       'globalParams' $globalParams
       6 ->MAP
     </warp10-quantumviz>
-
-    <template is="dom-if" if="{{current}}">
-        <div class="current-value">
-          <b>Current values:
-        <br/>
-          x: <span>{{current.xValue}}</span>
-        <br/>
-          <ul>
-          <template is="dom-repeat" items="{{current.yValues}}">
-            <li>
-              key: <span>{{item.key}}</span>
-              value: <span>{{item.value}}</span>
-            </li>
-          </template>
-          </ul>
-        </div>
-    </template>
   </div>
 </template>
 

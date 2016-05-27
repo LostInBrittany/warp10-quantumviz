@@ -631,6 +631,12 @@
         axes: {
           x : {
             axisLineColor:'rgb(196, 196, 196)'
+          },
+          y: {
+            axisLabelFormatter: function(y) {
+              var value = y.toString(); 
+              return value.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+            }
           }
         },        
         drawCallback: function(me, initial) {
