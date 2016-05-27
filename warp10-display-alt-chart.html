@@ -634,8 +634,15 @@
           },
           y: {
             axisLabelFormatter: function(y) {
-              var value = y.toString(); 
-              return value.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+              var value = y.toFixed(5);
+              var splittedValue = value.split('.');
+              var formattedIntPart = splittedValue[0].replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+              var formattedDecimalPart = splittedValue[1].replace(/0+$/g, '');              
+              
+              if (formattedDecimalPart.length == 0) {
+                return formattedIntPart;
+              }
+              return formattedIntPart+'.'+formattedDecimalPart;
             }
           }
         },        
