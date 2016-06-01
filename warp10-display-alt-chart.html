@@ -164,6 +164,13 @@
         notify: true
       },
       /**
+       * Displayed data value bounds
+       */
+      valueBounds: {
+        type: Object,
+        notify: true
+      },
+      /**
         * The chart area
         */
       chartArea: {
@@ -630,9 +637,11 @@
         gridLineColor: 'rgb(196, 196, 196)',
         axes: {
           x : {
+            axisLabelFontSize: 12, 
             axisLineColor:'rgb(196, 196, 196)'
           },
           y: {
+            axisLabelFontSize: 12, 
             axisLabelFormatter: function(y) {
               var value = y.toFixed(5);
               var splittedValue = value.split('.');
@@ -652,6 +661,10 @@
             min: me.xAxisRange()[0],
             max: me.xAxisRange()[1]
           }
+          context.valueBounds = {
+            min: me.yAxisRange()[0],
+            max: me.yAxisRange()[1]
+          } 
           // console.debug("[warp10-display-chart] drawCallback called", context.timeBounds)
         },
       }
