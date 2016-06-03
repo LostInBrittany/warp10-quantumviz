@@ -221,6 +221,7 @@
         this.customStyle['--tooltip-width'] = Math.max(400,this.$.chart.getBoundingClientRect().width * 2 / 3).toString()+"px";
         this.updateStyles();
       }
+      this.chart.resize();
     },
     // Observers
     dataChanged: function() {
@@ -508,8 +509,11 @@
       var sparklines = [];
 
       for (var i=0; i< gtsList.length; i++) {
-        var values = gtsList[i].v.sort(function(a, b) { return a[0] - b[0];}); // We begin by sorting the values
+        // We begin by sorting the values
+        var values = gtsList[i].v.sort(function(a, b) { return a[0] - b[0];}); 
         // console.debug("[warp10-display-chart] _gts2dygraphs - sorted values", values);
+        
+        
         for (var j=0; j<values.length; j++) {
           var ts = Math.round(values[j][0]/1000);
           var found = false;
@@ -521,7 +525,7 @@
                   if (i == ii) {
                     record.push(values[j][values[j].length-1]);
                   } else {
-                    record.push(NaN);
+                    record.push(null);
                   }
               }
               sparklines.splice(k,0, record)
@@ -542,7 +546,7 @@
                 if (i == ii) {
                   record.push(values[j][values[j].length-1]);
                 } else{
-                  record.push(NaN);
+                  record.push(null);
                 }
             }
             sparklines.push(record);
@@ -595,6 +599,8 @@
 
       var sparklines = this._gts2dygraphs(filteredResponse.gts);
 
+      console.debug("[warp10-display-chart] _data2dygraphs - sparklines", sparklines);
+
       var labels = []; labels[0] = "Timestamp";
       var colors = [];
       var interpolate = [];
@@ -636,6 +642,7 @@
         file: sparklines,
         labels: labels,
         labelsUTC: true,
+        connectSeparatedPoints: true,
         maxNumberWidth: 12,
         colors: colors,
         legend: "never",
