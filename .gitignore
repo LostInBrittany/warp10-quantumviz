@@ -9,5 +9,6 @@ tools-priv
 vulcanized-priv
 artifacts
 tools
+priv-*
 _old_elements
 tmp-*
