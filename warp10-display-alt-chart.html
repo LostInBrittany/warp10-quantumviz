@@ -221,7 +221,9 @@
         this.customStyle['--tooltip-width'] = Math.max(400,this.$.chart.getBoundingClientRect().width * 2 / 3).toString()+"px";
         this.updateStyles();
       }
-      this.chart.resize();
+      if (this.chart) {
+        this.chart.resize();  
+      }      
     },
     // Observers
     dataChanged: function() {
@@ -561,6 +563,7 @@
       return sparklines;
     },
     _data2dygraphs: function(data) {
+      console.debug("[warp10-display-chart] _data2dygraphs", quantumvizGts.isValidResponse(data));
 
       var context = this;
 
@@ -581,7 +584,7 @@
         response = data[0];
       }
       
-      // console.debug("[warp10-display-chart] _data2dygraphs - Data to plot", response);
+      console.debug("[warp10-display-chart] _data2dygraphs - Data to plot", response);
 
       var filteredResponse = {
         gts:[],
@@ -597,9 +600,14 @@
 
       // console.debug("[warp10-display-chart] _data2dygraphs - Filtered data to plot", filteredResponse);
 
+      if (filteredResponse.gts.length == 0) {
+        console.warn("[warp10-display-chart] _data2dygraphs - Empty data set", filteredResponse);
+        return;
+      }
+      
       var sparklines = this._gts2dygraphs(filteredResponse.gts);
 
-      console.debug("[warp10-display-chart] _data2dygraphs - sparklines", sparklines);
+      // console.debug("[warp10-display-chart] _data2dygraphs - sparklines", sparklines);
 
       var labels = []; labels[0] = "Timestamp";
       var colors = [];
