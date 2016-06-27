@@ -657,7 +657,26 @@
         colors: colors,
         legend: "never",
         gridLineColor: 'rgb(196, 196, 196)',
-        axes: {
+        xRangePad: 5,
+        yRangePad: 5,        
+        drawCallback: function(me, initial) {
+          context.chartArea = me.getArea();
+          context.timeBounds = {
+            min: me.xAxisRange()[0],
+            max: me.xAxisRange()[1]
+          }
+          context.valueBounds = {
+            min: me.yAxisRange()[0],
+            max: me.yAxisRange()[1]
+          } 
+          // console.debug("[warp10-display-chart] drawCallback called", context.timeBounds)
+        },
+      }
+      if (this.hideAxis) {
+        options.drawAxis = false;
+        options.drawGrid = false;
+      } else {        
+        options.axes = {
           x : {
             drawAxis: true,
             axisLabelFontSize: 12, 
@@ -678,25 +697,7 @@
               return formattedIntPart+'.'+formattedDecimalPart;
             }
           }
-        },
-        xRangePad: 5,
-        yRangePad: 5,        
-        drawCallback: function(me, initial) {
-          context.chartArea = me.getArea();
-          context.timeBounds = {
-            min: me.xAxisRange()[0],
-            max: me.xAxisRange()[1]
-          }
-          context.valueBounds = {
-            min: me.yAxisRange()[0],
-            max: me.yAxisRange()[1]
-          } 
-          // console.debug("[warp10-display-chart] drawCallback called", context.timeBounds)
-        },
-      }
-      if (this.hideAxis) {
-        options.drawAxis = false;
-        options.drawGrid = false;
+        };
       }
       options.highlightCallback = function(event, x, points, row, name) {
         // console.debug("[warp10-display-chart] highlightCallback", {event:event, name:name, x:x,points:points, row:row, xCoord: context.chart.toDomXCoord(x)});
