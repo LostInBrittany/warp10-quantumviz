@@ -7,12 +7,13 @@
 <script src="../dygraphs/dygraph-combined-dev.js"></script>
 <script type="text/javascript" src="../dygraphs/extras/smooth-plotter.js"></script>
 
-<dom-module name="warp10-display-chart" >
+<dom-module name="warp10-display-chart">
   <template>
     <style>
       :host {
         display: block;
         text-align: center;
+        position: relative;
       }
       #chart {
         display: inline-block;
@@ -34,7 +35,23 @@
       .chart-tooltip.hidden {
           display: none;
       }
-      :host ::content table {
+      .table    { display: table }
+      .tr       { display: table-row }
+      .thead    { display: table-header-group }
+      .tbody    { display: table-row-group }
+      .tfoot    { display: table-footer-group }
+      .col      { display: table-column }
+      .colgroup { display: table-column-group }
+      .td, .th  { display: table-cell }
+      .caption  { display: table-caption }
+      .table {
+        table-layout: fixed;
+      }      
+      
+      
+      :host ::content .table {
+        display: table;
+        width: 100%;
         white-space: normal;
         font-size: 10pt !important;
       }
@@ -50,7 +67,7 @@
         margin-right: 5px;
         margin-top: 5px;
       }
-      :host ::content tr.highlight {
+      :host ::content .tr.highlight {
         background-color: #ffffa4;
       }
       :host ::content .gts-classname {
@@ -365,14 +382,15 @@
       };
 
 
-      var table = d3.select(document.createElement("table"));
+      var table = d3.select(document.createElement("div"));
+      table.classed("table");
+      
       if (headerEnabled) {
-        var theadEnter = table.selectAll("thead")
+        var theadEnter = table.selectAll("div.thead")
           .data([d])
-          .enter().append("thead");
-
-        theadEnter.append("tr")
-          .append("td")
+          .enter().append("div").classed("thead", true);
+        theadEnter.append("div").classed("tr",true)
+          .append("div").classed("td", true)
           .attr("colspan", 3)
           .append("strong")
           .classed("x-value", true)
@@ -380,34 +398,34 @@
 
       }
 
-      var tbodyEnter = table.selectAll("tbody")
+      var tbodyEnter = table.selectAll("div.tbody")
         .data([d])
-        .enter().append("tbody");
+        .enter().append("div").classed("tbody", true);
 
-      var trowEnter = tbodyEnter.selectAll("tr")
+      var trowEnter = tbodyEnter.selectAll("div.tr")
         .data(d.yValues)
         .enter()
-        .append("tr")
+        .append("div").classed("tr", true)
         .classed("highlight", function(p) {
           // console.debug("[warp10-display-chart] hightlight", p);
           return p.highlight
         });
 
-      trowEnter.append("td")
+      trowEnter.append("div").classed("td", true)
         .classed("legend-color-guide",true)
         .append("div")
         .style("background-color", function(p) { return p.color });
 
-      trowEnter.append("td")
+      trowEnter.append("div").classed("td", true)
         .classed("key",true)
         .html(function(p, i) { return keyFormatter(p.name, i) });
 
-      trowEnter.append("td")
+      trowEnter.append("div").classed("td", true)
         .classed("value",true)
         .html(function(p, i) { return valueFormatter(p.yval, i) });
 
 
-      trowEnter.selectAll("td").each(function(p) {
+      trowEnter.selectAll("div.td").each(function(p) {
         if (p.highlight) {
           var opacityScale = d3.scale.linear().domain([0,1]).range(["#fff",p.color]);
           var opacity = 0.6;
@@ -765,4 +783,5 @@
   }
 
 );
+
 </script>
