@@ -107,7 +107,8 @@ Viz-only version of Quantum widget
        */
       host: {
         type: String,
-        value: ""
+        value: "",
+        observer: '_paramsChanged'
       },
       /**
        * The data of the chart
@@ -158,7 +159,7 @@ Viz-only version of Quantum widget
       },
       content: {
         type: String,
-        observer: 'contentChanged'
+        observer: '_paramsChanged'
       },
       timeBounds: {
         type: Object,
@@ -170,7 +171,7 @@ Viz-only version of Quantum widget
       },
       warpscript: {
         type: String,
-        observer: 'warpscriptChanged'
+        observer: '_paramsChanged'
       },
       _baseUrl: {
         type: String,
@@ -190,7 +191,15 @@ Viz-only version of Quantum widget
         notify: true,
         observer: "_annotationsSelectedTimestampChanged",
         value: -1
-      }
+      },
+      _readyToCall: {
+        type: Boolean,
+        computed: "_isReadyToCall(host, _rawWarpscriptScript)"
+      },
+      _rawWarpscriptScript: {
+        type: String,
+        value: ""
+      },
     },
     ready: function() {
     },
@@ -198,16 +207,20 @@ Viz-only version of Quantum widget
       console.debug("[warp10-quantumviz] attached - calling configure()", this.blockCalls);
       this.isAttached = true;
       this.configure();
-      if (this.generateWarpScript()) {
+      this.generateWarpScript();
+      if (this._readyToCall) {
         this.generateRequest();
       }
-    },
-    generateRequest: function() {
-      this.$.warpscriptcaller.generateRequest();  
     },
     detached: function() {
       console.debug("[warp10-quantumviz] detached");
       this.isAttached = false;
+    },
+    generateRequest: function() {
+      this.$.warpscriptcaller.generateRequest();  
+    },
+    _isReadyToCall: function() {
+      return ( (this.host.length > 0) && ( this._rawWarpscriptScript.length > 0) );
     },
     _annotationsSelectedTimestampChanged: function() {
       // console.debug("[warp10-quantumviz] _annotationsSelectedTimestampChanged", this.annotationsSelectedTimestamp);
@@ -228,48 +241,40 @@ Viz-only version of Quantum widget
 
     generateWarpScript: function() {
       console.debug("[warp10-quantumviz] generateWarpScript - begin", this.warpscript);
-      var warpscriptScript;
+      this._rawWarpscriptScript;
       if (this.warpscript !== undefined && this.warpscript.length > 0) {
         console.debug("[warp10-quantumviz] generateWarpScript - attribute warpscript found", this.warpscript);
-        warpscriptScript = this.warpscript.trim()
+        this._rawWarpscriptScript = this.warpscript.trim()
       } else {
         console.debug("[warp10-quantumviz] generateWarpScript - attribute warpscript not found");
         if (this.content !== undefined && this.content.length > 0) {
           console.debug("[warp10-quantumviz] generateWarpScript - using content for WarpScript", this.content);
-          warpscriptScript = this.content.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&').trim();
+          this._rawWarpscriptScript = this.content.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&').trim();
         } else {
           console.debug("[warp10-quantumviz] generateWarpScript - content not found, using innerHTML",  Polymer.dom(this).innerHTML);
-          warpscriptScript = Polymer.dom(this).innerHTML.replace(/&lt;/g,'<').replace(/&gt;/g,'>').trim();
+          this._rawWarpscriptScript = Polymer.dom(this).innerHTML.replace(/&lt;/g,'<').replace(/&gt;/g,'>').trim();
         }
       }
       // WarpScript
       //this.inputWarpScriptVariables = ""+this.width<0?"100%":this.width+" 'width' STORE ";
       var inputWarpScriptVariables = ""+Math.floor(this.$$('warp10-display-chart').getBoundingClientRect().width)+" 'width' STORE ";
       
-      console.debug("[warp10-quantumviz] generateWarpScript - about to change warpscriptScript - warpscript", inputWarpScriptVariables+warpscriptScript);
+      console.debug("[warp10-quantumviz] generateWarpScript - about to change warpscriptScript - warpscript", inputWarpScriptVariables+this._rawWarpscriptScript);
 
-      this.warpscriptScript = inputWarpScriptVariables+warpscriptScript;
+      this.warpscriptScript = inputWarpScriptVariables+this._rawWarpscriptScript;
 
-      if (warpscriptScript.length > 0) {
-        return true;
-      }
-      return false;
     },
-    warpscriptChanged: function() {
+    _paramsChanged: function() {
       if (!this.isAttached) {
         return;
       }
-       // console.debug("[warp10-quantumviz] generateWarpScript called via warpscriptChanged()");
-      if (this.generateWarpScript()) {
+      this.generateWarpScript();
+      
+      console.debug("[warp10-quantumviz] _paramsChanged()", {host: this.host, rawWarpscriptScript: this._warWarpScriptScript});
+      
+      if ( this._readyToCall) {
         this.generateRequest();
       }
-    },
-    contentChanged: function() {
-      if (!this.isAttached) {
-        return;
-      }
-       // console.debug("[warp10-quantumviz] generateWarpScript called via contentChanged()");
-      this.generateWarpScript();
     },
     vertGuideChanged: function(event) {
       if (this.vertGuide >0) {
