@@ -204,7 +204,7 @@ Viz-only version of Quantum widget
     ready: function() {
     },
     attached: function() {
-      console.debug("[warp10-quantumviz] attached - calling configure()", this.blockCalls);
+      // console.debug("[warp10-quantumviz] attached - calling configure()", this.blockCalls);
       this.isAttached = true;
       this.configure();
       this.generateWarpScript();
@@ -213,13 +213,15 @@ Viz-only version of Quantum widget
       }
     },
     detached: function() {
-      console.debug("[warp10-quantumviz] detached");
+      // console.debug("[warp10-quantumviz] detached");
       this.isAttached = false;
     },
     generateRequest: function() {
+      // console.debug("[warp10-quantumviz] generateRequest");
       this.$.warpscriptcaller.generateRequest();  
     },
     _isReadyToCall: function() {
+      // console.debug("[warp10-quantumviz] _isReadyToCall ",(this.host.length > 0) && ( this._rawWarpscriptScript.length > 0) );
       return ( (this.host.length > 0) && ( this._rawWarpscriptScript.length > 0) );
     },
     _annotationsSelectedTimestampChanged: function() {
@@ -240,18 +242,18 @@ Viz-only version of Quantum widget
     },
 
     generateWarpScript: function() {
-      console.debug("[warp10-quantumviz] generateWarpScript - begin", this.warpscript);
+      // console.debug("[warp10-quantumviz] generateWarpScript", this.warpscript);
       this._rawWarpscriptScript;
       if (this.warpscript !== undefined && this.warpscript.length > 0) {
-        console.debug("[warp10-quantumviz] generateWarpScript - attribute warpscript found", this.warpscript);
+        // console.debug("[warp10-quantumviz] generateWarpScript - attribute warpscript found", this.warpscript);
         this._rawWarpscriptScript = this.warpscript.trim()
       } else {
-        console.debug("[warp10-quantumviz] generateWarpScript - attribute warpscript not found");
+        // console.debug("[warp10-quantumviz] generateWarpScript - attribute warpscript not found");
         if (this.content !== undefined && this.content.length > 0) {
-          console.debug("[warp10-quantumviz] generateWarpScript - using content for WarpScript", this.content);
+          // console.debug("[warp10-quantumviz] generateWarpScript - using content for WarpScript", this.content);
           this._rawWarpscriptScript = this.content.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&').trim();
         } else {
-          console.debug("[warp10-quantumviz] generateWarpScript - content not found, using innerHTML",  Polymer.dom(this).innerHTML);
+          // console.debug("[warp10-quantumviz] generateWarpScript - content not found, using innerHTML",  Polymer.dom(this).innerHTML);
           this._rawWarpscriptScript = Polymer.dom(this).innerHTML.replace(/&lt;/g,'<').replace(/&gt;/g,'>').trim();
         }
       }
@@ -259,9 +261,11 @@ Viz-only version of Quantum widget
       //this.inputWarpScriptVariables = ""+this.width<0?"100%":this.width+" 'width' STORE ";
       var inputWarpScriptVariables = ""+Math.floor(this.$$('warp10-display-chart').getBoundingClientRect().width)+" 'width' STORE ";
       
-      console.debug("[warp10-quantumviz] generateWarpScript - about to change warpscriptScript - warpscript", inputWarpScriptVariables+this._rawWarpscriptScript);
+      // console.debug("[warp10-quantumviz] generateWarpScript - about to change warpscriptScript - warpscript", inputWarpScriptVariables+this._rawWarpscriptScript);
 
       this.warpscriptScript = inputWarpScriptVariables+this._rawWarpscriptScript;
+      
+      // console.debug("[warp10-quantumviz] generateWarpScript - _rawWarpscriptScript", this._rawWarpscriptScript);
 
     },
     _paramsChanged: function() {
@@ -270,7 +274,7 @@ Viz-only version of Quantum widget
       }
       this.generateWarpScript();
       
-      console.debug("[warp10-quantumviz] _paramsChanged()", {host: this.host, rawWarpscriptScript: this._warWarpScriptScript});
+      // console.debug("[warp10-quantumviz] _paramsChanged()", {host: this.host, rawWarpscriptScript: this._rawWarpscriptScript});
       
       if ( this._readyToCall) {
         this.generateRequest();
@@ -284,7 +288,9 @@ Viz-only version of Quantum widget
         this.$.vertGuide.style.display = "none";
       }
     },
-    _handleResponse: function(event, response) {      
+    _handleResponse: function(event, response) {    
+        
+        // console.debug("[warp10-quantumviz] _handleResponse", response);  
         if (!response.stack ||
           !response.stack instanceof Array ) {
           this.data = null;
@@ -296,7 +302,7 @@ Viz-only version of Quantum widget
         this._hasAnError = false;
         
         
-        // console.debug("[warp10-quantumviz] _handleResponse", { stack: this.stack, elapsed: this.elapsed, data: this.data });
+        // console.debug("[warp10-quantumviz] _handleResponse - parsed - dataChanged", this.data);
     },    
     _handleError: function(event, error) {        
         if (error.request.xhr.responseText.match(/<pre>\s*(.*)\s*<\/prse>/)) {
@@ -305,13 +311,13 @@ Viz-only version of Quantum widget
           this.errorMsg =  error.request.statusText;
         }
         
-        console.debug("[warp10-quantumviz] _handleError", { error: error, errorMsg: this.errorMsg });
+        // console.debug("[warp10-quantumviz] _handleError", { error: error, errorMsg: this.errorMsg });
         
         this.elapsed = error.elapsed;
         this._hasAResponse = false;
         this._hasAnError = true;       
         
-        console.debug("[warp10-quantumviz] _handleError - _hasAResponse", this._hasAResponse);
+        // console.debug("[warp10-quantumviz] _handleError - _hasAResponse", this._hasAResponse);
     },    
 
   }

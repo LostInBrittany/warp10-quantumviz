@@ -243,12 +243,12 @@
       }      
     },
     // Observers
-    dataChanged: function() {
+    dataChanged: function(newValue, oldValue) {
       if (!this.isReady) {
         // Component not ready yet
         return;
       }
-      //console.debug("[warp10-display-chart] dataChanged() - ", this.data);
+      // console.debug("[warp10-display-chart] dataChanged() - ", {new: newValue, old: oldValue});
       if (this.data != null) {
         this._updateChartData();
       } else {
@@ -334,8 +334,10 @@
     },
 
     _updateChartData: function() {
-      // console.debug("[warp10-display-chart] _updateChartData", this.data);
+      // console.debug("[warp10-display-chart] _updateChartData - begin", this.data);
       this._data2dygraphs(this.data);
+      // console.debug("[warp10-display-chart] _updateChartData -end", this.data);
+      
     },
     _tooltipContent: function() {
       
@@ -582,7 +584,7 @@
       return sparklines;
     },
     _data2dygraphs: function(data) {
-      console.debug("[warp10-display-chart] _data2dygraphs", quantumvizGts.isValidResponse(data));
+      // console.debug("[warp10-display-chart] _data2dygraphs", {data: data, thisdata: this.data});
 
       var context = this;
 
@@ -603,7 +605,7 @@
         response = data[0];
       }
       
-      console.debug("[warp10-display-chart] _data2dygraphs - Data to plot", response);
+      // console.debug("[warp10-display-chart] _data2dygraphs - Data to plot", response);
 
       var filteredResponse = {
         gts:[],
@@ -620,7 +622,7 @@
       // console.debug("[warp10-display-chart] _data2dygraphs - Filtered data to plot", filteredResponse);
 
       if (filteredResponse.gts.length == 0) {
-        console.warn("[warp10-display-chart] _data2dygraphs - Empty data set", filteredResponse);
+        // console.warn("[warp10-display-chart] _data2dygraphs - Empty data set", filteredResponse);
         this._removeChartData();
         return;
       }
@@ -719,7 +721,6 @@
       }
       options.highlightCallback = function(event, x, points, row, name) {
         // console.debug("[warp10-display-chart] highlightCallback", {event:event, name:name, x:x,points:points, row:row, xCoord: context.chart.toDomXCoord(x)});
-
         for (var i=0; i<points.length; i++) {
           // console.debug("[warp10-display-chart] color",  context.chart.colors_[i]);
           points[i].color = context.chart.colors_[i];
@@ -773,11 +774,17 @@
       
       // console.debug("[warp10-display-chart] _data2dygraphs - options", options);
 
+      
+      // console.debug("[warp10-display-chart] _data2dygraphs - this.$.chart", this.$.chart);
+      
       if (this.chart) {
         this.chart.updateOptions(options);
       } else {
-        // console.debug("[warp10-display-chart] _data2dygraphs - options",options);
+        // console.debug("[warp10-display-chart] _data2dygraphs - typeof this.$.chart", typeof(this.$.chart));
         this.chart = new Dygraph(this.$.chart, sparklines, options);
+        // console.debug("[warp10-display-chart] _data2dygraphs - chart", this.chart);
+        this.chart.maindiv_ = this.$.chart;
+        // console.debug("[warp10-display-chart] _data2dygraphs - chart", this.chart);
       }
     },
   }
