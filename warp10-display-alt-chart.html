@@ -590,7 +590,7 @@
       var context = this;
 
       if (typeof data  === 'string') {
-        data = looseJSON.parse(data);
+        data = looseJSON.parse(data)[0];
         console.debug("[warp10-display-chart] _data2dygraphs - Data from String", data);
       }
 
