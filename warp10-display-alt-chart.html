@@ -584,12 +584,18 @@
       return sparklines;
     },
     _data2dygraphs: function(data) {
-      // console.debug("[warp10-display-chart] _data2dygraphs", {data: data, thisdata: this.data});
+
+      console.debug("[warp10-display-chart] _data2dygraphs", {data: data, thisdata: this.data});
 
       var context = this;
 
+      if (typeof data  === 'string') {
+        data = looseJSON.parse(data);
+        console.debug("[warp10-display-chart] _data2dygraphs - Data from String", data);
+      }
+
       if (!quantumvizGts.isValidResponse(data)) {
-        // console.error("[warp10-display-chart] Received invalid data", data);
+        console.error("[warp10-display-chart] Received invalid data", data);
         return;
       }
       
@@ -605,7 +611,7 @@
         response = data[0];
       }
       
-      // console.debug("[warp10-display-chart] _data2dygraphs - Data to plot", response);
+      console.debug("[warp10-display-chart] _data2dygraphs - Data to plot", response);
 
       var filteredResponse = {
         gts:[],
