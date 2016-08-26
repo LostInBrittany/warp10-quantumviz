@@ -590,17 +590,17 @@
     },
     _data2dygraphs: function(data) {
 
-      console.debug("[warp10-display-chart] _data2dygraphs", {data: data, thisdata: this.data});
+      // console.debug("[warp10-display-chart] _data2dygraphs", {data: data, thisdata: this.data});
 
       var context = this;
 
       if (typeof data  === 'string') {
         data = looseJSON.parse(data)[0];
-        console.debug("[warp10-display-chart] _data2dygraphs - Data from String", data);
+        // console.debug("[warp10-display-chart] _data2dygraphs - Data from String", data);
       }
 
       if (!quantumvizGts.isValidResponse(data)) {
-        console.error("[warp10-display-chart] Received invalid data", data);
+        // console.error("[warp10-display-chart] Received invalid data", data);
         return;
       }
       
@@ -616,7 +616,7 @@
         response = data[0];
       }
       
-      console.debug("[warp10-display-chart] _data2dygraphs - Data to plot", response);
+      // console.debug("[warp10-display-chart] _data2dygraphs - Data to plot", response);
 
       var filteredResponse = {
         gts:[],
@@ -731,10 +731,18 @@
         };
       }
       options.highlightCallback = function(event, x, points, row, name) {
-        console.debug("[warp10-display-chart] highlightCallback", {event:event, name:name, x:x,points:points, row:row, xCoord: context.chart.toDomXCoord(x)});
+        // console.debug("[warp10-display-chart] highlightCallback", {event:event, name:name, x:x, points:points, row:row, xCoord: context.chart.toDomXCoord(x)});
+        var labels = context.chart.getLabels();
+        var colors = context.chart.getColors();
         for (var i=0; i<points.length; i++) {
-          // console.debug("[warp10-display-chart] color",  context.chart.colors_[i]);
-          points[i].color = context.chart.colors_[i];
+          // console.debug("[warp10-display-chart] colors", {point: points[i], colors: colors, labels: labels, colorIndex: labels.indexOf(points[i].name)})
+          var colorIndex = labels.indexOf(points[i].name) -1; // The fiorst label is X-axis label
+          if (colorIndex >= 0) {
+            points[i].color = colors[colorIndex];
+          }
+
+          // console.debug("[warp10-display-chart] color",  points[i].color);
+          // points[i].color = context.chart.colors_[i];
           if (name == points[i].name) {
             points[i].highlight = true;
           } else {
@@ -751,12 +759,12 @@
         };
       };      
       options.unhighlightCallback = function(event) {
-        console.debug("[warp10-display-chart] unhighlightCallback");
+        // console.debug("[warp10-display-chart] unhighlightCallback");
         context.currentValues = null;
       };
       options.interactionModel = {
         'mouseout': function(event) {
-          console.debug("[warp10-display-chart] interactionModel mouseout");
+          // console.debug("[warp10-display-chart] interactionModel mouseout");
           context.currentValues = null;
         }
       };
@@ -789,11 +797,6 @@
         }
       }
       
-      // console.debug("[warp10-display-chart] _data2dygraphs - options", options);
-
-      
-      // console.debug("[warp10-display-chart] _data2dygraphs - this.$.chart", this.$.chart);
-      
       if (this.chart) {
         this.chart.updateOptions(options);
       } else {
@@ -803,7 +806,7 @@
         this.chart.maindiv_ = this.$.chart;
         // console.debug("[warp10-display-chart] _data2dygraphs - chart", this.chart);
       }
-      console.debug("[warp10-display-chart] _data2dygraphs - chart", this.chart);
+      // console.debug("[warp10-display-chart] _data2dygraphs - chart", this.chart);
     },
   }
 
