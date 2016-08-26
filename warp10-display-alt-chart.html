@@ -54,24 +54,8 @@
       }      
       
       
-      :host ::content .table {
-        display: table;
-        width: 100%;
-        white-space: normal;
-        font-size: 10pt !important;
-      }
-      :host ::content .legend-color-guide {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-      }
-      :host ::content .legend-color-guide div {
-        width: 10px;
-        height: 10px;
-        border-radius: 5px;
-        margin-right: 5px;
-        margin-top: 5px;
-      }
+
+
       :host ::content .tr.highlight {
         background-color: #ffffa4;
       }
@@ -88,6 +72,29 @@
         color: #AAAAAA;
         font-style: italic;
       }
+      :host ::contentt .legend-color-guide .tr {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }   
+      :host ::content .legend-color-guide div {
+        width: 10px;
+        height: 10px;
+        border-radius: 5px;
+        margin-right: 5px;
+        margin-top: 5px;
+      }      
+      :host ::content .chart-tooltip .table {
+        display: table;
+        width: 100%;
+        white-space: normal;
+        font-size: 10pt !important;
+      }
+      :host ::content .chart-tooltip .tr {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+      }      
       :host ::content .chart-tooltip .key {
         text-align: left;
         padding-right: 10px;
@@ -760,12 +767,12 @@
       };      
       options.unhighlightCallback = function(event) {
         // console.debug("[warp10-display-chart] unhighlightCallback");
-        context.currentValues = null;
+        // context.currentValues = null;
       };
       options.interactionModel = {
         'mouseout': function(event) {
           // console.debug("[warp10-display-chart] interactionModel mouseout");
-          context.currentValues = null;
+          // context.currentValues = null;
         }
       };
       
