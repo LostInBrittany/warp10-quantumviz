@@ -197,9 +197,16 @@ Viz-only version of Quantum widget
         observer: "_annotationsSelectedTimestampChanged",
         value: -1
       },
+      /**
+       * When no-auto true, initial call isn't doing automatically but by calling generateRequest()
+       */
+      noAuto: {
+        type: Boolean,
+        value: false
+      },
       _readyToCall: {
         type: Boolean,
-        computed: "_isReadyToCall(host, _rawWarpscriptScript)"
+        computed: "_isReadyToCall(host, _rawWarpscriptScript, noAuto)"
       },
       _rawWarpscriptScript: {
         type: String,
@@ -227,7 +234,7 @@ Viz-only version of Quantum widget
     },
     _isReadyToCall: function() {
       // console.debug("[warp10-quantumviz] _isReadyToCall ",(this.host.length > 0) && ( this._rawWarpscriptScript.length > 0) );
-      return ( (this.host.length > 0) && ( this._rawWarpscriptScript.length > 0) );
+      return ( (! this.noAuto) && (this.host.length > 0) && ( this._rawWarpscriptScript.length > 0) );
     },
     _annotationsSelectedTimestampChanged: function() {
       // console.debug("[warp10-quantumviz] _annotationsSelectedTimestampChanged", this.annotationsSelectedTimestamp);
@@ -279,7 +286,7 @@ Viz-only version of Quantum widget
       }
       this.generateWarpScript();
       
-      // console.debug("[warp10-quantumviz] _paramsChanged()", {host: this.host, rawWarpscriptScript: this._rawWarpscriptScript});
+      console.debug("[warp10-quantumviz] _paramsChanged()", {host: this.host, rawWarpscriptScript: this._rawWarpscriptScript});
       
       if ( this._readyToCall) {
         this.generateRequest();
