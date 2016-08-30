@@ -767,12 +767,12 @@
       };      
       options.unhighlightCallback = function(event) {
         // console.debug("[warp10-display-chart] unhighlightCallback");
-        // context.currentValues = null;
+        context.currentValues = null;
       };
       options.interactionModel = {
         'mouseout': function(event) {
           // console.debug("[warp10-display-chart] interactionModel mouseout");
-          // context.currentValues = null;
+          context.currentValues = null;
         }
       };
       
