@@ -69,13 +69,13 @@
     },
     attached: function() {
       this.attached = true;
-      console.debug("[quantumviz-annotations] width", this.width);
+      // console.debug("[quantumviz-annotations] width", this.width);
     },
     _selectedTimestampChanged: function() {
       // console.debug("[quantumviz-annotations] _selectedTimestampChanged", this.selectedTimestamp);
     },
     contentChanged: function() {
-      console.debug("[quantumviz-annotations] - contentChanged()");
+      // console.debug("[quantumviz-annotations] - contentChanged()");
       if (!this.attached) {
         return
       }
@@ -84,7 +84,7 @@
     },
     getAnnotations: function(){
       var annotations = quantumvizGts.getAnnotations(this.data)
-      console.debug("[quantumviz-annotations] getAnnotations", annotations);
+      // console.debug("[quantumviz-annotations] getAnnotations", annotations);
       return annotations;
     },
     dataChanged: function(){
