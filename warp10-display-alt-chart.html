@@ -40,43 +40,38 @@
       .chart-tooltip.hidden {
           display: none;
       }
-      .table    { display: table }
-      .tr       { display: table-row }
-      .thead    { display: table-header-group }
-      .tbody    { display: table-row-group }
-      .tfoot    { display: table-footer-group }
-      .col      { display: table-column }
-      .colgroup { display: table-column-group }
-      .td, .th  { display: table-cell }
-      .caption  { display: table-caption }
-      .table {
-        table-layout: fixed;
-      }      
       
       
 
 
+      .tr.highlight, 
       :host ::content .tr.highlight {
         background-color: #ffffa4;
       }
-      :host ::content .gts-classname {
+      .gts-classname, 
+      :host ::content .gts-classname{
         color: #0074D9;
       }
+      .gts-labelname, 
       :host ::content .gts-labelname {
         color: #3d9970;
       }
+      .gts-separator, 
       :host ::content .gts-separator {
         color: #bbbbbb;
       }
+      .gts-labelvalue, 
       :host ::content .gts-labelvalue {
         color: #AAAAAA;
         font-style: italic;
       }
-      :host ::contentt .legend-color-guide .tr {
+      .legend-color-guide .tr, 
+      :host ::content .legend-color-guide .tr {
         display: flex;
         flex-direction: column;
         justify-content: center;
       }   
+      .legend-color-guide div, 
       :host ::content .legend-color-guide div {
         width: 10px;
         height: 10px;
@@ -84,17 +79,20 @@
         margin-right: 5px;
         margin-top: 5px;
       }      
+      .chart-tooltip .table, 
       :host ::content .chart-tooltip .table {
         display: table;
         width: 100%;
         white-space: normal;
         font-size: 10pt !important;
       }
+      .chart-tooltip .tr, 
       :host ::content .chart-tooltip .tr {
         display: flex;
         flex-direction: row;
         justify-content: center;
       }      
+      .chart-tooltip .key, 
       :host ::content .chart-tooltip .key {
         text-align: left;
         padding-right: 10px;
@@ -102,7 +100,8 @@
         word-break: break-word;
         width: calc( var(--tooltip-width, 400px) - 50px);
       }
-      :host ::content .chart-tooltip .value {
+      .chart-tooltip .value, 
+      :host ::content .chart-tooltip .value, {
         text-align: right;
       }
     </style>
