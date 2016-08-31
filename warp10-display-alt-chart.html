@@ -260,7 +260,7 @@
         // Component not ready yet
         return;
       }
-      // console.debug("[warp10-display-chart] dataChanged() - ", {new: newValue, old: oldValue});
+      // console.debug("[warp10-display-chart] dataChanged() - ", this.data);
       if (this.data != null) {
         this._updateChartData();
       } else {
@@ -790,20 +790,25 @@
           strokeWidth:strokeWidth[i-1],
           //stepPlot : true
         }
+        // console.debug("[warp10-display-chart] _data2dygraphs - interpolate", interpolate[i-1]);
         switch (interpolate[i-1]) {
           case "cardinal" :
-            options.series[labels[i]].plotter = smoothPlotter
+            options.series[labels[i]].plotter = smoothPlotter;
+            options.series[labels[i]].stepPlot = false;
             break;
           case "step-after":
           case "step-before":
-            options.series[labels[i]].stepPlot = true
+            options.series[labels[i]].plotter = Dygraph.Plotters.linePlotter;
+            options.series[labels[i]].stepPlot = true;
             break;
           case "linear":
           default:
+            options.series[labels[i]].plotter = Dygraph.Plotters.linePlotter;
+            options.series[labels[i]].stepPlot = false;
             break;
         }
       }
-      
+      // console.debug("[warp10-display-chart] _data2dygraphs - options", options);
       if (this.chart) {
         this.chart.updateOptions(options);
       } else {
