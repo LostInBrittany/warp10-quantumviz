@@ -259,12 +259,14 @@
         // Component not ready yet
         return;
       }
-      // console.debug("[warp10-display-chart] dataChanged() - ", this.data);
-      if (this.data != null) {
-        this._updateChartData();
-      } else {
-        this._removeChartData();
-      }
+      this.debounce('dataChanged', function() {
+        // console.debug("[warp10-display-chart] dataChanged() - ", this.data);
+        if (this.data != null) {
+          this._updateChartData();
+        } else {
+          this._removeChartData();
+        }
+      }, 100);
     },
     dimensionsChanged: function() {
       if (!this.isReady) {
