@@ -370,6 +370,8 @@
       // console.debug("[warp10-display-chart] _tooltipContent", this.currentValues)
       var d = this.currentValues;
 
+      var timestamps = this.timestamps;
+
       if (d === null) {
         this.tooltip = null;
         return;
@@ -383,7 +385,8 @@
 
       //Format function for the tooltip header value.
       var headerFormatter = function(d) {
-        if (this.timestamps) {
+        // console.debug("[warp10-display-chart] headerFormatter - timestamps", timestamps)
+        if (!timestamps) {
             return d3.time.format.utc('%Y-%m-%dT%H:%M:%S.%LZ')(new Date(d));
         }
         return d;
