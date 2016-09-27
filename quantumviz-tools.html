@@ -117,11 +117,12 @@
 
   /***********************************************************************************
   * Transforms quantumviz response object into annotation objects
+  * If `timestamps` is true, timestamps shouldn't be converted to ms
   ***********************************************************************************/
-  quantumvizGts.getAnnotations = function(data) {    
+  quantumvizGts.getAnnotations = function(data, timestamps) {    
 
 
-    // console.debug("[warp10-quantumviz-tools] getAnnotations - data", data);
+    console.debug("[warp10-quantumviz-tools] getAnnotations - data", data);
     
     if (!quantumvizGts.isValidResponse(data)) {
       return [];
@@ -152,15 +153,15 @@
       // Let's verify if it's a GTS to plot
       
       if (gtsTools.isGtsToAnnotate(response.gts[i])) {
-        var annotation = quantumvizGts.gtsToNvd3(response.gts[i]);
+        var annotation = quantumvizGts.gtsToNvd3(response.gts[i], timestamps);
         if ((response.params !== undefined)
-        && (response.params[i].key !== undefined)) {
+            && (response.params[i].key !== undefined)) {
           annotation.key = response.params[i].key;
         } else {
           annotation.key = annotation.c;
         }
         if ((response.params !== undefined)
-        && (response.params[i].color !== undefined)) {
+            && (response.params[i].color !== undefined)) {
           annotation.color = response.params[i].color;
         } else {
           annotation.color = warp10ColorTools.getColor(i);
@@ -205,8 +206,9 @@
 
   /***********************************************************************************
   * Tranform a gts @gts into nvd3 format
+  * If `timestamps` is true, timestamps shouldn't be converted to ms
   ***********************************************************************************/
-  quantumvizGts.gtsToNvd3 = function(gts) {
+  quantumvizGts.gtsToNvd3 = function(gts, timestamps) {
     var ndv3Series = {
       key: "",
       values: [],
@@ -230,9 +232,11 @@
       //console.debug(gts)
       for (var i = 0; i < gts.v.length; i++) {
         var metric = gts.v[i];
-        ndv3Series.values.push({x: Math.round(metric[0] / 1000), y: metric[metric.length-1]});
-
-        // ndv3Series.values.push({x: new Date(metric[0]/1000), y: metric[metric.length-1]});
+        var xVal = metric[0];
+        if (!timestamps) {
+          xVal = Math.round(xVal / 1000);
+        }
+        ndv3Series.values.push({x: xVal, y: metric[metric.length-1]});
       }
     }
     return ndv3Series;
@@ -272,7 +276,7 @@
   * Returns true if @data is a valid detailed quantumviz response object
   ***********************************************************************************/
   quantumvizGts.isValidDetailedResponse = function(response) {
-
+    console.debug("[warp10-quantumviz-tools] isValidDetailedResponse", response);
     if (!gtsTools.isArray(response) || (response.length != 1)) {
       // console.debug("[warp10-quantumviz-tools] isValidDetailedResponse false - Response isn't an Array or it has more than 1 element: ",response);
       return false;

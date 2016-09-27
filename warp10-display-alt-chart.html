@@ -621,11 +621,11 @@
 
       if (typeof data  === 'string') {
         data = looseJSON.parse(data)[0];
-        // console.debug("[warp10-display-chart] _data2dygraphs - Data from String", data);
+        console.debug("[warp10-display-chart] _data2dygraphs - Data from String", data);
       }
 
       if (!quantumvizGts.isValidResponse(data)) {
-        // console.error("[warp10-display-chart] Received invalid data", data);
+        console.error("[warp10-display-chart] Received invalid data", data);
         return;
       }
 

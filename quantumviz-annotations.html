@@ -23,8 +23,14 @@
   <template>
     <div id="annotations">
       <template is="dom-repeat" items="{{annotations}}" as="annotation">
-        <quantumviz-annotation width="{{width}}" time-bounds="{{timeBounds}}" chart-area="{{chartArea}}"
-          annotation="{{annotation}}" vert-guide="{{vertGuide}}" selected-timestamp="{{selectedTimestamp}}">
+        <quantumviz-annotation 
+          width="{{width}}" 
+          time-bounds="{{timeBounds}}" 
+          chart-area="{{chartArea}}"
+          annotation="{{annotation}}" 
+          vert-guide="{{vertGuide}}" 
+          selected-timestamp="{{selectedTimestamp}}"
+          timestamps="{{timestamps}}">
         </quantumviz-annotation>
       </template>
     </div>
@@ -35,12 +41,18 @@
   Polymer({
     is: "quantumviz-annotations",
     properties: {
+      /**
+       * The data of the chart
+       */
       data: {
         type: Object
       },
       annotations: {
         computed: "getAnnotations(data,_newData)"
       },
+      /**
+       * Displayed data time bounds
+       */
       timeBounds: {
         type: Object
       },
@@ -57,6 +69,15 @@
         observer: "_selectedTimestampChanged",
         value: -1
       },
+
+      /**
+       * If true, X scale will be in timestamp
+        */
+      timestamps: {
+        type: Boolean,
+        value: false
+      },
+
       _newData: {
         type: Number,
         value: 0
@@ -83,8 +104,8 @@
       //console.debug("[quantumviz-annotations] annotations offset", this.$.annotations.offsetTop);
     },
     getAnnotations: function(){
-      var annotations = quantumvizGts.getAnnotations(this.data)
-      // console.debug("[quantumviz-annotations] getAnnotations", annotations);
+      var annotations = quantumvizGts.getAnnotations(this.data, this.timestamps)
+      console.debug("[quantumviz-annotations] getAnnotations", annotations);
       return annotations;
     },
     dataChanged: function(){

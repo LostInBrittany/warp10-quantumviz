@@ -80,6 +80,9 @@
         type: Number,
         value: -1
       },
+      /**
+       * Displayed data time bounds
+       */
       timeBounds: {
         type: Object,
         observer: 'contentChanged'
@@ -175,7 +178,8 @@
       }
 
 
-      // console.debug("[quantumviz-annotation] timeBounds", [this.timeBounds.min, this.timeBounds.max])
+      console.debug("[quantumviz-annotation] timeBounds", [this.timeBounds.min, this.timeBounds.max]);
+      console.debug("[quantumviz-annotation] annotation", this.annotation);
 
       var scale = d3.scale.linear()
         .domain([this.timeBounds.min, this.timeBounds.max])
@@ -262,6 +266,7 @@
         }
         return html;
       };
+
 
       svg.selectAll("rect")
         .data(annotation.values)
