@@ -711,6 +711,8 @@
       if (filteredResponse.globalParams.timestamps) {
         this.timestamps = true;
       }
+      var xlabel = filteredResponse.globalParams.xLabel;
+      var ylabel = filteredResponse.globalParams.yLabel;      
 
       var options = {
         file: sparklines,
@@ -740,6 +742,12 @@
         options.drawAxis = false;
         options.drawGrid = false;
       } else {
+        if (xlabel) {
+          options.xlabel = xlabel;
+        }
+        if (ylabel) {
+          options.ylabel = ylabel;
+        }
         options.axes = {
           x : {
             drawAxis: true,
