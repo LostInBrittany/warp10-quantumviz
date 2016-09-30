@@ -51,14 +51,20 @@ Available parameters are:
 
 * `key`: the legend to associate to the GTS
 * `color` (optional): the color of the line, as an CSS compliant color STRING (e.g.: `#cc0505`)
-
+* `interpolate`: the interpolating function for the GTS.  Default mode is `linear`, other
+   usual modes are `step`  and `cardinal`. 
+* `strokeWidth`: the width in pixels of the GTS representation
 
 `globalParams` is an optional MAP of parameters to apply to the whole chart.
 Available parameters are:
 
-* `interpolate`: the interpolating function used.  Default mode is `step-before`, other
- usual modes are `linear`, `basis` and `cardinal`. The complete list of interpolation functions is
- [here](https://github.com/mbostock/d3/wiki/SVG-Shapes#line_interpolate)
+* `interpolate`: the fefault interpolating function used.  Default mode is `linear`, other
+  usual modes are `step`  and `cardinal`. 
+
+* `strokeWidth`: the defaault global width in pixels of the GTS representation. If no set, it will be fixed by the element.
+
+* `timestamps`: if the value of this parameter is `true`, the time will be shown as timestaps (in microseconds) instead 
+  of as UTC dates  
 
 
 ## Example of use ##

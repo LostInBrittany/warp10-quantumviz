@@ -10,6 +10,8 @@
 <link rel="import" href="../warp10-quantumviz/quantumviz-tools.html">
 
 
+<script src="../d3/d3.min.js"></script>
+
 <script src="../dygraphs/dygraph-combined-dev.js"></script>
 <script type="text/javascript" src="../dygraphs/extras/smooth-plotter.js"></script>
 
@@ -222,6 +224,7 @@
         */
       timestamps: {
         type: Boolean,
+        notify: true,
         value: false
       },
 
@@ -703,6 +706,10 @@
         } else {
           strokeWidth[i] = this.lineWidth;
         }
+      }
+
+      if (filteredResponse.globalParams.timestamps) {
+        this.timestamps = true;
       }
 
       var options = {
