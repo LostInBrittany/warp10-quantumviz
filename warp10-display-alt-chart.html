@@ -398,20 +398,39 @@
 
       var keyFormatter = function(d, i) {
 
-        var splitted = d.split(/[{}]/);
-        var classname = splitted[0];
-        var html = "<span class='gts-classname'>"+classname+"</span>"
-        if (splitted.length > 1) {
-          html += "<span class='gts-separator'>{</span>";
+        var outsideCurlyBrackets = d.split(/\{[^\}]*\}/);
+        console.debug("[warp10-display-chart] keyFormatter ", outsideCurlyBrackets);
 
-          var labels = []
-          splitted[1].split(',').forEach(function(it) {
-            var item = it.split('=');
-            labels.push("<span class='gts-labelname'>"+item[0]+"</span><span class='gts-separator'>=</span>"
-                  + "<span class='gts-labelvalue'>"+item[1]+"</span>");
-          })
-          html += labels.join("<span class='gts-separator'>,</span>") + "<span class='gts-separator'>}</span>";
+        var insideCurlyBrackets = [];
+        var insideRegex = /\{([^\}]*)\}/g
+        var matches;
+        while ((matches = insideRegex.exec(d)) !== null) {
+          insideCurlyBrackets.push(matches[1]);          
         }
+        console.debug("[warp10-display-chart] keyFormatter ", insideCurlyBrackets);
+        
+
+        var html = "";
+
+        for (var i in outsideCurlyBrackets) {
+          html += "<span class='gts-classname'>"+outsideCurlyBrackets[i]+"</span>";
+
+          if (insideCurlyBrackets.length > i) {
+            html += "<span class='gts-separator'>{</span>";
+            var labels = []
+            insideCurlyBrackets[i].split(',').forEach(function(it) {
+              var item = it.split('=');
+              var label = "<span class='gts-labelname'>"+item[0]+"</span>";
+              if (item.length>1) {
+                label += "<span class='gts-separator'>=</span>" +
+                    "<span class='gts-labelvalue'>"+item[1]+"</span>"
+              }
+              labels.push(label);
+            });
+            html += labels.join("<span class='gts-separator'>,</span>") + "<span class='gts-separator'>}</span>"
+          }
+        }
+        console.debug("[warp10-display-chart] keyFormatter ", html);
         return html;
       };
 
