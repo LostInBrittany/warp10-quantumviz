@@ -243,16 +243,60 @@
   };
 
   /***********************************************************************************
+  * Returns a full convention quantumviz response object if @data is a valid 
+  * quantumviz response object, else return null
+  ***********************************************************************************/
+  quantumvizGts.getValidResponse = function(data) {
+
+    console.debug("[warp10-quantumviz-tools] getValidResponse - Data", data);
+
+    if (quantumvizGts.isValidDetailedResponse(data)) {
+      return data[0];
+    }
+    var response = {};
+    if (quantumvizGts.isValidSingleDetailedResponse(data)) {
+      response.gts = [ data[0].gts ];
+      response.params = [ data[0].params ];
+      response.globalParams = data[0].globalParams;
+      return response;
+    }
+    if (quantumvizGts.isValidGtsListResponse(data)) {
+      response.gts = data;
+      response.params = [];
+      for (var i in response.gts) {
+        response.params[i] = {}
+      }
+      response.globalParams = {};
+      return response;
+    }
+    if (quantumvizGts.isValidGtsResponse(data)) {
+      response.gts = [ data ];
+      response.params = [ {} ];
+      response.globalParams = {};
+      return response;
+    }
+    console.debug("[warp10-quantumviz-tools] getValidResponse - Invalid response", response);
+    return null;
+
+  }
+  /***********************************************************************************
   * Returns true if @data is a valid quantumviz response object
   ***********************************************************************************/
   quantumvizGts.isValidResponse = function(response) {
     if (quantumvizGts.isValidDetailedResponse(response)) {
+      console.debug("[warp10-quantumviz-tools] isValidResponse - isValidDetailedResponse", response);
+      return true;
+    }
+    if (quantumvizGts.isValidSingleDetailedResponse(response)) {
+      console.debug("[warp10-quantumviz-tools] isValidResponse - isValidSingleDetailedResponse", response);
       return true;
     }
     if (quantumvizGts.isValidGtsListResponse(response)) {
+      console.debug("[warp10-quantumviz-tools] isValidResponse - isValidGtsListResponse", response);
       return true;
     }
-    if (quantumvizGts.isValidGts(response)) {
+    if (quantumvizGts.isValidGtsResponse(response)) {
+      console.debug("[warp10-quantumviz-tools] isValidResponse - isValidGtsResponse", response);
       return true;
     }
     return false;
@@ -261,9 +305,10 @@
   /***********************************************************************************
   * Returns true if @data is a valid GTS response object
   ***********************************************************************************/
-  quantumvizGts.isValidGts = function(response) {
+  quantumvizGts.isValidGtsResponse = function(response) {
     return gtsTools.isGts(response);
   }
+
   /***********************************************************************************
   * Returns true if @data is a valid GTS list response object
   ***********************************************************************************/
@@ -280,29 +325,54 @@
     }    
     return  true;
   }
+
   /***********************************************************************************
-  * Returns true if @data is a valid detailed quantumviz response object
+  * Returns true if @data is a valid detailed quantumviz response object with
+  * a single GTS and its params
   ***********************************************************************************/
-  quantumvizGts.isValidDetailedResponse = function(response) {
-    console.debug("[warp10-quantumviz-tools] isValidDetailedResponse", response);
+  quantumvizGts.isValidSingleDetailedResponse = function(response) {
     if (!gtsTools.isArray(response) || (response.length != 1)) {
-     console.debug("[warp10-quantumviz-tools] isValidDetailedResponse false - Response isn't an Array or it has more than 1 element: ",response);
+     // console.debug("[warp10-quantumviz-tools] isValidSingleDetailedResponse false - Response isn't an Array or it has more than 1 element: ",response);
       return false;
     }
     response = response[0];
 
     if ((response.gts === undefined) || (response.params == undefined)) {
-      console.debug("[warp10-quantumviz-tools] isValidDetailedResponse false - Response hasn't gts and/or params components",response);
+      // console.debug("[warp10-quantumviz-tools] isValidSingleDetailedResponse false - Response hasn't gts and/or params components",response);
+      return false;
+    }
+
+    if (typeof response.gts !== "object" || typeof response.params !== "object") {
+      //  console.debug("[warp10-quantumviz-tools] isValidSingleDetailedResponse false - Response's gts and/or params components aren't objects",response);
+      return false;
+    }
+
+    return true;
+  }
+
+  /***********************************************************************************
+  * Returns true if @data is a valid detailed quantumviz response object
+  ***********************************************************************************/
+  quantumvizGts.isValidDetailedResponse = function(response) {
+    // console.debug("[warp10-quantumviz-tools] isValidDetailedResponse", response);
+    if (!gtsTools.isArray(response) || (response.length != 1)) {
+     // console.debug("[warp10-quantumviz-tools] isValidDetailedResponse false - Response isn't an Array or it has more than 1 element: ",response);
+      return false;
+    }
+    response = response[0];
+
+    if ((response.gts === undefined) || (response.params == undefined)) {
+      // console.debug("[warp10-quantumviz-tools] isValidDetailedResponse false - Response hasn't gts and/or params components",response);
       return false;
     }
 
     if (!gtsTools.isArray(response.gts) || !gtsTools.isArray(response.params)) {
-      console.debug("[warp10-quantumviz-tools] isValidDetailedResponse false - Response's gts and/or params components aren't arrays",response);
+      // console.debug("[warp10-quantumviz-tools] isValidDetailedResponse false - Response's gts and/or params components aren't arrays",response);
       return false;
     }
 
     if (response.gts.length != response.params.length) {
-      console.debug("[warp10-quantumviz-tools] isValidDetailedResponse false - Response's gts and params components haven't the same length",response);
+      // console.debug("[warp10-quantumviz-tools] isValidDetailedResponse false - Response's gts and params components haven't the same length",response);
       return false;
     }
 

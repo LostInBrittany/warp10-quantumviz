@@ -656,6 +656,7 @@
         return;
       }
 
+      /*
       var response = {};
       if (quantumvizGts.isValidGts(data)) {
         response.gts = [ data ];
@@ -671,8 +672,11 @@
       } else {
         response = data[0];
       }
+      */
 
-      // console.debug("[warp10-display-chart] _data2dygraphs - Data to plot", response);
+      response = quantumvizGts.getValidResponse(data);
+
+      console.debug("[warp10-display-chart] _data2dygraphs - Data to plot", response);
 
       var filteredResponse = {
         gts:[],
