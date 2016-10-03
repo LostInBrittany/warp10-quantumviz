@@ -13,7 +13,7 @@ To use the widget in an HTML page you need:
 
 1. Import the `warp10-quantumviz.html` widget from Cityzen Data website:
 
-   `<link rel="import" href="https://cdn.cityzendata.net/quantumviz/latest/warp10-quantumviz.html">`
+   `<link rel="import" href="https://cdn.cityzendata.net/quantumviz/latest/warp10-quantumviz/warp10-quantumviz.html">`
 
 1. Use the `<warp10-quantumviz>` tag in your HTML
 
@@ -68,10 +68,16 @@ Available parameters are:
 
 
 ## Example of use ##
-
-    <script src="https://cdn.cityzendata.net/quantumviz/latest/webcomponentsjs/webcomponents-lite.js"></script>
-    <link rel="import" href="https://cdn.cityzendata.net/quantumviz/latest/warp10-quantumviz.html">
-
+```html
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>warp10-quantumviz</title>
+  <script src="https://cdn.cityzendata.net/quantumviz/latest/webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="https://cdn.cityzendata.net/quantumviz/latest/warp10-quantumviz/warp10-quantumviz.html">
+</head>
+<body>
    <warp10-quantumviz width="500" height="400">
      'TOKEN'
      'com.cityzendata.tutorial.sensors.temperature'
@@ -107,56 +113,65 @@ Available parameters are:
      'params' $params
      'globalParams' $globalParams
      6 ->MAP
-   </warp10-quantumviz>
-
-
+</warp10-quantumviz>
+</body>
+</html>
+```
 
 ## Another example using the `host` parameter ##
 
-
-   <script src="https://cdn.cityzendata.net/quantumviz/latest/webcomponentsjs/webcomponents-lite.js"></script>
-   <link rel="import" href="https://cdn.cityzendata.net/quantumviz/latest/warp10-quantumviz.html">
-
-   <warp10-quantumviz width="500" height="400" host="https://warp1.cityzendata.net">
-     NEWGTS
-     100000000 NaN NaN NaN 110 ADDVALUE
-     200000000 NaN NaN NaN 120 ADDVALUE
-     300000000 NaN NaN NaN 130 ADDVALUE
-     400000000 NaN NaN NaN 140 ADDVALUE
-     500000000 NaN NaN NaN 140 ADDVALUE
-     600000000 NaN NaN NaN 140 ADDVALUE
-
-
-     NEWGTS
-     100000000 NaN NaN NaN 10 ADDVALUE
-     200000000 NaN NaN NaN 9 ADDVALUE
-     300000000 NaN NaN NaN 8 ADDVALUE
-     400000000 NaN NaN NaN 7 ADDVALUE
-     500000000 NaN NaN NaN 6 ADDVALUE
-     600000000 NaN NaN NaN 8 ADDVALUE
+```html
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>warp10-quantumviz</title>
+  <script src="https://cdn.cityzendata.net/quantumviz/latest/webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="https://cdn.cityzendata.net/quantumviz/latest/warp10-quantumviz/warp10-quantumviz.html">
+</head>
+<body>
+  <warp10-quantumviz width="500" height="200" host="https://foo.bar">
+  NEWGTS
+  100000000 NaN NaN NaN 110 ADDVALUE
+  200000000 NaN NaN NaN 120 ADDVALUE
+  300000000 NaN NaN NaN 130 ADDVALUE
+  400000000 NaN NaN NaN 140 ADDVALUE
+  500000000 NaN NaN NaN 140 ADDVALUE
+  600000000 NaN NaN NaN 140 ADDVALUE
 
 
-     2 ->LIST
-     'gts' STORE
+  NEWGTS
+  100000000 NaN NaN NaN 10 ADDVALUE
+  200000000 NaN NaN NaN 9 ADDVALUE
+  300000000 NaN NaN NaN 8 ADDVALUE
+  400000000 NaN NaN NaN 7 ADDVALUE
+  500000000 NaN NaN NaN 6 ADDVALUE
+  600000000 NaN NaN NaN 8 ADDVALUE
+  
+  2 ->LIST
+  'gts' STORE
 
-     'color' '#ff1010'
-     'key' 'Heartrate'
-     4 ->MAP
-     'color' '#1010ff'
-     'key' 'Speed'
-     4 ->MAP
-     2 ->LIST
-     'params' STORE
+  'color' '#ff1010'
+  'key' 'Heartrate'
+  4 ->MAP
+  'color' '#1010ff'
+  'key' 'Speed'
+  4 ->MAP
+  2 ->LIST
+  'params' STORE
 
-     'interpolate' 'cardinal'
-     2 ->MAP
-     'globalParams' STORE
+  'interpolate' 'cardinal'
+  2 ->MAP
+  'globalParams' STORE
 
-     'gts' $gts
-     'params' $params
-     'globalParams' $globalParams
-     6 ->MAP
-   </warp10-quantumviz>
+  'gts' $gts
+  'params' $params
+  'globalParams' $globalParams
+  6 ->MAP
+ </warp10-quantumviz>
+</body>
+</html>
+```
 
 
 ## Launching Quantumviz from a local server
@@ -190,6 +205,6 @@ npm install -g bower polyserve
 
   Examples (on port 8000):
 
-  http://localhost:8000/components/webcomponentsjs/webcomponents.js
-  http://localhost:8000/components/polymer/polymer.html
-  http://localhost:8000/components/warp10-quantumviz/warp10-display-chart.html
+  - http://localhost:8000/components/webcomponentsjs/webcomponents.js
+  - http://localhost:8000/components/polymer/polymer.html
+  - http://localhost:8000/components/warp10-quantumviz/warp10-display-chart.html
