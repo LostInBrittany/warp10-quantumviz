@@ -192,9 +192,12 @@
 
       // If data is an string, we parse it
       if (typeof this.data  === 'string') {
-        this.data = looseJSON.parse(this.data)[0];
-        console.debug("[warp10-display-behavior] _dataToChart - Data from String", this.data);
-      }
+        this.data = looseJSON.parse(this.data)
+        if (typeof this.data == 'array') {
+          this.data = this.data[0];
+        }
+        console.debug("[warp10-display-chart] _data2dygraphs - Data from String", this.data);
+      }      
 
       if (!quantumvizGts.isValidResponse(this.data)) {
         console.error("[warp10-display-behavior] Received invalid data", this.data);
@@ -203,19 +206,7 @@
       }
 
       var response = {};
-      
-      if (quantumvizGts.isValidGtsListResponse(this.data)) {
-        // If data is a GTS list, we craft a quantumviz response object for it 
-        response.gts = this.data;
-        response.params = [];
-        for (var i in response.gts) {
-          response.params[i] = {}
-        }
-        response.globalParams = {};
-      } else {
-        // else we assume that data is a quantumviz response object
-        response = this.data[0];
-      }
+      response = quantumvizGts.getValidResponse(data);
 
       // console.debug("[warp10-display-behavior] _dataToChart - Data to plot", response);
 

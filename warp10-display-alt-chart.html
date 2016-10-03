@@ -655,25 +655,7 @@
         console.error("[warp10-display-chart] Received invalid data", data);
         return;
       }
-
-      /*
       var response = {};
-      if (quantumvizGts.isValidGts(data)) {
-        response.gts = [ data ];
-        response.params = [ {} ];
-        response.globalParams = {};
-      } else if (quantumvizGts.isValidGtsListResponse(data)) {
-        response.gts = data;
-        response.params = [];
-        for (var i in response.gts) {
-          response.params[i] = {}
-        }
-        response.globalParams = {};
-      } else {
-        response = data[0];
-      }
-      */
-
       response = quantumvizGts.getValidResponse(data);
 
       console.debug("[warp10-display-chart] _data2dygraphs - Data to plot", response);
