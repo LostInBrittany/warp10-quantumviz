@@ -644,7 +644,10 @@
       var context = this;
 
       if (typeof data  === 'string') {
-        data = looseJSON.parse(data)[0];
+        data = looseJSON.parse(data)
+        if (typeof data == 'array') {
+          data = data[0];
+        }
         console.debug("[warp10-display-chart] _data2dygraphs - Data from String", data);
       }
 
@@ -654,7 +657,11 @@
       }
 
       var response = {};
-      if (quantumvizGts.isValidGtsListResponse(data)) {
+      if (quantumvizGts.isValidGts(data)) {
+        response.gts = [ data ];
+        response.params = [ {} ];
+        response.globalParams = {};
+      } else if (quantumvizGts.isValidGtsListResponse(data)) {
         response.gts = data;
         response.params = [];
         for (var i in response.gts) {

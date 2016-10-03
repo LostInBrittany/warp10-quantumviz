@@ -252,10 +252,18 @@
     if (quantumvizGts.isValidGtsListResponse(response)) {
       return true;
     }
+    if (quantumvizGts.isValidGts(response)) {
+      return true;
+    }
     return false;
 
   }
-
+  /***********************************************************************************
+  * Returns true if @data is a valid GTS response object
+  ***********************************************************************************/
+  quantumvizGts.isValidGts = function(response) {
+    return gtsTools.isGts(response);
+  }
   /***********************************************************************************
   * Returns true if @data is a valid GTS list response object
   ***********************************************************************************/
