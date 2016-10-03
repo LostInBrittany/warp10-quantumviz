@@ -196,7 +196,7 @@
         if (typeof this.data == 'array') {
           this.data = this.data[0];
         }
-        console.debug("[warp10-display-chart] _data2dygraphs - Data from String", this.data);
+        console.debug("[warp10-display-chart] _dataToChart - Data from String", this.data);
       }      
 
       if (!quantumvizGts.isValidResponse(this.data)) {
@@ -206,7 +206,7 @@
       }
 
       var response = {};
-      response = quantumvizGts.getValidResponse(data);
+      response = quantumvizGts.getValidResponse(this.data);
 
       // console.debug("[warp10-display-behavior] _dataToChart - Data to plot", response);
 
@@ -272,17 +272,20 @@
         }
       }
 
+      var xlabel = quantumvizObj.globalParams.xLabel;
+      var ylabel = quantumvizObj.globalParams.yLabel;    
+
       this._params = {
         labels: labels,
         colors: colors,
         interpolate: interpolate,
-        strokeWidth: strokeWidth
+        strokeWidth: strokeWidth,
+        xlabel: xlabel,
+        ylabel: ylabel
       }
       if (quantumvizObj.globalParams.timestamps) {
         this.timestamps = true;
       }
-      var xlabel = quantumvizObj.globalParams.xLabel;
-      var ylabel = quantumvizObj.globalParams.yLabel;    
     }
 
   }

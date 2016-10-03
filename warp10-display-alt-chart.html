@@ -5,13 +5,9 @@
 -->
 <link rel="import" href=" ../polymer/polymer.html">
 
-<link rel="import" href="../warp10-iron/warp10-color-tools.html">
-
-<link rel="import" href="../warp10-quantumviz/quantumviz-tools.html">
-
+<link rel="import" href="../warp10-quantumviz/warp10-display-behavior.html">
 
 <script src="../d3/d3.min.js"></script>
-
 <script src="../dygraphs/dygraph-combined-dev.js"></script>
 <script type="text/javascript" src="../dygraphs/extras/smooth-plotter.js"></script>
 
@@ -20,12 +16,13 @@
     <style>
       :host {
         display: block;
-        text-align: center;
-        position: relative;
+        width: 100%;
+        height: 100%;
       }
       #chart {
-        display: inline-block;
-        text-align: center;
+        display: block;
+        width: 100%;
+        height: 100%;
       }
       .chart-tooltip {
           position: absolute;
@@ -124,114 +121,11 @@
   // element registration
   Polymer({
     is: "warp10-display-chart",
-    // Properties
-    properties: {
-      /**
-       * The chart width, in pixels
-       */
-      width: {
-        type: Number,
-        value: -1,
-        observer: 'dimensionsChanged'
-      },
-      /**
-       * The chart height, in pixels
-       */
-      height: {
-        type: Number,
-        value: -1,
-        observer: 'dimensionsChanged'
-      },
-      /**
-       * The data of the chart
-       */
-      data: {
-        type: Object,
-        notify: true,
-        observer: 'dataChanged'
-      },
-      /**
-       * The values of the lines at the mouseover postion
-       */
-      currentValues: {
-        type: Object,
-        notify: true,
-        observer: "currentValuesChanged"
-      },
-      /**
-       * The width of the lines on the chart
-       * It must be a number between _MIN_LINE_WIDTH and _MAX_LINE_WIDTH
-       */
-      lineWidth: {
-        type: Number,
-        value: 1.75
-      },
-      /**
-       * If true, axis aren't shown
-       */
-      hideAxis: {
-        type: Boolean,
-        value: false
-      },
-      /**
-       * If true, tooltip isn't shown
-       */
-      hideTooltip: {
-        type: Boolean,
-        value: false
-      },
-      /**
-       * If true, legend isn't shown
-       */
-      showLegend: {
-        type: Boolean,
-        value: false
-      },
-      /**
-       * Displayed data time bounds
-       */
-      timeBounds: {
-        type: Object,
-        notify: true
-      },
-      /**
-       * Displayed data value bounds
-       */
-      valueBounds: {
-        type: Object,
-        notify: true
-      },
-      /**
-        * The chart area
-        */
-      chartArea: {
-        type: Array,
-        notify: true
-      },
 
-      /**
-        * The tooltip
-        */
-      tooltip: {
-        type: String,
-        observer: "tooltipChanged",
-        notify: true,
-        value: ""
-      },
+    behaviors: [
+      Warp10DisplayBehavior
+    ],
 
-      /**
-       * If true, X scale will be in timestamp
-        */
-      timestamps: {
-        type: Boolean,
-        notify: true,
-        value: false
-      },
-
-      // Constants
-      _MIN_LINE_WIDTH: 1,
-      _MAX_LINE_WIDTH: 20
-    },
 
     observers: [
       'dataChanged(data.*, timestamps)'
@@ -241,16 +135,7 @@
       // console.debug("[warp10-display-chart] created");
     },
     ready: function() {
-      // console.debug("[warp10-display-chart] ready - begin", {width: this.width, height: this.height});
-      this.configure();
-      this.isReady = true;
-      if (this.data != null) {
-        this.dataChanged()
-      }
-      // tooltip key width
-      this.customStyle['--tooltip-width'] = Math.max(400,this.$.chart.getBoundingClientRect().width * 2 / 3).toString()+"px";
-      this.updateStyles();
-      // console.debug("[warp10-display-chart] ready - end");
+      // console.debug("[warp10-display-chart] ready");
     },
     attached: function(){
       // console.debug("[warp10-display-chart] attached", {width: this.width, height: this.height});
@@ -266,21 +151,7 @@
         this.chart.resize();
       }
     },
-    // Observers
-    dataChanged: function(newValue, oldValue) {
-      if (!this.isReady) {
-        // Component not ready yet
-        return;
-      }
-      this.debounce('dataChanged', function() {
-        // console.debug("[warp10-display-chart] dataChanged() - ", this.data);
-        if (this.data != null) {
-          this._updateChartData();
-        } else {
-          this._removeChartData();
-        }
-      }, 100);
-    },
+
     dimensionsChanged: function() {
       if (!this.isReady) {
         // Component not ready yet
@@ -307,37 +178,6 @@
         // console.debug("[warp10-display-chart] tooltipChanged", this.tooltip);
         this.$$(".chart-tooltip").innerHTML = this.tooltip;
       }
-
-    },
-
-    // Component methods
-    configure: function() {
-      // console.debug("[warp10-display-chart] configure");
-
-      // Dimensions
-      if (this.width <0) {
-        this.$.chart.style.width = "100%";
-        //this.$$('svg').style.width = calc(100% - 50px);
-      } else {
-        this.$.chart.style.width = (parseInt(this.width))+"px";
-        //this.$$('svg').style.width = (parseInt(this.width)-50)+"px";
-      }
-      this.style.width = this.$.chart.style.width;
-
-      if (this.height <0) {
-        this.$.chart.style.height = "100%";
-        //this.$$('svg').style.height = calc(100% - 100px);
-      } else {
-        this.$.chart.style.height = (parseInt(this.height))+"px";
-        //this.$$('svg').style.height = (parseInt(this.height)-100)+"px";
-      }
-      this.style.height = this.$.chart.style.height;
-
-      // Line width
-      if (this.lineWidth < this._MIN_LINE_WIDTH || this._MAX_LINE_WIDTH > 20) {
-          this.lineWidth = 1.5;
-      }
-       // console.debug("[warp10-display-chart] configure -lineWidth", this.lineWidth);
 
     },
 
@@ -637,95 +477,14 @@
       // console.debug("[warp10-display-chart] _gts2dygraphs - sparklines", sparklines);
       return sparklines;
     },
-    _data2dygraphs: function(data) {
-
-      // console.debug("[warp10-display-chart] _data2dygraphs", {data: data, thisdata: this.data});
+    _dataToChartLib: function(filteredResponse) { 
 
       var context = this;
-
-      if (typeof data  === 'string') {
-        data = looseJSON.parse(data)
-        if (typeof data == 'array') {
-          data = data[0];
-        }
-        console.debug("[warp10-display-chart] _data2dygraphs - Data from String", data);
-      }
-
-      if (!quantumvizGts.isValidResponse(data)) {
-        console.error("[warp10-display-chart] Received invalid data", data);
-        return;
-      }
-      var response = {};
-      response = quantumvizGts.getValidResponse(data);
-
-      console.debug("[warp10-display-chart] _data2dygraphs - Data to plot", response);
-
-      var filteredResponse = {
-        gts:[],
-        params:[],
-        globalParams:response.globalParams
-      };
-      for (var i=0; i<response.gts.length;i++){
-        if (gtsTools.isGtsToPlot(response.gts[i])) {
-          filteredResponse.gts.push(response.gts[i]);
-          filteredResponse.params.push(response.params[i]);
-        }
-      }
-
-      console.debug("[warp10-display-chart] _data2dygraphs - Filtered data to plot", filteredResponse);
-
-      if (filteredResponse.gts.length == 0) {
-        // console.warn("[warp10-display-chart] _data2dygraphs - Empty data set", filteredResponse);
-        this._removeChartData();
-        return;
-      }
-
       var sparklines = this._gts2dygraphs(filteredResponse.gts);
 
       console.debug("[warp10-display-chart] _data2dygraphs - sparklines", sparklines);
 
-      var labels = []; labels[0] = "Timestamp";
-      var colors = [];
-      var interpolate = [];
-      var strokeWidth = [];
-      for (var i=0; i< filteredResponse.params.length; i++) {
-
-        // console.debug("[warp10-display-chart]  filteredResponse.gts", filteredResponse.gts[i]);
-        // console.debug("[warp10-display-chart]  filteredResponse.params", filteredResponse.params[i]);
-        if (filteredResponse.params[i].key !== undefined) {
-          labels[i+1] = filteredResponse.params[i].key;
-        } else {
-          // console.debug("[warp10-display-chart] _data2dygraphs -  key", filteredResponse.gts[i]);
-          labels[i+1] = gtsTools.serializeGtsMetadata(filteredResponse.gts[i]);
-        }
-        if (filteredResponse.params[i].color !== undefined) {
-          colors[i] = filteredResponse.params[i].color;
-        } else {
-          colors[i] = warp10ColorTools.getColor(i);
-        }
-
-        if (filteredResponse.params[i].interpolate !== undefined) {
-          interpolate[i] = filteredResponse.params[i].interpolate;
-        } else if (filteredResponse.globalParams.interpolate !== undefined){
-          interpolate[i] = filteredResponse.globalParams.interpolate;
-        } else {
-          interpolate[i] = "linear";
-        }
-
-        if (filteredResponse.params[i].strokeWidth !== undefined) {
-          strokeWidth[i] = filteredResponse.params[i].strokeWidth;
-        } else if (response.globalParams.lineWidth !== undefined){
-          strokeWidth[i] = filteredResponse.globalParams.strokeWidth;
-        } else {
-          strokeWidth[i] = this.lineWidth;
-        }
-      }
-
-      if (filteredResponse.globalParams.timestamps) {
-        this.timestamps = true;
-      }
-      var xlabel = filteredResponse.globalParams.xLabel;
-      var ylabel = filteredResponse.globalParams.yLabel;      
+      var labels = ['X'].concat(this._params.labels); // The fiorst label is X-axis label
 
       var options = {
         file: sparklines,
@@ -733,7 +492,7 @@
         labelsUTC: true,
         connectSeparatedPoints: true,
         maxNumberWidth: 16,
-        colors: colors,
+        colors: this._params.colors,
         legend: "never",
         gridLineColor: 'rgb(196, 196, 196)',
         xRangePad: 5,
@@ -755,11 +514,11 @@
         options.drawAxis = false;
         options.drawGrid = false;
       } else {
-        if (xlabel) {
-          options.xlabel = xlabel;
+        if (this._params.xlabel) {
+          options.xlabel = this._params.xlabel;
         }
-        if (ylabel) {
-          options.ylabel = ylabel;
+        if (this._params.ylabel) {
+          options.ylabel = this._params.ylabel;
         }
         options.axes = {
           x : {
@@ -790,9 +549,9 @@
         var colors = context.chart.getColors();
         for (var i=0; i<points.length; i++) {
           // console.debug("[warp10-display-chart] colors", {point: points[i], colors: colors, labels: labels, colorIndex: labels.indexOf(points[i].name)})
-          var colorIndex = labels.indexOf(points[i].name) -1; // The fiorst label is X-axis label
+          var colorIndex = context._params.labels.indexOf(points[i].name); 
           if (colorIndex >= 0) {
-            points[i].color = colors[colorIndex];
+            points[i].color = context._params.colors[colorIndex];
           }
 
           // console.debug("[warp10-display-chart] color",  points[i].color);
@@ -832,26 +591,28 @@
         };
       }
       options.series = {}
-      for (var i=1; i<labels.length; i++) {   // i==0 is the X axis
-        options.series[labels[i]] = {
-          strokeWidth:strokeWidth[i-1],
+      for (var i=0; i<this._params.labels.length; i++) {   
+        options.series[this._params.labels[i]] = {
+          strokeWidth:this._params.strokeWidth[i],
           //stepPlot : true
         }
         // console.debug("[warp10-display-chart] _data2dygraphs - interpolate", interpolate[i-1]);
-        switch (interpolate[i-1]) {
+        switch (this._params.interpolate[i]) {
           case "cardinal" :
-            options.series[labels[i]].plotter = smoothPlotter;
-            options.series[labels[i]].stepPlot = false;
+            options.series[this._params.labels[i]].plotter = smoothPlotter;
+            options.series[this._params.labels[i]].stepPlot = false;
             break;
+          case "step":
           case "step-after":
           case "step-before":
-            options.series[labels[i]].plotter = Dygraph.Plotters.linePlotter;
-            options.series[labels[i]].stepPlot = true;
+            options.series[this._params.labels[i]].plotter = Dygraph.Plotters.linePlotter;
+            options.series[this._params.labels[i]].stepPlot = true;
             break;
+          case "line":
           case "linear":
           default:
-            options.series[labels[i]].plotter = Dygraph.Plotters.linePlotter;
-            options.series[labels[i]].stepPlot = false;
+            options.series[this._params.labels[i]].plotter = Dygraph.Plotters.linePlotter;
+            options.series[this._params.labels[i]].stepPlot = false;
             break;
         }
       }
