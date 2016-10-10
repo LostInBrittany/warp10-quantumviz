@@ -242,7 +242,7 @@
       var keyFormatter = function(d, i) {
 
         var outsideCurlyBrackets = d.split(/\{[^\}]*\}/);
-        console.debug("[warp10-display-chart] keyFormatter ", outsideCurlyBrackets);
+        // console.debug("[warp10-display-chart] keyFormatter ", outsideCurlyBrackets);
 
         var insideCurlyBrackets = [];
         var insideRegex = /\{([^\}]*)\}/g
@@ -250,7 +250,7 @@
         while ((matches = insideRegex.exec(d)) !== null) {
           insideCurlyBrackets.push(matches[1]);          
         }
-        console.debug("[warp10-display-chart] keyFormatter ", insideCurlyBrackets);
+        // console.debug("[warp10-display-chart] keyFormatter ", insideCurlyBrackets);
         
 
         var html = "";
@@ -273,7 +273,7 @@
             html += labels.join("<span class='gts-separator'>,</span>") + "<span class='gts-separator'>}</span>"
           }
         }
-        console.debug("[warp10-display-chart] keyFormatter ", html);
+        // console.debug("[warp10-display-chart] keyFormatter ", html);
         return html;
       };
 
@@ -509,7 +509,7 @@
             min: me.yAxisRange()[0],
             max: me.yAxisRange()[1]
           }
-          // console.debug("[warp10-display-chart] drawCallback called", context.timeBounds)
+          console.debug("[warp10-display-chart] drawCallback called", context.timeBounds, context.valueBounds)
         },
       }
       if (this.hideAxis) {
@@ -618,7 +618,7 @@
             break;
         }
       }
-      // console.debug("[warp10-display-chart] _data2dygraphs - options", options);
+      console.debug("[warp10-display-chart] _data2dygraphs - options", options);
       if (this.chart) {
         this.chart.updateOptions(options);
       } else {
@@ -627,6 +627,7 @@
         // console.debug("[warp10-display-chart] _data2dygraphs - chart", this.chart);
         this.chart.maindiv_ = this.$.chart;
         // console.debug("[warp10-display-chart] _data2dygraphs - chart", this.chart);
+
       }
       // console.debug("[warp10-display-chart] _data2dygraphs - chart", this.chart);
     },

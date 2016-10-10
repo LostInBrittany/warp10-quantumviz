@@ -30,6 +30,8 @@ Viz-only version of Quantum widget
   <template>
     <style>
       :host {
+        height: 100%;
+        width: 100%;
       }
       .widget {
         position: relative;
@@ -66,8 +68,6 @@ Viz-only version of Quantum widget
 
       <warp10-display-chart
         id="warp10-display-chart"
-        width={{width}}
-        height={{height}}
         data={{data}}
         current-values={{currentValues}}
         line-width={{lineWidth}}
@@ -242,10 +242,16 @@ Viz-only version of Quantum widget
     configure: function() {
 
       // Dimensions
-      if (this.width <0) {
+      if (this.width <=0) {
         this.$$(".widget").style.width = "100%";
       } else {
         this.$$(".widget").style.width = (parseInt(this.width))+"px";
+      }
+       
+      if (this.height <=0) {
+        this.$$(".widget").style.height = "100%";
+      } else {
+        this.$$(".widget").style.height = (parseInt(this.height))+"px";
       }
       // console.debug("[test-quantumviz] configure - end");
     },
@@ -271,7 +277,9 @@ Viz-only version of Quantum widget
       }
       // WarpScript
       //this.inputWarpScriptVariables = ""+this.width<0?"100%":this.width+" 'width' STORE ";
-      var inputWarpScriptVariables = ""+Math.floor(this.$$('warp10-display-chart').getBoundingClientRect().width)+" 'width' STORE ";
+      // console.debug("[warp10-quantumviz] generateWarpScript getBoundingClientRect ",this.getBoundingClientRect().width)
+
+      var inputWarpScriptVariables = ""+Math.floor(this.getBoundingClientRect().width)+" 'width' STORE ";
       
       // console.debug("[warp10-quantumviz] generateWarpScript - about to change warpscriptScript - warpscript", inputWarpScriptVariables+this._rawWarpscriptScript);
 
