@@ -122,7 +122,7 @@
   quantumvizGts.getAnnotations = function(data, timestamps) {    
 
 
-    console.debug("[warp10-quantumviz-tools] getAnnotations - data", data);
+    // console.debug("[warp10-quantumviz-tools] getAnnotations - data", data);
     
     if (!quantumvizGts.isValidResponse(data)) {
       return [];
@@ -158,7 +158,7 @@
             && (response.params[i].key !== undefined)) {
           annotation.key = response.params[i].key;
         } else {
-          annotation.key = annotation.c;
+          annotation.key = annotation.c  + (JSON.stringify(annotation.l));
         }
         if ((response.params !== undefined)
             && (response.params[i].color !== undefined)) {

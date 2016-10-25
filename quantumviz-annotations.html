@@ -4,8 +4,8 @@
 @license Apache 2.0
 -->
 <link rel="import" href=" ../polymer/polymer.html">
-<link rel="import" href="../warp10-quantumviz/quantumviz-annotation.html">
-<link rel="import" href="../warp10-quantumviz/quantumviz-tools.html">
+<link rel="import" href="./quantumviz-annotation.html">
+<link rel="import" href="./quantumviz-tools.html">
 
 <dom-module id="quantumviz-annotations">
   <style>
@@ -105,7 +105,7 @@
     },
     getAnnotations: function(){
       var annotations = quantumvizGts.getAnnotations(this.data, this.timestamps)
-      console.debug("[quantumviz-annotations] getAnnotations", annotations);
+      // console.debug("[quantumviz-annotations] getAnnotations", annotations);
       return annotations;
     },
     dataChanged: function(){
