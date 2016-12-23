@@ -231,7 +231,7 @@
             annotationD3.select(".annotation-tooltip")
               .style("left", xPosition + "px")
               .style("bottom", yPosition + "px")
-
+            console.debug("[quantumviz-annotation] annotationMouseover", {x: d.x, scaledX: scale(d.x), svgMarginLeft: svgMarginLeft })
             context.vertGuide = scale(d.x) + svgMarginLeft -svgStrokeWidth/2;
       }
     

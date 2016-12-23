@@ -152,6 +152,7 @@
     //*************************************************************************
     // Instance methods
     //*************************************************************************
+
     /**
      * Initial settings
      */
@@ -163,6 +164,7 @@
       }
       // console.debug("[warp10-display-behavior] configure -lineWidth", this.lineWidth);
     },  
+
     /**
      * Remove chart when no data is present
      */
@@ -173,6 +175,7 @@
         this.chart = null;
       }
     },
+
     /**
      * Parses data and put it in chart format
      */
@@ -208,6 +211,17 @@
       response = quantumvizGts.getValidResponse(this.data);
 
       // console.debug("[warp10-display-behavior] _dataToChart - Data to plot", response);
+
+      var range = quantumvizGts.getGtsListRange(response.gts);
+      if (!this.timestamps) {
+        this.timeBounds = [ 
+          new Date(Math.floor(range[0]/1000)),
+          new Date(Math.floor(range[1]/1000)) 
+        ];        
+      } else {
+        this.timeBounds = range;
+      };
+      console.debug("[warp10-display-behavior] _dataToChart - timeBounds", this.timeBounds);
 
       var filteredResponse = {
         gts:[],

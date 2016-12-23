@@ -476,7 +476,7 @@
           sparklines[i][0] = new Date(Math.floor(sparklines[i][0]/1000));
         }
       }
-      // console.debug("[warp10-display-chart] _gts2dygraphs - sparklines", sparklines);
+      console.debug("[warp10-display-chart] _gts2dygraphs - sparklines", sparklines);
       return sparklines;
     },
     _dataToChartLib: function(filteredResponse) { 
@@ -488,6 +488,7 @@
 
       var labels = ['X'].concat(this._params.labels); // The fiorst label is X-axis label
 
+      console.debug("[warp10-display-chart] _data2dygraphs - timeBounds", this.timeBounds);
       var options = {
         file: sparklines,
         labels: labels,
@@ -499,6 +500,7 @@
         gridLineColor: 'rgb(196, 196, 196)',
         xRangePad: 5,
         yRangePad: 5,
+        dateWindow: this.timeBounds,
         drawCallback: function(me, initial) {
           context.chartArea = me.getArea();
           context.timeBounds = {

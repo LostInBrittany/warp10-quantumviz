@@ -41,78 +41,12 @@
   quantumvizGts.MAX_TS = Math.pow(2, 53) - 1;
 
   /***********************************************************************************
-  * Transforms quantumviz response object into nvd3 graphs objects
+  * Get the time range of a GTS
+  * If `timestamps` is true, timestamps shouldn't be converted to ms
   ***********************************************************************************/
-  quantumvizGts.toNvd3Graph = function(data) {
-
-    if (!quantumvizGts.isValidResponse(data)) {
-      return false;
-    }
-
-    var response = {};
-    if (quantumvizGts.isValidGtsListResponse(data)) {
-      response.gts = data[0];
-      response.params = Array.apply(null, Array(data[0].length));
-      response.globalParams = {};
-    } else {
-      response = data[0];
-    }
-
-    var chartData = {}
-
-    var sparklines = [];
-    for (var i=0; i< response.gts.length; i++) {
-      // Let's verify if it's a GTS to plot
-      if (gtsTools.isGtsToPlot(response.gts[i])) {
-        var sl = quantumvizGts.gtsToNvd3(response.gts[i]);
-        if (response.params[i].key !== undefined) {
-          sl.key = response.params[i].key;
-        }
-        if (response.params[i].color !== undefined) {
-          sl.color = response.params[i].color;
-        }
-        sl.area = false;
-        if (response.params[i].interpolate !== undefined) {
-          sl.interpolate = response.params[i].interpolate;
-        } else if (response.globalParams.interpolate !== undefined){
-          sl.interpolate = response.globalParams.interpolate;
-        } else {
-          sl.interpolate = "linear";
-        }
-        sparklines.push(sl);
-      }
-    }
-
-    var tickFormat = function(d) {
-      var dx = sparklines[0].values[d] && sparklines[0].values[d].x || 0;
-      return dx ? d3.time.format('%x')(new Date(dx)) : '';
-    }
-
-    var globalParams = {}
-
-    if (response.globalParams !== undefined) {
-      if (response.globalParams.interpolate !== undefined) {
-        globalParams.interpolate = response.globalParams.interpolate;
-      } else {
-        globalParams.interpolate = "linear";
-      }
-      if (response.globalParams.dateFormat !== undefined) {
-        globalParams.dateFormat = response.globalParams.dateFormat;
-      } else {
-        globalParams.dateFormat = '%Y-%m-%dT%H:%M:%SZ';
-      }
-    }
-
-
-    chartData.sparklines = sparklines;
-    chartData.globalParams = globalParams;
-    chartData.tickFormat = tickFormat;
-
-    //console.debug("nvd3 data", chartData);
-    //console.debug(JSON.stringify(chartData))
-
-    return chartData;
-  };
+  quantumvizGts.getRange = function(data, timestamps) {    
+    
+  }
 
 
   /***********************************************************************************
@@ -153,7 +87,7 @@
       // Let's verify if it's a GTS to plot
       
       if (gtsTools.isGtsToAnnotate(response.gts[i])) {
-        var annotation = quantumvizGts.gtsToNvd3(response.gts[i], timestamps);
+        var annotation = quantumvizGts.gtsToAnnotation(response.gts[i], timestamps);
         if ((response.params !== undefined)
             && (response.params[i].key !== undefined)) {
           annotation.key = response.params[i].key;
@@ -175,72 +109,35 @@
   };
 
   /***********************************************************************************
-  * Get time bounds for Nvd3 formatted GTS
-  ***********************************************************************************/
-  quantumvizGts.getTimeBounds = function(ndv3SeriesList) {
-
-    var bounds = {}
-
-    if (!gtsTools.isArray(ndv3SeriesList)) {
-      // console.error("[quantumvizGts.getTimeBounds] ndv3SeriesList isn't array",ndv3SeriesList);
-      return bounds;
-    }
-
-    bounds.min = quantumvizGts.MAX_TS;
-    bounds.max = quantumvizGts.MIN_TS;
-
-    ndv3SeriesList.forEach(function(ndv3Series) {
-      // console.debug("[quantumvizGts.getTimeBounds] Min:",ndv3Series.values[0].x)
-      // console.debug("[quantumvizGts.getTimeBounds] Max: ", ndv3Series.values[ndv3Series.values.length - 1].x);
-      if (bounds.min > ndv3Series.values[0].x) {
-        bounds.min = ndv3Series.values[0].x;
-      }
-      if (bounds.max < ndv3Series.values[ndv3Series.values.length - 1].x) {
-        bounds.max = ndv3Series.values[ndv3Series.values.length - 1].x;
-      }
-    });
-
-    // console.debug("[quantumvizGts.getTimeBounds] bounds...", bounds);
-    return bounds;
-  }
-
-  /***********************************************************************************
-  * Tranform a gts @gts into nvd3 format
+  * Tranform a gts @gts into an annotation format
   * If `timestamps` is true, timestamps shouldn't be converted to ms
   ***********************************************************************************/
-  quantumvizGts.gtsToNvd3 = function(gts, timestamps) {
-    var ndv3Series = {
-      key: "",
-      values: [],
-      c: "",
-      l: "",
-      id: ""
-    };
-    ndv3Series.c = gts.c;
-    ndv3Series.l = gts.l;
-    ndv3Series.id = gts.id;
-    ndv3Series.key = " " + gts.id + " - " + gts.c;
-    if (gts.l != null) {
-      ndv3Series.key += " - " + (JSON.stringify(gts.l));
+  quantumvizGts.gtsToAnnotation = function(gts, timestamps) {
+    var annotation = {
+        c: gts.c,
+        l: gts.l,
+        id: gts.id,
+        values: [],
     }
+    annotation.key =  " " + gts.id + " - " + gts.c + 
+      (gts.l != null) ? (" - "+JSON.stringify(gts.l)) : "";    
 
     if (gts.v !== undefined) {
 
       // Sort values
-      gts.v = gts.v.sort(function(a, b) { return a[0] - b[0];});
+      gtsTools.gtsSort(gts);
 
-      //console.debug(gts)
       for (var i = 0; i < gts.v.length; i++) {
         var metric = gts.v[i];
         var xVal = metric[0];
         if (!timestamps) {
           xVal = Math.round(xVal / 1000);
         }
-        ndv3Series.values.push({x: xVal, y: metric[metric.length-1]});
+        annotation.values.push({x: xVal, y: metric[metric.length-1]});
       }
-    }
-    return ndv3Series;
-  };
+    }  
+    return annotation;
+  }
 
   /***********************************************************************************
   * Returns a full convention quantumviz response object if @data is a valid 
@@ -279,6 +176,7 @@
     return null;
 
   }
+
   /***********************************************************************************
   * Returns true if @data is a valid quantumviz response object
   ***********************************************************************************/
@@ -302,6 +200,7 @@
     return false;
 
   }
+
   /***********************************************************************************
   * Returns true if @data is a valid GTS response object
   ***********************************************************************************/
@@ -378,6 +277,34 @@
 
     return true;
   };
+
+  /***********************************************************************************
+   * Returns the time range of the list of GTS.
+   **********************************************************************************/
+  quantumvizGts.getGtsListRange = function(gtsList) {
+    var range = [
+      Number.POSITIVE_INFINITY,
+      Number.NEGATIVE_INFINITY
+    ];
+
+    for (var i in gtsList) {
+      if (!gtsTools.isGts(gtsList[i])) {
+        break;
+      }
+      var gtsRange = gtsTools.gtsTimeRange(gtsList[i]);
+      // console.debug("[quantumviz-tools] getGtsListRange - gtsRange", gtsRange);
+      if (gtsRange[0] < range[0]) {
+        range[0] = gtsRange[0];
+      }
+      if (gtsRange[1] > range[1]) {
+        range[1] = gtsRange[1];
+      }      
+    }
+    console.debug("[quantumviz-tools] getGtsListRange", range);
+    return range;
+  };
+
+
 
   window.quantumvizGts = quantumvizGts;
 }).call(this);
