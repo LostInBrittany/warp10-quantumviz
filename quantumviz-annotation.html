@@ -124,17 +124,11 @@
       if(this.dimensionAlreadyChanged) {
         return;
       }
-      // console.debug("[quantumviz-annotation] setDimensions")
+      console.debug("[quantumviz-annotation] setDimensions")
       this.$$('.annotation').style.paddingLeft = this.SVG_MARGIN_LEFT+"px"
       // Dimensions
-      if (this.width <0) {
-        this.$$('.annotation').style.width = "100%";
-        this.$$('svg').style.width = "100%";
-      } else {
-        // this.$$('.annotation').style.width = (parseInt(this.width)+50)+"px";
-        this.$$('svg').definedWidth = parseInt(this.width)-this.SVG_MARGIN_LEFT-this.NVD3_CHART_RIGHT_MARGIN;
-        this.$$('svg').style.width = this.$$('svg').definedWidth+"px";
-      }
+      this.$$('.annotation').style.width = "calc(100% -"+this.$$('.annotation').style.paddingLeft+");";
+      this.$$('svg').style.width = "100%";
     },
     _changeDimensions: function() {
       // console.debug("[quantumviz-annotation] _changeDimensions", this.chartArea)
@@ -172,9 +166,7 @@
       var svg = annotationD3.select("svg");
 
       var width;
-      if (this.$$('svg').definedWidth !== undefined) {
-        width = this.$$('svg').definedWidth;
-      } else if (this.$$('svg').getBoundingClientRect().width > 0) {
+      if (this.$$('svg').getBoundingClientRect().width > 0) {
         width = this.$$('svg').getBoundingClientRect().width;
       } else {
         width = this.$$('.annotation').getBoundingClientRect().width - this.SVG_MARGIN_LEFT-this.NVD3_CHART_RIGHT_MARGIN;
