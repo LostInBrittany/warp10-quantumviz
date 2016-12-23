@@ -133,7 +133,6 @@
       } else {
         // this.$$('.annotation').style.width = (parseInt(this.width)+50)+"px";
         this.$$('svg').definedWidth = parseInt(this.width)-this.SVG_MARGIN_LEFT-this.NVD3_CHART_RIGHT_MARGIN;
-        // console.debug("[quantumviz-annotation] setDimensions() - definedWidth",this.$$('svg').definedWidth);
         this.$$('svg').style.width = this.$$('svg').definedWidth+"px";
       }
     },
@@ -159,6 +158,10 @@
         return
       }
 
+      if (!this.timeBounds) {
+        return;
+      }
+
       // console.debug("[quantumviz-annotation] Content changed - isAttached");
 
       var svgMarginLeft = this.SVG_MARGIN_LEFT;
@@ -178,7 +181,8 @@
       }
 
 
-      // console.debug("[quantumviz-annotation] timeBounds", [this.timeBounds.min, this.timeBounds.max]);
+      console.debug("[quantumviz-annotation] contentChanged - timeBounds", [this.timeBounds.min, this.timeBounds.max]);
+      console.debug("[quantumviz-annotation] contentChanged - width", width, this.NVD3_CHART_RIGHT_MARGIN,this.$$('svg').definedWidth);
       // console.debug("[quantumviz-annotation] annotation", this.annotation);
 
       var scale = d3.scale.linear()

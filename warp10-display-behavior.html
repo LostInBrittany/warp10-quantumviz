@@ -214,12 +214,12 @@
 
       var range = quantumvizGts.getGtsListRange(response.gts);
       if (!this.timestamps) {
-        this.timeBounds = [ 
-          new Date(Math.floor(range[0]/1000)),
-          new Date(Math.floor(range[1]/1000)) 
-        ];        
+        this.timeBounds = { 
+          min: new Date(Math.floor(range[0]/1000)),
+          max: new Date(Math.floor(range[1]/1000)) 
+        };        
       } else {
-        this.timeBounds = range;
+        this.timeBounds = { min: range[0], max: range[0]};
       };
       console.debug("[warp10-display-behavior] _dataToChart - timeBounds", this.timeBounds);
 

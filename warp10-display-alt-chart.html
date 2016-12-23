@@ -484,11 +484,12 @@
       var context = this;
       var sparklines = this._gts2dygraphs(filteredResponse.gts);
 
-      console.debug("[warp10-display-chart] _data2dygraphs - sparklines", sparklines);
+      // console.debug("[warp10-display-chart] _data2dygraphs - sparklines", sparklines);
+      // console.debug("[warp10-display-chart] _data2dygraphs - timeBounds", this.timeBounds);
+      
 
-      var labels = ['X'].concat(this._params.labels); // The fiorst label is X-axis label
+      var labels = ['X'].concat(this._params.labels); // The first label is X-axis label
 
-      console.debug("[warp10-display-chart] _data2dygraphs - timeBounds", this.timeBounds);
       var options = {
         file: sparklines,
         labels: labels,
@@ -500,7 +501,7 @@
         gridLineColor: 'rgb(196, 196, 196)',
         xRangePad: 5,
         yRangePad: 5,
-        dateWindow: this.timeBounds,
+        dateWindow: [ this.timeBounds.min, this.timeBounds.max ],
         drawCallback: function(me, initial) {
           context.chartArea = me.getArea();
           context.timeBounds = {
