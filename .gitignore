@@ -1,14 +1,3 @@
 bower_components
 node_modules
-dist
-artifacts
-test-api0
-dist-priv
-test-priv
-tools-priv
-vulcanized-priv
-artifacts
-tools
 priv-*
-_old_elements
-tmp-*
