@@ -10,12 +10,13 @@
   <style>
     :host {
       display: block;
+      width: var(--default-width, 100%);
+      height: var(--default-height, 100%);
     }
-  	leaflet-map {
-      max-width: 100%;
-      width: 100%;
-      height: 400px;
-      border: 1px solid #aaa;
+  	warp10-display-map,
+    warp10-quantumviz {
+      width: var(--default-width, 100%);
+      height: calc( var(--default-height, 100%) / 2);
   	}
     /deep/ .leaflet-control-attribution {
       display: none;
@@ -25,7 +26,9 @@
     }
   </style>
   <template>
+    <!--
     <spinner-widget id="map-spinner" active="{{loading}}" hover container-height="{{mapHeight}}" size="{{_mapSpinnerSize}}" ></spinner-widget>
+    -->
     <warp10-display-map
       width={{mapWidth}} height={{mapHeight}} data={{data}}
       latitude="{{mapLat}}" longitude="{{mapLon}}" zoom="{{mapZoom}}"
@@ -51,20 +54,6 @@
     Polymer({
       is: "warp10-geoquantumviz",
       properties: {
-        /**
-         * The chart width, in pixels
-         */
-        width: {
-          type: Number,
-          value: -1
-        },
-        /**
-         * The chart height, in pixels
-         */
-        height: {
-          type: Number,
-          value: -1
-        },
         /**
          * The Warp 10 instance
          */
@@ -108,14 +97,6 @@
           type: Boolean,
           value: false
         },
-        mapWidth: {
-          type: Number,
-          value: -1
-        },
-        mapHeight: {
-          type: Number,
-          value: -1
-        },
         mapZoom: {
           type: Number,
           value: 0
@@ -144,6 +125,14 @@
           type: String,
           computed: "_getWarpScript(content, warpscript)"
         },
+        _DEFAULT_WIDTH: {
+          type: Number,
+          value: 480,
+        },
+        _DEFAULT_HEIGHT: {
+          type: Number,
+          value: 320,
+        },
       },
       created: function(){
       },
@@ -157,6 +146,7 @@
           this.content =  this.content.replace(/&lt;/g,'<').replace(/&gt;/g,'>');
         }
         */
+        this.configure();
         this.isAttached = true;
         this._getWarpScript();
       },
@@ -188,9 +178,21 @@
         }
 
         // Setting lat, lon and zoom as script variables
-        console.debug("[warp10-geoquantumviz] _getWarpScript - Generated warpscript: ", warpscript);
+        // console.debug("[warp10-geoquantumviz] _getWarpScript - Generated warpscript: ", warpscript);
         this._warpscript = warpscript;
         return warpscript;
+      },
+
+      configure: function() {
+          // Dimensions
+          console.debug("[warp10-geoquantumviz] configure", this.clientWidth, this.clientHeight);
+          if (this.clientWidth == 0) {
+            this.customStyle['--default-width'] = this._DEFAULT_WIDTH + "px";
+          }
+          if (this.clientHeight == 0) {
+            this.customStyle['--default-height'] = this._DEFAULT_HEIGHT + "px";
+          }
+          this.updateStyles();
       },
 
     });
