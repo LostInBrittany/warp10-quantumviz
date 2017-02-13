@@ -128,23 +128,27 @@
   quantumvizGts.getValidResponse = function(response) {
     if (quantumvizGts.isValidDetailedResponse(response)) {
       console.debug("[warp10-quantumviz-tools] getValidResponse - isValidDetailedResponse", response);
-      return response[0];
+      return  {
+        gts: response[0].gts ,
+        params: response[0].params,
+        globalParams: response[0].globalParams || {}
+      };
     }
 
     if (quantumvizGts.isValidParamlessDetailedResponse(response)) {
       console.debug("[warp10-quantumviz-tools] getValidResponse - isValidParamlessDetailedResponse", response);
-      response[0].params = [];
-      for (var i=0; i< response[0].gts.length; i++) {
-        response[0].params.push({});
-      }
-      return response[0];
+      return  {
+        gts: response[0].gts ,
+        params: response[0].gts.map(function() { return {} }),
+        globalParams: response[0].globalParams || {}
+      };
     }
     if (quantumvizGts.isValidSingleDetailedResponse(response)) {
       console.debug("[warp10-quantumviz-tools] getValidResponse - isValidSingleDetailedResponse", response);
       return {
         gts: [ response[0].gts ],
         params: [ response[0].params ],
-        globalParams: response[0].globalParams
+        globalParams: response[0].globalParams || {}
       };
     }
     if (quantumvizGts.isValidParamlessSingleDetailedResponse(response)) {
@@ -152,7 +156,7 @@
       return {
         gts: [ response[0].gts ],
         params: [ {} ],
-        globalParams: response[0].globalParams
+        globalParams: response[0].globalParams || {}
       };
     }
     if (quantumvizGts.isValidGtsListResponse(response)) {
