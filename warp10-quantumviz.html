@@ -4,7 +4,10 @@
 @license Apache 2.0
 -->
 <link rel="import" href=" ../polymer/polymer.html">
+<link rel="import" href="../iron-resizable-behavior/iron-resizable-behavior.html">
+
 <link rel="import" href="../warp10-iron/warp10-warpscript-caller.html">
+
 <link rel="import" href=" ../warp10-iron/warp10-warpscript-request-gatherer.html">
 
 <link rel="import" href="./warp10-display-alt-chart.html">
@@ -26,11 +29,16 @@ Viz-only version of Quantum widget
   <template>
     <style>
       :host {
-        height: 100%;
-        width: 100%;
+        display: block;
+        width: var(--default-width, 100%);
+        height: var(--default-height, 100%);
+        position:relative
       }
       .widget {
-        position: relative;
+        display: flex;
+        flex-flow: column nowrap;
+        height: 100%;
+        width: 100%;
       }
       #content {
         display: none;
@@ -45,6 +53,14 @@ Viz-only version of Quantum widget
         display: none;
       }
 
+      .chartContainer {
+        height: 100%;
+        flex-grow: 1;
+        flex-shrink: 1;
+        flex-basis: auto;
+        display: flex;
+        flex-direction: row;
+      }
     </style>
     <div class="widget">
 
@@ -52,26 +68,30 @@ Viz-only version of Quantum widget
 
       <div id="vertGuide"></div>
 
+      <div class="annotationsContainer">
 
-      <quantumviz-annotations
-        time-bounds={{timeBounds}}
-        chart-area={{chartArea}}
-        data={{data}}
-        vert-guide={{vertGuide}}
-        selected-timestamp="{{annotationsSelectedTimestamp}}"
-        >
-      </quantumviz-annotations>
+        <quantumviz-annotations
+          time-bounds={{timeBounds}}
+          chart-area={{chartArea}}
+          data={{data}}
+          vert-guide={{vertGuide}}
+          selected-timestamp="{{annotationsSelectedTimestamp}}"
+          >
+        </quantumviz-annotations>
+      </div>
 
-      <warp10-display-chart
-        id="warp10-display-chart"
-        data={{data}}
-        current-values={{currentValues}}
-        line-width={{lineWidth}}
-        hide-axis={{hideAxis}}
-        hide-tooltip={{hideTooltip}}
-        show-legend={{showLegend}}
-        time-bounds={{timeBounds}}
-        chart-area={{chartArea}}></warp10-display-chart>
+      <div class="chartContainer">
+        <warp10-display-chart
+          id="warp10-display-chart"
+          data={{data}}
+          current-values={{currentValues}}
+          line-width={{lineWidth}}
+          hide-axis={{hideAxis}}
+          hide-tooltip={{hideTooltip}}
+          show-legend={{showLegend}}
+          time-bounds={{timeBounds}}
+          chart-area={{chartArea}}></warp10-display-chart>
+      </div>
 
       <template is="dom-if" if="[[!_usingProxy]]" restamp>
         <warp10-warpscript-caller
@@ -100,20 +120,6 @@ Viz-only version of Quantum widget
     Polymer({
       is: "warp10-quantumviz",
       properties: {
-        /**
-         * The chart width, in pixels
-         */
-        width: {
-          type: Number,
-          value: -1
-        },
-        /**
-         * The chart height, in pixels
-         */
-        height: {
-          type: Number,
-          value: -1
-        },
         /**
          * The Warp 10 instance
          */
@@ -231,6 +237,14 @@ Viz-only version of Quantum widget
           type: Boolean,
           computed: "_isReadyToCall(host, _rawWarpscriptScript, noAuto, _usingProxy, isCallerAttached)"
         },
+        _DEFAULT_WIDTH: {
+          type: Number,
+          value: 480,
+        },
+        _DEFAULT_HEIGHT: {
+          type: Number,
+          value: 320,
+        },
       },
 
 
@@ -248,7 +262,7 @@ Viz-only version of Quantum widget
       },
 
       _isUsingProxy: function() {
-        console.debug("[warp10-quantumviz] _isUsingProxy ",!this.host, this.host);
+        // console.debug("[warp10-quantumviz] _isUsingProxy ",!this.host, this.host);
         if (this.host) {
           return false;
         }
@@ -269,10 +283,7 @@ Viz-only version of Quantum widget
         }
         this.generateWarpScript();
 
-        console.debug("[warp10-quantumviz] _paramsChanged()", {
-          host: this.host,
-          rawWarpscriptScript: this._rawWarpscriptScript
-        });
+        // console.debug("[warp10-quantumviz] _paramsChanged()", { host: this.host, rawWarpscriptScript: this._rawWarpscriptScript });
 
         if (this._readyToCall) {
           this.generateRequest();
@@ -297,9 +308,11 @@ Viz-only version of Quantum widget
 
       attached: function() {
         // console.debug("[warp10-quantumviz] attached - calling configure()");
+        // console.debug("[warp10-quantumviz] attached -  clientHeight", this.clientHeight);
         this.isAttached = true;
         this.configure();
         this.generateWarpScript();
+        // console.debug("[warp10-quantumviz] attached -  clientHeight", this.clientHeight);
       },
 
       detached: function() {
@@ -345,7 +358,7 @@ Viz-only version of Quantum widget
       },
 
       _handleCallerAttached: function() {
-          console.debug("[warp10-quantumviz] _handleError - _handleCallerAttached");
+          // console.debug("[warp10-quantumviz] _handleError - _handleCallerAttached");
           this.isCallerAttached = true;
           if (this._readyToCall) {
             this.generateRequest();
@@ -361,19 +374,15 @@ Viz-only version of Quantum widget
         this.$$("#warpscriptcaller").generateRequest();
       },
       configure: function() {
-
         // Dimensions
-        if (this.width <= 0) {
-          this.$$(".widget").style.width = "100%";
-        } else {
-          this.$$(".widget").style.width = (parseInt(this.width)) + "px";
+        // console.debug("[test-quantumviz] configure", this.clientWidth, this.clientHeight);
+        if (this.clientWidth == 0) {
+          this.customStyle['--default-width'] = this._DEFAULT_WIDTH + "px";
         }
-
-        if (this.height <= 0) {
-          this.$$(".widget").style.height = "100%";
-        } else {
-          this.$$(".widget").style.height = (parseInt(this.height)) + "px";
+        if (this.clientHeight == 0) {
+          this.customStyle['--default-height'] = this._DEFAULT_HEIGHT + "px";
         }
+        this.updateStyles();
         // console.debug("[test-quantumviz] configure - end");
       },
 

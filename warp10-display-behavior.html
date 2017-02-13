@@ -1,10 +1,13 @@
+<link rel="import" href="../iron-resizable-behavior/iron-resizable-behavior.html">
+
 <link rel="import" href="../warp10-iron/warp10-color-tools.html">
 
 <link rel="import" href="./quantumviz-tools.html">
 
+
 <script>
 
-  Warp10DisplayBehavior = {
+  Warp10DisplayBehaviorImpl = {
     // Properties
     properties: {
       /**
@@ -120,24 +123,36 @@
       'dataChanged(data.*, timestamps)'
     ],
 
-    //*************************************************************************
+    listeners: {
+      'iron-resize': '_onIronResize',
+        'resize': '_onIronResize'
+    },
+
+    // *************************************************************************
+    // Listeners
+    // *************************************************************************
+    _onIronResize:  function() {
+      // console.debug("[warp10-display-behavior] _onIronResize - OMG, I got resized!");
+    },
+
+
+    // *************************************************************************
     // Lifecycle methods
-    //*************************************************************************
+    // *************************************************************************
     created: function () {
       // console.debug("[warp10-display-behavior] created");
     },
     ready: function () {
-      console.debug("[warp10-display-behavior] ready - begin", {width: this.style.width, height: this.style.height});
+      // console.debug("[warp10-display-behavior] ready - begin", {width: this.style.width, height: this.style.height});
 
       this.isReady = true;
       if (this.data != null) {
         this.dataChanged()
       }
-      console.debug("[warp10-display-behavior] ready - end");
       // console.debug("[warp10-display-behavior] ready - end");
     },
     attached: function () {
-    console.debug("[warp10-display-behavior] attached -  clientHeight", this.clientHeight);
+    // console.debug("[warp10-display-behavior] attached -  clientHeight", this.clientHeight);
     this.configure();
     },
 
@@ -215,7 +230,7 @@
 
       // If no data, we remove the chart
       if (!this.data) {
-        console.debug("[warp10-display-behavior] No data");
+        // console.debug("[warp10-display-behavior] No data");
         this._removeChartData();
         return;
       }
@@ -226,11 +241,11 @@
         if (typeof this.data == 'array') {
           this.data = this.data[0];
         }
-        console.debug("[warp10-display-chart] _dataToChart - Data from String", this.data);
+        // console.debug("[warp10-display-chart] _dataToChart - Data from String", this.data);
       }
 
       if (!quantumvizGts.isValidResponse(this.data)) {
-        console.warn("[warp10-display-behavior] Received invalid data", this.data);
+        // console.warn("[warp10-display-behavior] Received invalid data", this.data);
         this._removeChartData();
         return;
       }
@@ -249,7 +264,7 @@
       } else {
         this.timeBounds = { min: range[0], max: range[1] };
       };
-      console.debug("[warp10-display-behavior] _dataToChart - timeBounds", this.timeBounds);
+      // console.debug("[warp10-display-behavior] _dataToChart - timeBounds", this.timeBounds);
 
       var filteredResponse = {
         gts: [],
@@ -264,7 +279,7 @@
         }
       }
 
-      console.debug("[warp10-display-behavior] _dataToChart - Filtered data to plot", filteredResponse);
+      // console.debug("[warp10-display-behavior] _dataToChart - Filtered data to plot", filteredResponse);
 
       if (filteredResponse.gts.length == 0) {
         // console.warn("[warp10-display-behavior] _dataToChart - Empty data set", filteredResponse);
@@ -331,4 +346,5 @@
 
   }
 
+  Warp10DisplayBehavior = [ Polymer.IronResizableBehavior,  Warp10DisplayBehaviorImpl ]
 </script>
