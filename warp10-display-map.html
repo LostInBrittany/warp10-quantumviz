@@ -12,11 +12,26 @@
     <style>
       :host {
         display: block;
-        text-align: center;
+        width: var(--default-width, 100%);
+        height: var(--default-height, 100%);
+        position:relative
+      }
+      #map{
+        width: 100%;
+        height: 100%;
       }
     </style>
 
-    <leaflet-map id="map" latitude="{{latitude}}" longitude="{{longitude}}" zoom="{{zoom}}" >
+    <leaflet-map
+        id="map"
+        latitude="{{latitude}}"
+        longitude="{{longitude}}"
+        zoom="{{zoom}}"
+        on-load="_mapLoadedEvt"
+        on-map-ready="_mapReadyEvt"
+        on-resize="_mapResizeEvt"
+        on-viewreset="_mapEvt"
+        fit-to-markers>
     </leaflet-map>
 
 
@@ -36,20 +51,6 @@
     is: "warp10-display-map",
     // Properties
     properties: {
-      /**
-       * The map width, in pixels
-       */
-      width: {
-        type: Number,
-        value: -1
-      },
-      /**
-       * The map height, in pixels
-       */
-      height: {
-        type: Number,
-        value: -1
-      },
       /**
        * The data of the map
        */
@@ -80,7 +81,7 @@
       latitude: {
         type: Number,
         notify: true,
-        value: 51.0
+        value: 0.0
       },
       /**
        * The selected value set
@@ -98,10 +99,24 @@
         notify: true,
         observer: "_annotationsSelectedTimestampChanged",
         value: -1
-      }
+      },
+      _DEFAULT_WIDTH: {
+        type: Number,
+        value: 640,
+      },
+      _DEFAULT_HEIGHT: {
+        type: Number,
+        value: 480,
+      },
+
     },
 
-    // Lifecycle methods
+
+
+    // *************************************************************************
+    // Livecycle
+    // *************************************************************************
+
     created: function(){
       // console.debug("[warp10-display-map] created");
 
@@ -117,27 +132,29 @@
 
       this.positionArraysMarkers = [];
     },
+
     ready: function() {
       // console.debug("[warp10-display-map] ready");
-      this.configure();
-      this.$.map.addEventListener('load', this._mapLoadedEvt.bind(this));
-      this.$.map.addEventListener('map-ready', this._mapReadyEvt.bind(this));
     },
     attached: function() {
       // console.debug("[warp10-display-map] attached");
+      this.configure();
       this.isAttached = true;
       if (this.data != null) {
         this._dataChanged()
       }
     },
 
+
+    // *************************************************************************
     // Observers
+    // *************************************************************************
+
     _dataChanged: function() {
       if (!this.isAttached || !this.mapLoaded) {
         // Component not ready yet
         return;
       }
-      // console.debug("[warp10-display-map] dataChanged() - ", this.data);
       if (this.data != null) {
         this._updateMapData();
       } else {
@@ -186,7 +203,9 @@
       }
     },
 
+    // *************************************************************************
     // Event listeners
+    // *************************************************************************
 
     _mapLoadedEvt: function() {
       // console.debug("[warp10-display-map] Map loaded!", { obj: this.$.map, map: this.$.map.map, longitude : this.$.map.longitude, latitude: this.$.map.latitude, zoom: this.$.map.zoom});
@@ -196,8 +215,6 @@
       }
     },
 
-    // Event listeners
-
     _mapReadyEvt: function() {
       // console.debug("[warp10-display-map] Map ready!", { obj: this.$.map, map: this.$.map.map, longitude : this.$.map.longitude, latitude: this.$.map.latitude, zoom: this.$.map.zoom});
       this.mapReady = true;
@@ -206,26 +223,45 @@
       }
     },
 
-    // Component methods
+    _mapResizeEvt: function() {
+      // console.debug("[warp10-display-map] Map resize!", { obj: this.$.map, map: this.$.map.map, longitude : this.$.map.longitude, latitude: this.$.map.latitude, zoom: this.$.map.zoom});
+    },
+
+    _mapEvt: function(evt) {
+      // console.debug("[warp10-display-map] Map evt!", evt, { obj: this.$.map, map: this.$.map.map, longitude : this.$.map.longitude, latitude: this.$.map.latitude, zoom: this.$.map.zoom});
+    },
+
+
+    // *************************************************************************
+    // Instance methods
+    // *************************************************************************
+
     configure: function() {
       // console.debug("[warp10-display-map] configure");  // Dimensions
-      if (this.width > 0) {
-        this.$.map.style.width = this.width+"px";
-        this.$.map.style.maxWidth = this.width+"px";
+
+      // console.debug("[warp10-display-map] configure", this.clientWidth, this.clientHeight);
+      // Dimensions
+      if (this.clientWidth == 0) {
+        this.customStyle['--default-width'] = this._DEFAULT_WIDTH + "px";
       }
-      if (this.height > 0) {
-        this.$.map.style.height = this.height+"px";
+      if (this.clientHeight == 0) {
+        this.customStyle['--default-height'] = this._DEFAULT_HEIGHT + "px";
       }
+
+      this.updateStyles();
+
+      // console.debug("[warp10-display-map] configure", this.clientWidth, this.clientHeight);
+      // console.debug("[warp10-display-map] configure", this.$.map.clientWidth, this.$.map.clientHeight);
       // console.debug("[warp10-display-map] Dimensions", this.$.map.style);
 
     },
 
-    // Private methods
     _updateMapData: function() {
-      if (this.layerGroup) {
-        this._removeMapData();  
-      }
+      // console.debug("[warp10-display-map] _updateMapData");
 
+      if (this.layerGroup) {
+        this._removeMapData();
+      }
 
       this.pathData = warp10DisplayMapTools.toLeafletMapPaths(this.data);
       this.annotationsData = warp10DisplayMapTools.annotationsToLeafletPositions(this.data);
@@ -267,9 +303,10 @@
       if (this.pathData.length>0 || this.positionData.length>0 ) {
         // console.debug("[warp10-display-map] getBoundsArray", warp10DisplayMapTools.getBoundsArray(this.pathData,this.positionData))
         // Fit map to curves
+        map.invalidateSize();
         map.fitBounds(warp10DisplayMapTools.getBoundsArray(this.pathData,this.positionData), {padding: [20,20]});
       }
-      // console.debug("[warp10-display-map] Fit bounds done");
+      // console.debug("[warp10-display-map] Fit bounds done", map);
     },
 
     _updateGtsPath: function(gts) {
@@ -418,9 +455,6 @@
 
       map.removeLayer(this.layerGroup);
     },
-
-
-
   }
 
 );
