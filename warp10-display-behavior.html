@@ -93,9 +93,22 @@
       },
 
       // Constants
-      _MIN_LINE_WIDTH: 1,
-      _MAX_LINE_WIDTH: 20,
-
+      _MIN_LINE_WIDTH: {
+        type: Number,
+        value: 1,
+      },
+      _MAX_LINE_WIDTH: {
+        type: Number,
+        value: 20,
+      },
+      _DEFAULT_WIDTH: {
+        type: Number,
+        value: 480,
+      },
+      _DEFAULT_HEIGHT: {
+        type: Number,
+        value: 320,
+      },
       _params: {
         type: Object,
         value: function () {
@@ -114,18 +127,18 @@
       // console.debug("[warp10-display-behavior] created");
     },
     ready: function () {
-      // console.debug("[warp10-display-behavior] ready - begin", {width: this.width, height: this.height});
-      this.configure();
+      console.debug("[warp10-display-behavior] ready - begin", {width: this.style.width, height: this.style.height});
+
       this.isReady = true;
       if (this.data != null) {
         this.dataChanged()
       }
-      // tooltip key width
-      this.customStyle['--tooltip-width'] = Math.max(400, this.$.chart.getBoundingClientRect().width * 2 / 3).toString() + "px";
-      this.updateStyles();
+      console.debug("[warp10-display-behavior] ready - end");
       // console.debug("[warp10-display-behavior] ready - end");
     },
     attached: function () {
+    console.debug("[warp10-display-behavior] attached -  clientHeight", this.clientHeight);
+    this.configure();
     },
 
 
@@ -158,6 +171,21 @@
      */
     configure: function () {
       // console.debug("[warp10-display-behavior] configure");
+
+      // Dimensions
+      if (this.clientWidth == 0) {
+        this.customStyle['--default-width'] = this._DEFAULT_WIDTH + "px";
+      }
+      if (this.clientHeight == 0) {
+        this.customStyle['--default-height'] = this._DEFAULT_HEIGHT + "px";
+      }
+
+      // tooltip key width
+      this.customStyle['--tooltip-width'] = Math.max(400, this.$.chart.getBoundingClientRect().width * 2 / 3).toString() + "px";
+
+      // Update styles
+      this.updateStyles();
+
       // Line width
       if (this.lineWidth < this._MIN_LINE_WIDTH || this.lineWidth > this._MAX_LINE_WIDTH) {
         this.lineWidth = 1.5;
