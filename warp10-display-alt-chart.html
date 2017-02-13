@@ -17,7 +17,7 @@
       :host {
         display: block;
         width: var(--default-width, 100%);
-        height: var(--default-height, 100%);;
+        height: var(--default-height, 100%);
         position:relative
       }
       #chart {
@@ -475,7 +475,7 @@
           sparklines[i][0] = new Date(Math.floor(sparklines[i][0] / 1000));
         }
       }
-      console.debug("[warp10-display-chart] _gts2dygraphs - sparklines", sparklines);
+      // console.debug("[warp10-display-chart] _gts2dygraphs - sparklines", sparklines);
       return sparklines;
     },
     _dataToChartLib: function (filteredResponse) {
@@ -511,7 +511,7 @@
             min: me.yAxisRange()[0],
             max: me.yAxisRange()[1]
           }
-          console.debug("[warp10-display-chart] drawCallback called", context.timeBounds, context.valueBounds)
+          // console.debug("[warp10-display-chart] drawCallback called", context.timeBounds, context.valueBounds)
         },
       }
       if (this.hideAxis) {
@@ -620,7 +620,7 @@
             break;
         }
       }
-      console.debug("[warp10-display-chart] _data2dygraphs - options", options);
+      // console.debug("[warp10-display-chart] _data2dygraphs - options", options);
       if (this.chart) {
         this.chart.updateOptions(options);
       } else {

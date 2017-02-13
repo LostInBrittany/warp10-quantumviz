@@ -127,7 +127,7 @@
   ***********************************************************************************/
   quantumvizGts.getValidResponse = function(response) {
     if (quantumvizGts.isValidDetailedResponse(response)) {
-      console.debug("[warp10-quantumviz-tools] getValidResponse - isValidDetailedResponse", response);
+      // console.debug("[warp10-quantumviz-tools] getValidResponse - isValidDetailedResponse", response);
       return  {
         gts: response[0].gts ,
         params: response[0].params,
@@ -136,7 +136,7 @@
     }
 
     if (quantumvizGts.isValidParamlessDetailedResponse(response)) {
-      console.debug("[warp10-quantumviz-tools] getValidResponse - isValidParamlessDetailedResponse", response);
+      // console.debug("[warp10-quantumviz-tools] getValidResponse - isValidParamlessDetailedResponse", response);
       return  {
         gts: response[0].gts ,
         params: response[0].gts.map(function() { return {} }),
@@ -144,7 +144,7 @@
       };
     }
     if (quantumvizGts.isValidSingleDetailedResponse(response)) {
-      console.debug("[warp10-quantumviz-tools] getValidResponse - isValidSingleDetailedResponse", response);
+      // console.debug("[warp10-quantumviz-tools] getValidResponse - isValidSingleDetailedResponse", response);
       return {
         gts: [ response[0].gts ],
         params: [ response[0].params ],
@@ -152,7 +152,7 @@
       };
     }
     if (quantumvizGts.isValidParamlessSingleDetailedResponse(response)) {
-      console.debug("[warp10-quantumviz-tools] getValidResponse - isValidParamlessSingleDetailedResponse", response);
+      // console.debug("[warp10-quantumviz-tools] getValidResponse - isValidParamlessSingleDetailedResponse", response);
       return {
         gts: [ response[0].gts ],
         params: [ {} ],
@@ -160,7 +160,7 @@
       };
     }
     if (quantumvizGts.isValidGtsListResponse(response)) {
-      console.debug("[warp10-quantumviz-tools] getValidResponse - isValidGtsListResponse", response);
+      // console.debug("[warp10-quantumviz-tools] getValidResponse - isValidGtsListResponse", response);
       // console.debug({ gts: response, params: response.forEach(function() { return {}}), globalParams: response[0].globalParams });
       return {
         gts: response ,
@@ -169,7 +169,7 @@
       };
     }
     if (quantumvizGts.isValidGtsResponse(response)) {
-      console.debug("[warp10-quantumviz-tools] getValidResponse - isValidGtsResponse", response);
+      // console.debug("[warp10-quantumviz-tools] getValidResponse - isValidGtsResponse", response);
       return {
         gts: [ response ],
         params: [ {} ],
@@ -184,27 +184,27 @@
   ***********************************************************************************/
   quantumvizGts.isValidResponse = function(response) {
     if (quantumvizGts.isValidDetailedResponse(response)) {
-      console.debug("[warp10-quantumviz-tools] isValidResponse - isValidDetailedResponse", response);
+      // console.debug("[warp10-quantumviz-tools] isValidResponse - isValidDetailedResponse", response);
       return true;
     }
     if (quantumvizGts.isValidParamlessDetailedResponse(response)) {
-      console.debug("[warp10-quantumviz-tools] isValidResponse - isValidParamlessDetailedResponse", response);
+      // console.debug("[warp10-quantumviz-tools] isValidResponse - isValidParamlessDetailedResponse", response);
       return true;
     }
     if (quantumvizGts.isValidSingleDetailedResponse(response)) {
-      console.debug("[warp10-quantumviz-tools] isValidResponse - isValidSingleDetailedResponse", response);
+      // console.debug("[warp10-quantumviz-tools] isValidResponse - isValidSingleDetailedResponse", response);
       return true;
     }
     if (quantumvizGts.isValidParamlessSingleDetailedResponse(response)) {
-      console.debug("[warp10-quantumviz-tools] isValidResponse - isValidSingleDetailedResponse", response);
+      // console.debug("[warp10-quantumviz-tools] isValidResponse - isValidSingleDetailedResponse", response);
       return true;
     }
     if (quantumvizGts.isValidGtsListResponse(response)) {
-      console.debug("[warp10-quantumviz-tools] isValidResponse - isValidGtsListResponse", response);
+      // console.debug("[warp10-quantumviz-tools] isValidResponse - isValidGtsListResponse", response);
       return true;
     }
     if (quantumvizGts.isValidGtsResponse(response)) {
-      console.debug("[warp10-quantumviz-tools] isValidResponse - isValidGtsResponse", response);
+      // console.debug("[warp10-quantumviz-tools] isValidResponse - isValidGtsResponse", response);
       return true;
     }
     return false;
@@ -360,7 +360,7 @@
         range[1] = gtsRange[1];
       }
     }
-    console.debug("[quantumviz-tools] getGtsListRange", range);
+    // console.debug("[quantumviz-tools] getGtsListRange", range);
     return range;
   };
 
