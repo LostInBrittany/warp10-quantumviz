@@ -19,10 +19,10 @@
   .container {
     display: inline-block;
     border: 1px solid #444;
-    padding:10px;
-    border-radius: 10px;
     margin: 20px;
-    min-width: 750px;
+    width: 700px;
+    height: 700px;
+
   }
 </style>
 <script src=" ../../webcomponentsjs/webcomponents.js"></script>
@@ -40,7 +40,6 @@
   <div class="container">
 
     <warp10-geoquantumviz
-      width="800" height="450" map-width="800" map-height="450"
       show-axis="true"  tooltip="true" line-width="2" reload="0"
       current-values={{current}}
       host="https://warp.cityzendata.net/dist/api/v0" old-path="" >
