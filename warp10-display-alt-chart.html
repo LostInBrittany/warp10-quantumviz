@@ -143,9 +143,6 @@
         // console.debug("[warp10-display-chart] attached - dimensionsChanged, resizing");
         this.configure();
         this.chart.resize();
-        // tooltip key width
-        this.customStyle['--tooltip-width'] = Math.max(400, this.$.chart.getBoundingClientRect().width * 2 / 3).toString() + "px";
-        this.updateStyles();
       }
       if (this.chart) {
         this.chart.resize();
@@ -239,6 +236,8 @@
 
       var keyFormatter = function (d, i) {
 
+
+        console.debug("[warp10-display-chart] keyFormatter ", d);
         // console.debug("[warp10-display-chart] keyFormatter ", d);
         var outsideCurlyBrackets = d.split(/\{[^\}]*\}/);
         // console.debug("[warp10-display-chart] keyFormatter ", outsideCurlyBrackets);
@@ -249,7 +248,7 @@
         while ((matches = insideRegex.exec(d)) !== null) {
           insideCurlyBrackets.push(matches[1]);
         }
-        // console.debug("[warp10-display-chart] keyFormatter ", insideCurlyBrackets);
+        // console.debug("[warp10-display-chart] keyFormatter ", insideCurlyBrackets, insideCurlyBrackets.length);
 
 
         var html = "";
@@ -272,7 +271,7 @@
             html += labels.join("<span class='gts-separator'>,</span>") + "<span class='gts-separator'>}</span>"
           }
         }
-        // console.debug("[warp10-display-chart] keyFormatter ", html);
+        console.debug("[warp10-display-chart] keyFormatter ", html);
         return html;
       };
 
@@ -334,7 +333,7 @@
       if (d.footer !== undefined)
         html += "<div class='footer'>" + d.footer + "</div>";
 
-
+      console.debug("[warp10-display-chart] _tooltipContent - html", html);
       //console.debug("[warp10-display-chart] _tooltipContent - window.innerWidth",  window.innerWidth);
       //console.debug("[warp10-display-chart] _tooltipContent - chart width",  this.$$("#chart").style.width);
       // console.debug("[warp10-display-chart] _tooltipContent - chart getBoundingClientRect()",  this.$$("#chart").getBoundingClientRect().width);
@@ -350,7 +349,7 @@
       var yCoord = this.currentValues.yCoord;
       var tooltipWidth = this.$$(".chart-tooltip").getBoundingClientRect().width
 
-
+      // console.debug("[warp10-display-chart] tooltip", xCoord, yCoord )
 
       // Left, right or centerer
       if (chartLeftOffset + xCoord + tooltipWidth + 20 > windowWidth) {
