@@ -189,18 +189,22 @@
 
       // Dimensions
       if (this.clientWidth == 0) {
-        this.customStyle['--default-width'] = this._DEFAULT_WIDTH + "px";
+        this.updateStyles({
+          '--default-width': this._DEFAULT_WIDTH + "px"
+        });
       }
       if (this.clientHeight == 0) {
-        this.customStyle['--default-height'] = this._DEFAULT_HEIGHT + "px";
+        this.updateStyles({
+          '--default-height': this._DEFAULT_HEIGHT + "px"
+        });
       }
 
       // tooltip key width
-      this.customStyle['--tooltip-width'] = Math.max(400, this.$.chart.getBoundingClientRect().width * 2 / 3).toString() + "px";
+      this.updateStyles({
+        '--tooltip-width': Math.max(400, this.$.chart.getBoundingClientRect().width * 2 / 3).toString() + "px"
+      });
 
-      // Update styles
-      this.updateStyles();
-
+      
       // Line width
       if (this.lineWidth < this._MIN_LINE_WIDTH || this.lineWidth > this._MAX_LINE_WIDTH) {
         this.lineWidth = 1.5;
