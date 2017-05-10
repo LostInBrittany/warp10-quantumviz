@@ -305,10 +305,26 @@
         // console.debug("[warp10-display-chart]  quantumvizObj.params", quantumvizObj.params[i]);
 
 
-        if (quantumvizObj.gts[i].a !== undefined && quantumvizObj.gts[i].a.quantumParams !== undefined ) {
-          for ( var j in quantumvizObj.gts[i].a.quantumParams) {
-            if (quantumvizObj.gts[i].a.quantumParams.hasOwnProperty(j)) {
-              quantumvizObj.params[i][j] =  quantumvizObj.gts[i].a.quantumParams[j]; 
+        if (quantumvizObj.gts[i].a !== undefined) {
+
+          var attributes = quantumvizObj.gts[i].a;
+          for ( var j in attributes) {
+            if (attributes.hasOwnProperty(j) 
+                && [ 'string', 'number'].indexOf(typeof attributes[j]) >= 0   
+                && j.startsWith("quantum-")) {
+              quantumvizObj.params[i][j.replace("quantum-","")] =  attributes[j]; 
+            }
+          }
+        }
+        if (quantumvizObj.gts[i].a !== undefined && quantumvizObj.gts[i].a.quantumParams !== undefined) {
+          var quantumParams = attributes.quantumParams;
+          if (typeof attributes.quantumParams == "string") {
+            quantumParams = looseJSON.parse(attributes.quantumParams);
+          } 
+
+          for ( var j in quantumParams) {
+            if (quantumParams.hasOwnProperty(j)) {
+              quantumvizObj.params[i][j] =  quantumParams[j]; 
             }
           }
         }
