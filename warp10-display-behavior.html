@@ -303,6 +303,16 @@
 
         // console.debug("[warp10-display-chart]  quantumvizObj.gts", quantumvizObj.gts[i]);
         // console.debug("[warp10-display-chart]  quantumvizObj.params", quantumvizObj.params[i]);
+
+
+        if (quantumvizObj.gts[i].a !== undefined && quantumvizObj.gts[i].a.quantumParams !== undefined ) {
+          for ( var j in quantumvizObj.gts[i].a.quantumParams) {
+            if (quantumvizObj.gts[i].a.quantumParams.hasOwnProperty(j)) {
+              quantumvizObj.params[i][j] =  quantumvizObj.gts[i].a.quantumParams[j]; 
+            }
+          }
+        }
+
         if (quantumvizObj.params[i].key !== undefined) {
           labels[i] = quantumvizObj.params[i].key;
         } else {
