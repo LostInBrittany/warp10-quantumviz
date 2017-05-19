@@ -353,6 +353,7 @@
       }
       var gtsRange = gtsTools.gtsTimeRange(gtsList[i]);
       // console.debug("[quantumviz-tools] getGtsListRange - gtsRange", gtsRange);
+      if (!gtsRange) continue
       if (gtsRange[0] < range[0]) {
         range[0] = gtsRange[0];
       }
