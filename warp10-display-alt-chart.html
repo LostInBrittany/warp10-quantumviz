@@ -45,64 +45,55 @@
 
 
 
-      .tr.highlight,
-      :host ::content .tr.highlight {
+      .tr.highligh {
         background-color: #ffffa4;
       }
       .gts-classname,
-      :host ::content .gts-classname{
+      :host ::slotted(.gts-classname) {
         color: #0074D9;
       }
       .gts-labelname,
-      :host ::content .gts-labelname {
+      :host ::slotted(.gts-labelname) {
         color: #3d9970;
       }
-      .gts-separator,
-      :host ::content .gts-separator {
+      .gts-separator {
         color: #bbbbbb;
       }
-      .gts-labelvalue,
-      :host ::content .gts-labelvalue {
+      .gts-labelvalue {
         color: #AAAAAA;
         font-style: italic;
       }
-      .legend-color-guide .tr,
-      :host ::content .legend-color-guide .tr {
+      .legend-color-guide .tr {
         display: flex;
         flex-direction: column;
         justify-content: center;
       }
-      .legend-color-guide div,
-      :host ::content .legend-color-guide div {
+      .legend-color-guide div {
         width: 10px;
         height: 10px;
         border-radius: 5px;
         margin-right: 5px;
         margin-top: 5px;
       }
-      .chart-tooltip .table,
-      :host ::content .chart-tooltip .table {
+      .chart-tooltip .table {
         display: table;
         width: 100%;
         white-space: normal;
         font-size: 10pt !important;
       }
-      .chart-tooltip .tr,
-      :host ::content .chart-tooltip .tr {
+      .chart-tooltip .tr {
         display: flex;
         flex-direction: row;
         justify-content: center;
       }
-      .chart-tooltip .key,
-      :host ::content .chart-tooltip .key {
+      .chart-tooltip .key {
         text-align: left;
         padding-right: 10px;
         word-wrap: break-word;
         word-break: break-word;
         width: calc( var(--tooltip-width, 400px) - 50px);
       }
-      .chart-tooltip .value,
-      :host ::content .chart-tooltip .value, {
+      .chart-tooltip .value {
         text-align: right;
       }
     </style>
@@ -345,7 +336,7 @@
         var yCoord = this.currentValues.yCoord;
         var tooltipWidth = this.$$(".chart-tooltip").getBoundingClientRect().width
 
-        // console.debug("[warp10-display-chart] tooltip", xCoord, yCoord )
+        // console.debug("[warp10-display-chart] tooltip", xCoord, yCoord)
 
         // Left, right or centerer
         if (chartLeftOffset + xCoord + tooltipWidth + 20 > windowWidth) {
@@ -441,12 +432,12 @@
                 }
                 sparklines.splice(k, 0, record)
                 found = true;
-                // console.debug("[warp10-display-chart] _gts2dygraphs - ts < sparklines[k][0] ", sparklines[k] );
+                // console.debug("[warp10-display-chart] _gts2dygraphs - ts < sparklines[k][0] ", sparklines[k]);
                 break;
               } else if (ts == sparklines[k][0]) {
                 sparklines[k][i + 1] = values[j][values[j].length - 1];
                 found = true;
-                // console.debug("[warp10-display-chart] _gts2dygraphs - ts == sparklines[k][0] ", sparklines[k] );
+                // console.debug("[warp10-display-chart] _gts2dygraphs - ts == sparklines[k][0] ", sparklines[k]);
                 break;
               }
             }
@@ -461,7 +452,7 @@
                 }
               }
               sparklines.push(record);
-              // console.debug("[warp10-display-chart] _gts2dygraphs - ts > sparklines[k][0] ", sparklines[sparklines.length-1] );
+              // console.debug("[warp10-display-chart] _gts2dygraphs - ts > sparklines[k][0] ", sparklines[sparklines.length-1]);
             }
           }
         }

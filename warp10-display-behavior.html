@@ -6,7 +6,11 @@
 
 
 <script>
-
+  /**
+   * Implementation of behavior to display Warp10 graphs
+   *
+   * @polymerBehavior
+   */
   Warp10DisplayBehaviorImpl = {
     // Properties
     properties: {
@@ -376,5 +380,10 @@
 
   }
 
+  /**
+   * Behavior to display Warp10 graphs
+   *
+   * @polymerBehavior
+   */
   Warp10DisplayBehavior = [ Polymer.IronResizableBehavior,  Warp10DisplayBehaviorImpl ]
 </script>
