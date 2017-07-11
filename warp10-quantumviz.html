@@ -377,12 +377,11 @@ Viz-only version of Quantum widget
         // Dimensions
         // console.debug("[test-quantumviz] configure", this.clientWidth, this.clientHeight);
         if (this.clientWidth == 0) {
-          this.customStyle['--default-width'] = this._DEFAULT_WIDTH + "px";
+          this.updateStyles({'--default-width': this._DEFAULT_WIDTH + "px" });
         }
         if (this.clientHeight == 0) {
-          this.customStyle['--default-height'] = this._DEFAULT_HEIGHT + "px";
+          this.updateStyles({'--default-height': this._DEFAULT_HEIGHT + "px" });
         }
-        this.updateStyles();
         // console.debug("[test-quantumviz] configure - end");
       },
 

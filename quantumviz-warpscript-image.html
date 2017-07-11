@@ -115,12 +115,11 @@
       this.generateWarpScript();
       // Setting img styles
       if (this.width > 0) {
-        this.customStyle['--width'] = this.width.toString()+"px";
+        this.updateStyles({'--width': this.width.toString()+"px" })        
       }
       if (this.height > 0) {
-        this.customStyle['--height'] = this.height.toString()+"px";
+        this.updateStyles({'--height': this.height.toString()+"px" });
       }
-      this.updateStyles();
 
       this.call = 1;
 
