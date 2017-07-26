@@ -408,60 +408,83 @@
 
       },
       _gts2dygraphs: function (gtsList) {
-        var sparklines = [];
+       	//
+       	// Extract all the ticks from all the GTS
+       	//
 
-        for (var i = 0; i < gtsList.length; i++) {
-          // We begin by sorting the values
-          var values = gtsList[i].v.sort(function (a, b) { return a[0] - b[0]; });
-          // console.debug("[warp10-display-chart] _gts2dygraphs - sorted values", values);
+       	var ticks = []
 
+       	for (var i = 0; i < gtsList.length; i++) {
+       	  for (var t = 0; t < gtsList[i].v.length; t++) {
+       	    ticks.push(gtsList[i].v[t][0]);
+       	  }
+       	}
 
-          for (var j = 0; j < values.length; j++) {
-            var ts = values[j][0];
-            var found = false;
-            for (var k = 0; k < sparklines.length; k++) {
-              if (ts < sparklines[k][0]) {
-                var record = [];  // Every record is [ts, y_series0, y_series1...]
-                record.push(ts);
-                for (var ii = 0; ii < gtsList.length; ii++) {
-                  if (i == ii) {
-                    record.push(values[j][values[j].length - 1]);
-                  } else {
-                    record.push(null);
-                  }
-                }
-                sparklines.splice(k, 0, record)
-                found = true;
-                // console.debug("[warp10-display-chart] _gts2dygraphs - ts < sparklines[k][0] ", sparklines[k]);
-                break;
-              } else if (ts == sparklines[k][0]) {
-                sparklines[k][i + 1] = values[j][values[j].length - 1];
-                found = true;
-                // console.debug("[warp10-display-chart] _gts2dygraphs - ts == sparklines[k][0] ", sparklines[k]);
-                break;
-              }
-            }
-            if (!found) {
-              var record = [];  // Every record is [ts, y_series0, y_series1...]
-              record.push(ts);
-              for (var ii = 0; ii < gtsList.length; ii++) {
-                if (i == ii) {
-                  record.push(values[j][values[j].length - 1]);
-                } else {
-                  record.push(null);
-                }
-              }
-              sparklines.push(record);
-              // console.debug("[warp10-display-chart] _gts2dygraphs - ts > sparklines[k][0] ", sparklines[sparklines.length-1]);
-            }
-          }
+       	// Sort the ticks
+       	ticks.sort(function (a, b) { return a - b; });
+
+       	// Keep unique ticks
+       	var uniqueTicks = [ticks[0]]
+
+       	for (var i = 1; i < ticks.length; i++) {
+       	  if (ticks[i] == uniqueTicks[uniqueTicks.length - 1]) {
+       	    continue;
+       	  }
+       	  uniqueTicks.push(ticks[i]);
+       	}
+       
+       	//
+       	// Now allocate one sparkline per GTS of length 'uniqueTicks.length'
+       	// and populate it with the values from the GTS
+       	//
+
+       	var sparklines = new Array(uniqueTicks.length);
+
+        for (var i = 0; i < sparklines.length; i++) {
+          sparklines[i] = new Array(gtsList.length + 1);
+          if (!this.timestamps) {
+       	    sparklines[i][0] = new Date(Math.floor(uniqueTicks[i] / 1000));
+       	  } else {
+       	    sparklines[i][0] = uniqueTicks[i];
+       	  }
         }
-        if (!this.timestamps) {
-          for (var i in sparklines) {
-            sparklines[i][0] = new Date(Math.floor(sparklines[i][0] / 1000));
-          }
-        }
-        // console.debug("[warp10-display-chart] _gts2dygraphs - sparklines", sparklines);
+
+       	for (var i = 0; i < gtsList.length; i++) {
+       	  // Sort the GTS values according to tick
+       	  var values = gtsList[i].v.sort(function (a, b) { return a[0] - b[0]; });
+
+       	  var tickidx = 0;
+       	  var validx = 0;
+
+       	  while(validx < values.length && tickidx < uniqueTicks.length) {
+       	    // If the unique tick at 'tickidx' is below the tick of the GTS at 'validx',
+       	    // store null and increase tickidx
+       	    if (uniqueTicks[tickidx] < values[validx][0]) {
+       	      sparklines[tickidx][i + 1] = null;
+       	      tickidx++;
+       	      continue;
+       	    }
+
+       	    // If the tick at 'validx' is == to the uniqueTick at 'tickidx', store the value
+       	    // and increase validx
+       	    if (uniqueTicks[tickidx] == values[validx][0]) {
+       	      sparklines[tickidx][i + 1] = values[validx][values[validx].length - 1];
+       	      validx++;
+       	      tickidx++;
+       	      continue;
+       	    }
+
+       	    // Ignore successive identical ticks, we retain only the first value
+       	    validx++;
+       	  }
+
+       	  // Fill empty slots with 'nulls'
+       	  while(tickidx < uniqueTicks.length) {
+       	    sparklines[tickidx][i + 1] = null;
+       	    tickidx++;
+       	  }
+       	}
+
         return sparklines;
       },
       _dataToChartLib: function (filteredResponse) {
