@@ -20,11 +20,13 @@
     <img src={{img}}></img>
 
     <warp10-warpscript-caller
-      id="warpscript-caller"
-      base-url="{{baseURL}}" warpscript="{{warpscriptScript}}"
-      data="{{data}}"  reload="{{reload}}"
+      id="warpscriptCaller"
+      url="{{baseURL}}" warpscript="{{warpscriptScript}}"
+      reload="{{reload}}"
       block-calls="{{blockCalls}}" call="{{call}}"
-      loading="{{loading}}">
+      loading="{{loading}}"
+      on-response="_handleResponse"
+      on-error="_handleError">
     </warp10-warpscript-caller>
 
   </template>
@@ -81,6 +83,10 @@
       oldPath: {
         type: String,
         value: ""
+      },
+      debug:{
+        type: Boolean,
+        value: false
       }
     },
 
@@ -103,7 +109,7 @@
     dataChanged: function() {
       if (this.data != null) {
         this.getImageContent()
-        // console.debug("[warp10-img] dataChanged - Image:\n", this.img);
+        if (this.debug) { console.log("[warp10-img] dataChanged - Image:\n", this.img); }
       }
     },
 
@@ -111,7 +117,7 @@
      * Livecycle functions
      ********************************/
     attached: function() {
-      // console.debug("[warp10-img] attached");
+      if (this.debug) { console.log("[warp10-img] attached"); }
       this.generateWarpScript();
       // Setting img styles
       if (this.width > 0) {
@@ -125,6 +131,24 @@
 
     },
 
+    /********************************
+     * Action listeners
+     ********************************/
+    _handleResponse: function(event, response) {
+      if (!response.stack) {
+        // We have an error here
+        // TO-DO deal with it
+        return;
+      }
+
+      this.data = response.stack;
+    },
+
+    _handleError: function(event, error) {
+        // We have an error here
+        // TO-DO deal with it
+    },
+    
     /********************************
      * Generate warpscript script
      ********************************/
@@ -152,8 +176,10 @@
       }
       this.warpscriptScript = inputWarpScriptVariables+this.warpscriptScript;
 
-      // console.debug("[warp10-img] generateWarpScript - WarpScript script:\n",this.warpscriptScript);
+      if (this.debug) { console.log("[warp10-img] generateWarpScript - WarpScript script:\n",this.warpscriptScript); }
       if (this.warpscriptScript.length > 0) {
+        if (this.debug) { console.log("[warp10-img] generateWarpScript - Generating request"); }
+        this.$.warpscriptCaller.generateRequest();
         return true;
       }
       return false;
@@ -168,7 +194,7 @@
         return
       }
       var response = this.data[0];
-      // console.debug("[warp10-img] getImageContent \n", response);
+      if (this.debug) { console.log("[warp10-img] getImageContent \n", response); }
       if (/^data:image/.test(response)) {
         this.img = response
       }
