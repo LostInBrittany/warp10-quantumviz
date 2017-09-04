@@ -8,19 +8,19 @@
 <link rel="import" href="./quantumviz-tools.html">
 
 <dom-module id="quantumviz-annotations">
-  <style>
-    :host {
-      display: block;
-    }
-    quantumviz-annotation {
-      margin-top: 2px;
-      margin-bottom: 2px;
-    }
-    #spacer {
-      height: 50px;
-    }
-  </style>
   <template>
+    <style>
+      :host {
+        display: block;
+      }
+      quantumviz-annotation {
+        margin-top: 2px;
+        margin-bottom: 2px;
+      }
+      #spacer {
+        height: 50px;
+      }
+    </style>
     <div id="annotations">
       <template is="dom-repeat" items="{{annotations}}" as="annotation">
         <quantumviz-annotation 
