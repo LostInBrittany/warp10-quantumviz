@@ -41,10 +41,6 @@
       .chart-tooltip.hidden {
           display: none;
       }
-
-
-
-
       .tr.highligh {
         background-color: #ffffa4;
       }
@@ -147,7 +143,7 @@
 
       },
       currentValuesChanged: function () {
-        if (null != this.isReady) {
+        if (null !== this.isReady) {
           // console.debug("[warp10-display-chart] currentValuesChanged() - currentValues", this.currentValues);
           this._tooltipContent();
         }
@@ -156,7 +152,7 @@
         // console.debug("[warp10-display-chart] tooltipChanged - oldValue", oldValue);
         // console.debug("[warp10-display-chart] tooltipChanged - newValue", newValue);
 
-        if (null == this.tooltip || "" == this.tooltip) {
+        if (null === this.tooltip || "" === this.tooltip) {
           // this.$$(".chart-tooltip").innerHTML = this.tooltip;
         } else {
           // console.debug("[warp10-display-chart] tooltipChanged", this.tooltip);
@@ -167,7 +163,7 @@
 
       _isTooltipHidden: function (tooltip) {
 
-        if (null == this.tooltip || "" == this.tooltip) {
+        if (null === this.tooltip || "" === this.tooltip) {
           // console.debug("[warp10-display-chart] _isTooltipHidden - true");
           return "hidden";
         } else {
@@ -222,9 +218,6 @@
         };
 
         var keyFormatter = function (d, i) {
-
-
-          console.debug("[warp10-display-chart] keyFormatter ", d);
           // console.debug("[warp10-display-chart] keyFormatter ", d);
           var outsideCurlyBrackets = d.split(/\{[^\}]*\}/);
           // console.debug("[warp10-display-chart] keyFormatter ", outsideCurlyBrackets);
@@ -236,8 +229,6 @@
             insideCurlyBrackets.push(matches[1]);
           }
           // console.debug("[warp10-display-chart] keyFormatter ", insideCurlyBrackets, insideCurlyBrackets.length);
-
-
           var html = "";
 
           for (var i in outsideCurlyBrackets) {
@@ -282,7 +273,7 @@
         var tbodyEnter = table.selectAll("div.tbody")
           .data([d])
           .enter().append("div").classed("tbody", true);
-
+        console.log(d)
         var trowEnter = tbodyEnter.selectAll("div.tr")
           .data(d.yValues)
           .enter()
@@ -412,7 +403,7 @@
        	// Extract all the ticks from all the GTS
        	//
 
-       	var ticks = []
+       	var ticks = [];
 
        	for (var i = 0; i < gtsList.length; i++) {
        	  for (var t = 0; t < gtsList[i].v.length; t++) {
@@ -427,7 +418,7 @@
        	var uniqueTicks = [ticks[0]]
 
        	for (var i = 1; i < ticks.length; i++) {
-       	  if (ticks[i] == uniqueTicks[uniqueTicks.length - 1]) {
+       	  if (ticks[i] === uniqueTicks[uniqueTicks.length - 1]) {
        	    continue;
        	  }
        	  uniqueTicks.push(ticks[i]);
@@ -467,7 +458,7 @@
 
        	    // If the tick at 'validx' is == to the uniqueTick at 'tickidx', store the value
        	    // and increase validx
-       	    if (uniqueTicks[tickidx] == values[validx][0]) {
+       	    if (uniqueTicks[tickidx] === values[validx][0]) {
        	      sparklines[tickidx][i + 1] = values[validx][values[validx].length - 1];
        	      validx++;
        	      tickidx++;
@@ -495,7 +486,6 @@
         // console.debug("[warp10-display-chart] _data2dygraphs - sparklines", sparklines);
         // console.debug("[warp10-display-chart] _data2dygraphs - timeBounds", this.timeBounds);
 
-
         var labels = ['X'].concat(this._params.labels); // The first label is X-axis label
 
         var options = {
@@ -515,14 +505,14 @@
             context.timeBounds = {
               min: me.xAxisRange()[0],
               max: me.xAxisRange()[1]
-            }
+            };
             context.valueBounds = {
               min: me.yAxisRange()[0],
               max: me.yAxisRange()[1]
-            }
+            };
             // console.debug("[warp10-display-chart] drawCallback called", context.timeBounds, context.valueBounds)
-          },
-        }
+          }
+        };
         if (this.hideAxis) {
           options.drawAxis = false;
           options.drawGrid = false;
@@ -548,7 +538,7 @@
                 var formattedIntPart = splittedValue[0].replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
                 var formattedDecimalPart = splittedValue[1].replace(/0+$/g, '');
 
-                if (formattedDecimalPart.length == 0) {
+                if (formattedDecimalPart.length === 0) {
                   return formattedIntPart;
                 }
                 return formattedIntPart + '.' + formattedDecimalPart;
@@ -569,7 +559,7 @@
 
             // console.debug("[warp10-display-chart] color",  points[i].color);
             // points[i].color = context.chart.colors_[i];
-            if (name == points[i].name) {
+            if (name === points[i].name) {
               points[i].highlight = true;
             } else {
               points[i].highlight = false;
@@ -608,7 +598,7 @@
           options.series[this._params.labels[i]] = {
             strokeWidth: this._params.strokeWidth[i],
             //stepPlot : true
-          }
+          };
           // console.debug("[warp10-display-chart] _data2dygraphs - interpolate", interpolate[i-1]);
           switch (this._params.interpolate[i]) {
             case "cardinal":
@@ -641,7 +631,7 @@
 
         }
         // console.debug("[warp10-display-chart] _data2dygraphs - chart", this.chart);
-      },
+      }
     });
 
   </script>

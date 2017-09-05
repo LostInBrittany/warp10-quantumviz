@@ -6,114 +6,97 @@
 <!doctype html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-<title>warp10-geoquantumviz demo</title>
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <title>warp10-geoquantumviz demo</title>
 
-<style>
-  body {
-    background-color: #eeeeee;
-  }
-  .current-value {
-    padding-left:100px;
-  }
-  .container {
-    display: inline-block;
-    padding:10px;
-    border-radius: 10px;
-    margin: 20px;
-    border: solid 1px black;
-  }
-</style>
-<script src=" ../../webcomponentsjs/webcomponents.js"></script>
-<link   rel="import" href=" ../../polymer/polymer.html">
-<link   rel="import" href=" ../warp10-geoquantumviz.html">
-<link   rel="import" href=" ../../leaflet-map/leaflet-map.html">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
-<body  unresolved>
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <link rel="import" href=" ../../polymer/polymer.html">
+    <link rel="import" href=" ../warp10-geoquantumviz.html">
 
-  <h1>Quantumviz with annotations</h1>
-
-
+<body unresolved>
 
 <div class="container">
 
+    <h1>Quantumviz with annotations only</h1>
+
+
     <warp10-quantumviz
-      width="800" height="350"
-      show-axis="true"  tooltip="true" line-width="2" reload="0"
-      current-values={{current}}
-      host="https://warp.cityzendata.net/dist/api/v0" old-path="" >
-  NOW '_NOW' STORE
-  51.40 '_BASE_LAT' STORE
-  0.00 '_BASE_LON' STORE
-  <% 10000000 * $_NOW SWAP - %> 'getTimestamp' STORE
-  <% 10.0 / 2 * PI * SIN 0.1 * $_BASE_LAT + %> 'getLat' STORE
-  <% -0.01 * $_BASE_LON + %> 'getLon' STORE
-  <% 10.0 / 2 * PI * COS 10 * TOSTRING %> 'getValue' STORE
-  <%
-    'i' STORE
-    $i @getTimestamp
-    $i @getLat
-    $i @getLon
-    1000
-    $i @getValue
-    ADDVALUE
-  %> 'generateGts' STORE
+            width="800" height="350"
+            show-axis="true" tooltip="true" line-width="2" reload="0"
+            host="https://warp.cityzendata.net/dist/api/v0" old-path="">
+        NOW '_NOW' STORE
+        51.40 '_BASE_LAT' STORE
+        0.00 '_BASE_LON' STORE
+        <% 10000000 * $_NOW SWAP - %> 'getTimestamp' STORE
+        <% 10.0 / 2 * PI * SIN 0.1 * $_BASE_LAT + %> 'getLat' STORE
+        <% -0.01 * $_BASE_LON + %> 'getLon' STORE
+        <% 10.0 / 2 * PI * COS 10 * TOSTRING %> 'getValue' STORE
+        <%
+        'i' STORE
+        $i @getTimestamp
+        $i @getLat
+        $i @getLon
+        1000
+        $i @getValue
+        ADDVALUE
+        %> 'generateGts' STORE
 
-  NEWGTS
-  1 10 $generateGts FOR
+        NEWGTS
+        1 10 $generateGts FOR
 
-  NEWGTS
-  $_NOW 10000000 - 51.50 -0.10 NaN '10a' ADDVALUE
-  $_NOW 20000000 - 51.46 -0.09 NaN '9b' ADDVALUE
-  $_NOW 30000000 - 51.42 -0.08 NaN '8c' ADDVALUE
-  $_NOW 40000000 - 51.40 -0.07 NaN '7d' ADDVALUE
-  $_NOW 50000000 - 51.44 -0.06 NaN '6e' ADDVALUE
-  $_NOW 60000000 - 51.48 -0.05 NaN '8f' ADDVALUE
-  $_NOW 70000000 - 51.50 -0.03 NaN '10g' ADDVALUE
-  $_NOW 80000000 - 51.52 -0.02 NaN '9h' ADDVALUE
-  $_NOW 90000000 - 51.54 -0.01 NaN '8i' ADDVALUE
-  $_NOW 100000000 - 51.56 -0.00 NaN '9j' ADDVALUE
-
-
-  NEWGTS
-  $_NOW 10000000 - 51.50 -0.10 NaN 'a' ADDVALUE
-  $_NOW 20000000 - 51.46 -0.09 NaN 'b' ADDVALUE
-  $_NOW 30000000 - 51.42 -0.08 NaN 'c' ADDVALUE
-  $_NOW 40000000 - 51.40 -0.07 NaN 'd' ADDVALUE
-
-  NEWGTS
-  $_NOW 20000000 - 51.44 -0.06 NaN true ADDVALUE
-  $_NOW 40000000 - 51.48 -0.05 NaN false ADDVALUE
-  $_NOW 60000000 - 51.50 -0.03 NaN true ADDVALUE
-  $_NOW 80000000 - 51.52 -0.02 NaN false ADDVALUE
-  $_NOW 100000000 - 51.54 -0.01 NaN true ADDVALUE
+        NEWGTS
+        $_NOW 10000000 - 51.50 -0.10 NaN '10a' ADDVALUE
+        $_NOW 20000000 - 51.46 -0.09 NaN '9b' ADDVALUE
+        $_NOW 30000000 - 51.42 -0.08 NaN '8c' ADDVALUE
+        $_NOW 40000000 - 51.40 -0.07 NaN '7d' ADDVALUE
+        $_NOW 50000000 - 51.44 -0.06 NaN '6e' ADDVALUE
+        $_NOW 60000000 - 51.48 -0.05 NaN '8f' ADDVALUE
+        $_NOW 70000000 - 51.50 -0.03 NaN '10g' ADDVALUE
+        $_NOW 80000000 - 51.52 -0.02 NaN '9h' ADDVALUE
+        $_NOW 90000000 - 51.54 -0.01 NaN '8i' ADDVALUE
+        $_NOW 100000000 - 51.56 -0.00 NaN '9j' ADDVALUE
 
 
-  4 ->LIST
-  'gts' STORE
+        NEWGTS
+        $_NOW 10000000 - 51.50 -0.10 NaN 'a' ADDVALUE
+        $_NOW 20000000 - 51.46 -0.09 NaN 'b' ADDVALUE
+        $_NOW 30000000 - 51.42 -0.08 NaN 'c' ADDVALUE
+        $_NOW 40000000 - 51.40 -0.07 NaN 'd' ADDVALUE
 
-  [
-    { 'color' '#ff1010' 'key' 'Path A' }
-    { 'color' '#1010ff' 'key' 'Path B' }
-    { 'key' 'Annotations (text)' }
-    { 'key' 'Annotations (boolean)' }
-  ]
-  'params' STORE
+        NEWGTS
+        $_NOW 20000000 - 51.44 -0.06 NaN true ADDVALUE
+        $_NOW 40000000 - 51.48 -0.05 NaN false ADDVALUE
+        $_NOW 60000000 - 51.50 -0.03 NaN true ADDVALUE
+        $_NOW 80000000 - 51.52 -0.02 NaN false ADDVALUE
+        $_NOW 100000000 - 51.54 -0.01 NaN true ADDVALUE
 
-  { 'interpolate' 'cardinal' }
-  'globalParams' STORE
 
-  {
-    'gts' $gts
-    'params' $params
-    'globalParams' $globalParams
-  }
-  </warp10-quantumviz>
+        4 ->LIST
+        'gts' STORE
 
-</div>
+        [
+        { 'color' '#ff1010' 'key' 'Path A' }
+        { 'color' '#1010ff' 'key' 'Path B' }
+        { 'key' 'Annotations (text)' }
+        { 'key' 'Annotations (boolean)' }
+        ]
+        'params' STORE
 
-<div>
-  <p>By <a href="http://cityzendata.com">Cityzen Data</a></p>
+        { 'interpolate' 'cardinal' }
+        'globalParams' STORE
+
+        {
+        'gts' $gts
+        'params' $params
+        'globalParams' $globalParams
+        }
+    </warp10-quantumviz>
+    <p>By <a href="http://cityzendata.com">Cityzen Data</a></p>
 </div>
 
 </body>

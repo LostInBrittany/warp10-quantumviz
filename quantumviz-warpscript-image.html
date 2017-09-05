@@ -4,225 +4,198 @@
 @license Apache 2.0
 -->
 <link rel="import" href=" ../polymer/polymer.html">
+<link rel="import" href=" ../iron-image/iron-image.html">
+<link rel="import" href=" ../granite-spinner/granite-spinner.html">
 <link rel="import" href="../warp10-iron/warp10-warpscript-caller.html">
 
-<dom-module id="warp10-img" >
-  <template>
-    <style>
-      :host {
-      }
-      img {
-        width:var(--width, auto);
-        height:var(--height, auto);
-      }
-    </style>
+<dom-module id="warp10-img">
+    <template>
+        <style>
+            :host {
+            }
 
-    <img src={{img}}></img>
+            #img {
+                width: var(--width, auto);
+                height: var(--height, auto);
+            }
+        </style>
+        <granite-spinner
+                color="#ff4081"
+                line-width="0.5em"
+                size="50"
+                active="{{loading}}"></granite-spinner>
+        <template is="dom-if" if="{{!loading}}">
+            <iron-image id="img" src="[[img]]" sizing="contain"></iron-image>
+        </template>
+        <warp10-warpscript-caller
+                id="warpscript-caller"
+                url="{{baseURL}}" warpscript="{{warpscriptScript}}"
+                on-response="_handleData"
+                reload="{{reload}}"
+                block-calls="{{blockCalls}}" call="{{call}}"
+                loading="{{loading}}" auto>
+        </warp10-warpscript-caller>
 
-    <warp10-warpscript-caller
-      id="warpscriptCaller"
-      url="{{baseURL}}" warpscript="{{warpscriptScript}}"
-      reload="{{reload}}"
-      block-calls="{{blockCalls}}" call="{{call}}"
-      loading="{{loading}}"
-      on-response="_handleResponse"
-      on-error="_handleError">
-    </warp10-warpscript-caller>
-
-  </template>
+    </template>
 </dom-module>
 
 <script>
-  Polymer({
-    is: "warp10-img",
-    /********************************
-     * Properties
-     ********************************/
-    properties: {
-      width: {
-        type: Number,
-        value: -1
-      },
-      height: {
-        type: Number,
-        value: -1
-      },
-      host: {
-        type: String,
-        value: ""
-      },
-      baseURL: {
-        type: String,
-        computed: "getBaseUrl(host,oldPath)"
-      },
-      content: {
-        type: String,
-        observer: 'contentChanged'
-      },
-      warpscript: {
-        type: String,
-        observer: 'warpscriptChanged'
-      },
-      data: {
-        type: Object,
-        notify: true,
-        observer: 'dataChanged'
-      },
-      reload: {
-        type: Number,
-        value: -1
-      },
-      blockCalls: {
-        type: Number,
-        value: 0
-      },
-      call: {
-        type: Number,
-        value: 0
-      },
-      oldPath: {
-        type: String,
-        value: ""
-      },
-      debug:{
-        type: Boolean,
-        value: false
-      }
-    },
+    Polymer({
+        is: "warp10-img",
+        /********************************
+         * Properties
+         ********************************/
+        properties: {
+            width: {
+                type: Number,
+                value: -1
+            },
+            height: {
+                type: Number,
+                value: -1
+            },
+            host: {
+                type: String,
+                value: ""
+            },
+            baseURL: {
+                type: String,
+                computed: "getBaseUrl(host,oldPath)"
+            },
+            content: {
+                type: String,
+                observer: 'contentChanged'
+            },
+            warpscript: {
+                type: String,
+                observer: 'warpscriptChanged'
+            },
+            data: {
+                type: Object,
+                notify: true,
+                observer: 'dataChanged'
+            },
+            reload: {
+                type: Number,
+                value: -1
+            },
+            blockCalls: {
+                type: Number,
+                value: 0
+            },
+            call: {
+                type: Number,
+                value: 0
+            },
+            oldPath: {
+                type: String,
+                value: ""
+            },
+            loading: {
+                type: Boolean,
+                value: true
+            }
+        },
 
-    /********************************
-     * Computed properties
-     ********************************/
-    getBaseUrl: function() {
-      return this.host + "/exec" + this.oldPath;
-    },
+        /********************************
+         * Computed properties
+         ********************************/
+        getBaseUrl: function () {
+            return this.host + "/exec" + this.oldPath;
+        },
 
-    /********************************
-     * Observers
-     ********************************/
-    contentChanged: function() {
-      this.generateWarpScript();
-    },
-    warpscriptChanged: function() {
-      this.generateWarpScript();
-    },
-    dataChanged: function() {
-      if (this.data != null) {
-        this.getImageContent()
-        if (this.debug) { console.log("[warp10-img] dataChanged - Image:\n", this.img); }
-      }
-    },
+        /********************************
+         * Events Handlers
+         ********************************/
+        _handleData: function (e) {
+            this.data = e.detail.stack;
 
-    /********************************
-     * Livecycle functions
-     ********************************/
-    attached: function() {
-      if (this.debug) { console.log("[warp10-img] attached"); }
-      this.generateWarpScript();
-      // Setting img styles
-      if (this.width > 0) {
-        this.updateStyles({'--width': this.width.toString()+"px" })        
-      }
-      if (this.height > 0) {
-        this.updateStyles({'--height': this.height.toString()+"px" });
-      }
+        },
+        /********************************
+         * Observers
+         ********************************/
+        contentChanged: function () {
+            this.generateWarpScript();
+        },
+        warpscriptChanged: function () {
+            this.generateWarpScript();
+        },
+        dataChanged: function () {
+            if (this.data !== null) {
+                this.getImageContent();
+                // console.debug("[warp10-img] dataChanged - Image:\n", this.img);
+            }
+        },
 
-      this.call = 1;
+        /********************************
+         * Livecycle functions
+         ********************************/
+        attached: function () {
+            // console.debug("[warp10-img] attached");
+            this.generateWarpScript();
+            // Setting img styles
+            if (this.width > 0) {
+                this.updateStyles({'--width': this.width.toString() + "px"})
+            }
+            if (this.height > 0) {
+                this.updateStyles({'--height': this.height.toString() + "px"});
+            }
 
-    },
+            this.call = 1;
 
-    /********************************
-     * Action listeners
-     ********************************/
-    _handleResponse: function(event, response) {
-      if (!response.stack) {
-        // We have an error here
-        // TO-DO deal with it
-        return;
-      }
+        },
 
-      this.data = response.stack;
-    },
+        /********************************
+         * Generate warpscript script
+         ********************************/
+        generateWarpScript: function () {
+            // If we have warpscript code in attribute, it's prioritary
+            // else we try to get it from content
+            // else we look for it using innerHTML
+            if (this.warpscript !== undefined && this.warpscript.length > 0) {
+                this.warpscriptScript = this.warpscript.trim()
+            } else {
+                if (this.content !== undefined && this.content.length > 0) {
+                    this.warpscriptScript = this.content.trim();
+                } else {
+                    this.warpscriptScript = Polymer.dom(this).innerHTML.replace(/&lt;/g, '<').replace(/&gt;/g, '>').trim();
+                }
+            }
 
-    _handleError: function(event, error) {
-        // We have an error here
-        // TO-DO deal with it
-    },
-    
-    /********************************
-     * Generate warpscript script
-     ********************************/
-    generateWarpScript: function() {
-      // If we have warpscript code in attribute, it's prioritary
-      // else we try to get it from content
-      // else we look for it using innerHTML
-      if (this.warpscript !== undefined && this.warpscript.length > 0) {
-        this.warpscriptScript = this.warpscript.trim()
-      } else {
-        if (this.content !== undefined && this.content.length > 0) {
-          this.warpscriptScript = this.content.trim();
-        } else {
-          this.warpscriptScript = Polymer.dom(this).innerHTML.replace(/&lt;/g,'<').replace(/&gt;/g,'>').trim();
+            // WarpScript
+            var inputWarpScriptVariables = "";
+            if (this.width > 0) {
+                inputWarpScriptVariables += this.width + " 'width' STORE ";
+            }
+            if (this.height > 0) {
+                inputWarpScriptVariables += this.height + " 'height' STORE ";
+            }
+            this.warpscriptScript = inputWarpScriptVariables + this.warpscriptScript;
+
+            // console.debug("[warp10-img] generateWarpScript - WarpScript script:\n", this.warpscriptScript);
+            return this.warpscriptScript.length > 0;
+        },
+
+        /********************************
+         * Extract image from answer
+         ********************************/
+        getImageContent: function () {
+            if (!this.isArray(this.data)) {
+                return
+            }
+            var response = this.data[0];
+            // console.debug("[warp10-img] getImageContent \n", response);
+            if (/^data:image/.test(response)) {
+                this.img = response;
+                this.loading = false;
+            }
+        },
+        /********************************
+         * [Helper function] return true if is Array
+         ********************************/
+        isArray: function (value) {
+            return value && typeof value === 'object' && value instanceof Array && typeof value.length === 'number'
+                && typeof value.splice === 'function' && !(value.propertyIsEnumerable('length'));
         }
-      }
-
-      // WarpScript
-      var inputWarpScriptVariables = ""
-      if (this.width > 0) {
-        inputWarpScriptVariables += this.width +" 'width' STORE ";
-      }
-      if (this.height > 0) {
-        inputWarpScriptVariables += this.height +" 'height' STORE ";
-      }
-      this.warpscriptScript = inputWarpScriptVariables+this.warpscriptScript;
-
-      if (this.debug) { console.log("[warp10-img] generateWarpScript - WarpScript script:\n",this.warpscriptScript); }
-      if (this.warpscriptScript.length > 0) {
-        if (this.debug) { console.log("[warp10-img] generateWarpScript - Generating request"); }
-        this.$.warpscriptCaller.generateRequest();
-        return true;
-      }
-      return false;
-    },
-
-    /********************************
-     * Extract image from answer
-     ********************************/
-    getImageContent: function() {
-
-      if (!this.isArray(this.data)) {
-        return
-      }
-      var response = this.data[0];
-      if (this.debug) { console.log("[warp10-img] getImageContent \n", response); }
-      if (/^data:image/.test(response)) {
-        this.img = response
-      }
-    },
-
-    /********************************
-     * [DEPRECATED]
-     * [Helper function] Set spinner
-     * height and width
-     ********************************/
-    setSpinnerDimensions: function() {
-      if (this.height < 0) {
-        this.spinnerHeight = "100px"
-      } else {
-        this.spinnerHeight = this.height+"px"
-      }
-      if (this.width < 0) {
-        this.spinnerWidth = "100px"
-      } else {
-        this.spinnerWidth = this.width+"px"
-      }
-    },
-    /********************************
-     * [Helper function] rerturn true if is Array
-     ********************************/
-    isArray: function(value) {
-      return value && typeof value === 'object' && value instanceof Array && typeof value.length === 'number'
-        && typeof value.splice === 'function' && !(value.propertyIsEnumerable('length'));
-    }
-  });
+    });
 </script>

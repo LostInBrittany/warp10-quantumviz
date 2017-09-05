@@ -6,67 +6,54 @@
 <!doctype html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-<title>quantumviz-warpscript-image demo</title>
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <title>quantumviz-warpscript-image demo</title>
 
-<style>
-  body {
-    background-color: #eeeeee;
-  }
-  .current-value {
-    padding-left:100px;
-  }
-  .box {
-    display: inline-block;
-    border: 1px solid #444;
-    padding:10px;
-    border-radius: 10px;
-    margin: 20px;
-  }
+    <style>
+        .box {
+            display: inline-block;
+            border: 1px solid #444;
+            padding: 10px;
+            border-radius: 10px;
+            margin: 20px;
+        }
 
-</style>
-<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    </style>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.6.0/themes/prism.css"/>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.6.0/prism.js"></script>
 
-
-<script src=" ../../webcomponentsjs/webcomponents-lite.js"></script>
-<link   rel="import" href=" ../../polymer/polymer.html">
-<link rel="import" href=" ../../polymer/lib/elements/dom-bind.html">
-
-<link   rel="import" href=" ../quantumviz-warpscript-image.html">
-<!--
-<script src="https://warp.cityzendata.net/quantumviz/webcomponentsjs/webcomponents.js"></script>
-<link   rel="import" href=" https://warp.cityzendata.net/quantumviz/polymer/polymer.html">
-<link   rel="import" href=" https://warp.cityzendata.net/quantumviz/czd-quantumviz/quantumviz-warpscript-image.html">
--->
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <link rel="import" href=" ../../polymer/polymer.html">
+    <link rel="import" href=" ../quantumviz-warpscript-image.html">
 <body>
 
-  <div class="container">
-    <h1>Quantumviz</h1>
+<div class="container">
+    <h1>Quantumviz - Warpscript image</h1>
 
     <div class="box">
-
-      <!--
-      <czd-img
-        width="300" height="300" reload="0"
-        host="https://warp.cityzendata.net/dist" einstein ="{{einstein}}">
-      </czd-img>
-      -->
-      <warp10-img
-        width="300" height="300" reload="0" debug
-        host="https://warp.cityzendata.net/dist/api/v0">
-        200 'width' CSTORE 200 'height' CSTORE $width $height '2D' PGraphics Ppixels <% DROP DROP RAND 0xFFFFFFFF * TOLONG %> LMAP PupdatePixels Pencode
-      </warp10-img>
+        <warp10-img
+                width="300" height="300" reload="0" old-path=""
+                host="https://warp.cityzendata.net/dist/api/v0">
+            200 'width' CSTORE 200 'height' CSTORE $width $height '2D' PGraphics Ppixels <% DROP DROP RAND
+            0xFFFFFFFF * TOLONG %> LMAP PupdatePixels Pencode
+        </warp10-img>
 
     </div>
-  </div>
 
+    <pre><code class="language-html">
+        &#x3C;warp10-img
+                width=&#x22;300&#x22; height=&#x22;300&#x22; reload=&#x22;0&#x22; old-path=&#x22;&#x22;
+                host=&#x22;https://warp.cityzendata.net/dist/api/v0&#x22;&#x3E;
+           200 &#x27;width&#x27; CSTORE 200 &#x27;height&#x27; CSTORE $width $height &#x27;2D&#x27; PGraphics Ppixels &#x3C;% DROP DROP RAND
+            0xFFFFFFFF * TOLONG %&#x3E;
+        &#x3C;/warp10-img&#x3E;
+    </code></pre>
+    <p>By <a href="http://cityzendata.com">Cityzen Data</a></p>
+</div>
 
-
-
-
-  <p>By <a href="http://cityzendata.com">Cityzen Data</a></p>
 </body>
 </html>

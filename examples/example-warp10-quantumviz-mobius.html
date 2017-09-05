@@ -6,48 +6,35 @@
 <!doctype html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-<title>Warp10 - Quantumviz-Mobius demo</title>
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <title>Warp10 - Quantumviz-Mobius demo</title>
 
-<style>
-  body {
-    background-color: #eeeeee;
-  }
-  .current-value {
-    padding-left:100px;
-  }
-  .container {
-    display: inline-block;
-    border: 1px solid #444;
-    padding:10px;
-    border-radius: 10px;
-    margin: 20px;
-  }
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
-
-</style>
-<script src=" ../../webcomponentsjs/webcomponents-lite.js"></script>
-<link   rel="import" href=" ../../polymer/polymer.html">
-    <link   rel="import" href=" ../warp10-display-alt-chart.html">
-
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <link rel="import" href=" ../../polymer/polymer.html">
+    <link rel="import" href=" ../warp10-display-alt-chart.html">
 <body>
 
-  <h1>Quantumviz</h1>
 
 <div class="container">
-  <template is="dom-bind" id="template">
-    <warp10-display-chart
-      width="800"
-      height="600"
-      data="[[data]]" ></warp10-display-chart>
-  </template>
-</div>  
+    <h1>Quantumviz - Mobius</h1>
+
+    <template is="dom-bind" id="template">
+        <warp10-display-chart
+                width="800"
+                height="600"
+                data="[[data]]"></warp10-display-chart>
+    </template>
 
 
-<script>
-      var template = document.querySelector('#template');
-  
-      var warpscript = `
+    <script>
+        var template = document.querySelector('#template');
+
+        var warpscript = `
         NOW 'now' STORE       
         NEWGTS
         $now  2000000 - NaN NaN NaN $now  2000000 - 1000000 / 100  % ADDVALUE
@@ -87,31 +74,32 @@
         'params' $params
         'globalParams' $globalParams
         6 ->MAP
-      `;      
+      `;
 
-      var ws = new WebSocket("wss://warp.cityzendata.net/dist/api/v0/mobius");
+        var ws = new WebSocket("wss://warp.cityzendata.net/dist/api/v0/mobius");
 
-      ws.onopen = function(evt) {
-        console.debug("WebSocket opened", evt);
-        ws.send(`<% ${warpscript} %> 2000 EVERY`);
+        ws.onopen = function (evt) {
+            console.debug("WebSocket opened", evt);
+            ws.send(`<% ${warpscript} %> 2000 EVERY`);
 
-      }
+        };
 
-      ws.onmessage = function(evt) {
-        console.debug("WS message received", evt.data);
-        template.data = evt.data
-      }
+        ws.onmessage = function (evt) {
+            console.debug("WS message received", evt.data);
+            template.data = evt.data
+        };
 
-      ws.onerror = function(evt) {
-        console.debug("WS error", evt);
-      }
+        ws.onerror = function (evt) {
+            console.debug("WS error", evt);
+        };
 
-      ws.onclose = function(evt) {
-        console.debug("WS closed", evt);
-      }
+        ws.onclose = function (evt) {
+            console.debug("WS closed", evt);
+        };
 
 
-</script>
-  <p>By <a href="http://cityzendata.com">Cityzen Data</a></p>
+    </script>
+    <p>By <a href="http://cityzendata.com">Cityzen Data</a></p>
+</div>
 </body>
 </html>

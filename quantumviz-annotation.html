@@ -161,7 +161,7 @@
       var svgMarginLeft = this.SVG_MARGIN_LEFT;
       var svgStrokeWidth = this.SVG_STROKE_WIDTH;
 
-      var annotationD3 = d3.select(context.$$('.annotation'))
+      var annotationD3 = d3.select(context.$$('.annotation'));
 
       var svg = annotationD3.select("svg");
 
@@ -179,7 +179,7 @@
 
       var scale = d3.scale.linear()
         .domain([this.timeBounds.min, this.timeBounds.max])
-        .range([0, width])
+        .range([0, width]);
 
 
       var annotation = this.annotation;
@@ -229,7 +229,7 @@
               .style("bottom", yPosition + "px")
             console.debug("[quantumviz-annotation] annotationMouseover", {x: d.x, scaledX: scale(d.x), svgMarginLeft: svgMarginLeft })
             context.vertGuide = scale(d.x) + svgMarginLeft -svgStrokeWidth/2;
-      }
+      };
     
       var annotationMouseout =  function(d) {
         context.selectedTimestamp = -1;
@@ -240,8 +240,7 @@
             //Hide the tooltip
             annotationD3.select(".annotation-tooltip").classed("hidden", true);
             context.vertGuide = -1;
-      }
-
+      };
 
       var keyFormatter = function(d, i) {
 
@@ -249,7 +248,7 @@
         // console.debug("[quantumviz-annotation] keyFormatter ", outsideCurlyBrackets);
 
         var insideCurlyBrackets = [];
-        var insideRegex = /\{([^\}]*)\}/g
+        var insideRegex = /\{([^\}]*)\}/g;
         var matches;
         while ((matches = insideRegex.exec(d)) !== null) {
           insideCurlyBrackets.push(matches[1]);          
@@ -264,7 +263,7 @@
 
           if (insideCurlyBrackets.length > i) {
             html += "<span class='gts-separator'>{</span>";
-            var labels = []
+            var labels = [];
             insideCurlyBrackets[i].split(',').forEach(function(it) {
               var item = it.split('=');
               var label = "<span class='gts-labelname'>"+item[0]+"</span>";

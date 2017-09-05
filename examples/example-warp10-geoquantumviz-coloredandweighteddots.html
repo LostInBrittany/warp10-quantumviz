@@ -6,104 +6,84 @@
 <!doctype html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-<title>warp10-geoquantumviz demo</title>
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <title>warp10-geoquantumviz demo</title>
 
-<style>
-  body {
-    background-color: #eeeeee;
-  }
-  .current-value {
-    padding-left:100px;
-  }
-  .container {
-    display: inline-block;
-    border: 1px solid #444;
-    padding:10px;
-    border-radius: 10px;
-    margin: 20px;
-    min-width: 750px;
-  }
-</style>
-<!--
-<script src=" ../../webcomponentsjs/webcomponents-lite.js"></script>
-<link   rel="import" href=" ../../polymer/polymer.html">
-<link   rel="import" href=" ../warp10-geoquantumviz.html">
-<link   rel="import" href=" ../../leaflet-map/leaflet-map.html">
--->
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
-<script src="https://warp.cityzendata.net/quantumviz/webcomponentsjs/webcomponents-lite.js"></script>
-<link   rel="import" href=" https://warp.cityzendata.net/quantumviz/latest/polymer/polymer.html">
-<link   rel="import" href=" https://warp.cityzendata.net/quantumviz/late./warp10-geoquantumviz.html">
-<link   rel="import" href=" https://warp.cityzendata.net/quantumviz/latest/leaflet-map/leaflet-map.html">
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <link rel="import" href=" ../../polymer/polymer.html">
+    <link rel="import" href=" ../warp10-geoquantumviz.html">
+    <link rel="import" href=" ../../leaflet-map/leaflet-map.html">
 
 
-<body  unresolved>
+    <style>
+        .current-value {
+            padding-left: 100px;
+        }
 
-  <h1>GeoQuantumviz</h1>
+    </style>
 
+<body unresolved>
 
-<template is="dom-bind">
+<div class="container">
 
-  <div class="container">
+    <h1>GeoQuantumviz colored and weighted dots</h1>
 
     <warp10-geoquantumviz
-      width="800" height="350" map-width="800" map-height="450"
-      show-axis="true"  tooltip="true" line-width="2" reload="0"
-      current-values={{current}}
-      host="https://warp.cityzendata.net/dist/api/v0" old-path="" >
-  [
-    {
-      'positions' [
+            width="800" height="350" map-width="800" map-height="450"
+            show-axis="true" tooltip="true" line-width="2" reload="0"
+            host="https://warp.cityzendata.net/dist/api/v0" old-path="">
+        [
+        {
+        'positions' [
         [ 51.10 0.50 20 00 ] [ 51.10 0.52 20 05 ] [ 51.10 0.54 20 10 ] [ 51.10 0.56 20 15 ]
         [ 51.10 0.58 20 20 ] [ 51.10 0.60 20 25 ] [ 51.10 0.62 20 30 ] [ 51.10 0.64 20 35 ]
         [ 51.10 0.66 20 40 ] [ 51.10 0.68 20 45 ] [ 51.10 0.70 20 50 ]
-      ]
-    }
-  ]
+        ]
+        }
+        ]
 
-  'gts' STORE
+        'gts' STORE
 
-  [
-    {
-      'key' 'points' 'render' 'coloredWeightedDots'  'maxValue' 100 'minValue' 0 'baseRadius' 5 'numSteps' 10
-      'maxColorValue' 50 'minColorValue' 0 'numColorSteps' 5 'startColor' '#ff0000' 'endColor' '#00ff00'
-    }
-  ]
-  'params' STORE
+        [
+        {
+        'key' 'points' 'render' 'coloredWeightedDots' 'maxValue' 100 'minValue' 0 'baseRadius' 5 'numSteps' 10
+        'maxColorValue' 50 'minColorValue' 0 'numColorSteps' 5 'startColor' '#ff0000' 'endColor' '#00ff00'
+        }
+        ]
+        'params' STORE
 
-  { 'interpolate' 'cardinal' }
-  'globalParams' STORE
+        { 'interpolate' 'cardinal' }
+        'globalParams' STORE
 
-  {
-    'gts' $gts
-    'params' $params
-    'globalParams' $globalParams
-  }
-</warp10-geoquantumviz>
+        {
+        'gts' $gts
+        'params' $params
+        'globalParams' $globalParams
+        }
+    </warp10-geoquantumviz>
 
     <template is="dom-if" if="{{current}}">
         <div class="current-value">
-          <b>Current values:
-        <br/>
-          x: <span>{{current.xValue}}</span>
-        <br/>
-          <ul>
-          <template is="dom-repeat" items="{{current.yValues}}">
-            <li>
-              key: <span>{{item.key}}</span>
-              value: <span>{{item.value}}</span>
-            </li>
-          </template>
-          </ul>
+            <b>Current values:</b>
+            <br/>
+            x: <span>{{current.xValue}}</span>
+            <br/>
+            <ul>
+                <template is="dom-repeat" items="{{current.yValues}}">
+                    <li>
+                        key: <span>{{item.key}}</span>
+                        value: <span>{{item.value}}</span>
+                    </li>
+                </template>
+            </ul>
         </div>
     </template>
-  </div>
-</template>
-
-<div></div>
-
-
-  <p>By <a href="http://cityzendata.com">Cityzen Data</a></p>
+    <p>By <a href="http://cityzendata.com">Cityzen Data</a></p>
+</div>
 </body>
 </html>
