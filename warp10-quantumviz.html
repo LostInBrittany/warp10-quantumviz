@@ -26,399 +26,426 @@ Viz-only version of Quantum widget
 -->
 
 <dom-module id="warp10-quantumviz">
-    <template>
-        <style>
-            :host {
-                display: block;
-                width: var(--default-width, 100%);
-                height: var(--default-height, 100%);
-                position: relative
+  <template>
+    <style>
+       :host {
+        display: block;
+        width: var(--default-width, 100%);
+        height: var(--default-height, 100%);
+        position: relative
+      }
+
+      .widget {
+        display: flex;
+        flex-flow: column nowrap;
+        height: 100%;
+        width: 100%;
+      }
+
+      #content {
+        display: none;
+      }
+
+      #vertGuide {
+        width: 0px;
+        height: 100%;
+        border: solid 1px #aaaaaa;
+        z-index: 500;
+        position: absolute;
+        left: 250px;
+        display: none;
+      }
+
+      .chartContainer {
+        height: 100%;
+        flex-grow: 1;
+        flex-shrink: 1;
+        flex-basis: auto;
+        display: flex;
+        flex-direction: row;
+      }
+    </style>
+    <div class="widget">
+
+      <spinner-widget
+          id="spinner"
+          active="{{loading}}"
+          size="50"
+          line-width="10px"
+          container-height="{{height}}"
+          hover ></spinner-widget>
+
+      <div id="vertGuide"></div>
+
+      <div class="annotationsContainer">
+        <quantumviz-annotations
+            time-bounds="{{timeBounds}}"
+            chart-area="{{chartArea}}"
+            data="{{data}}"
+            vert-guide="{{vertGuide}}"
+            selected-timestamp="{{annotationsSelectedTimestamp}}"
+            debug="[[debug]]"></quantumviz-annotations>
+      </div>
+
+      <div class="chartContainer">
+        <warp10-display-chart
+            id="warp10-display-chart"
+            data="{{data}}"
+            current-values="{{currentValues}}"
+            line-width="{{lineWidth}}"
+            hide-axis="{{hideAxis}}"
+            hide-tooltip="{{hideTooltip}}"
+            show-legend="{{showLegend}}"
+            time-bounds="{{timeBounds}}"
+            chart-area="{{chartArea}}"
+            debug="[[debug]]"></warp10-display-chart>
+      </div>
+
+      <template is="dom-if" if="[[!_usingProxy]]" restamp>
+        <warp10-warpscript-caller
+            id="warpscriptcaller"
+            url="{{_baseUrl}}"
+            warpscript="{{warpscriptScript}}"
+            on-response="_handleResponse"
+            on-error="_handleError"
+            on-attached="_handleCallerAttached"
+            loading="{{loading}}"
+            reload="{{reload}}"
+            debug="[[debug]]"></warp10-warpscript-caller>
+      </template>
+      <template is="dom-if" if="[[_usingProxy]]" restamp>
+        <warp10-warpscript-request-gatherer
+            proxy="[[proxy]]"
+            warpscript="[[warpscriptScript]]"
+            interval="[[reload]]"
+            on-response="_handleResponse"
+            on-attached="_handleCallerAttached"
+            debug="[[debug]]"></warp10-warpscript-request-gatherer>
+      </template>
+    </div>
+  </template>
+
+  <script>
+    // element registration
+    Polymer({
+      is: 'warp10-quantumviz',
+      properties: {
+        /**
+         * The Warp 10 instance
+         */
+        host: {
+          type: String,
+          value: '',
+          observer: '_paramsChanged',
+        },
+        /**
+         * The data of the chart
+         */
+        data: {
+          type: Array,
+          notify: true,
+        },
+        /**
+         * The values of the lines on the chart at the mouseover postion
+         */
+        currentValues: {
+          type: Object,
+          notify: true,
+        },
+        /**
+         * The width of the lines on the chart
+         * It must be a number between warp10-display-chart's _MIN_LINE_WIDTH and _MAX_LINE_WIDTH
+         */
+        lineWidth: {
+          type: Number,
+          value: 1.75,
+        },
+        /**
+         * If true, axis aren't shown
+         */
+        hideAxis: {
+          type: Boolean,
+          value: false,
+        },
+        /**
+         * If true, tooltip isn't shown
+         */
+        hideTooltip: {
+          type: Boolean,
+          value: false,
+        },
+        /**
+         * If true, legend is shown
+         */
+        showLegend: {
+          type: Boolean,
+          value: false,
+        },
+        reload: {
+          type: Number,
+          value: -1,
+        },
+        content: {
+          type: String,
+          observer: '_paramsChanged',
+        },
+        timeBounds: {
+          type: Object,
+          notify: true,
+        },
+        vertGuide: {
+          type: Number,
+          observer: '_vertGuideChanged',
+        },
+        warpscript: {
+          type: String,
+          observer: '_paramsChanged',
+        },
+        oldPath: {
+          type: String,
+          value: '',
+        },
+        loading: {
+          type: Boolean,
+          value: false,
+          notify: true,
+        },
+        annotationsSelectedTimestamp: {
+          type: Number,
+          notify: true,
+          observer: '_annotationsSelectedTimestampChanged',
+          value: -1,
+        },
+        /**
+         * When no-auto true, initial call isn't doing automatically but by calling generateRequest()
+         */
+        noAuto: {
+          type: Boolean,
+          value: false,
+        },
+        proxy: {
+          type: Boolean,
+          value: 'proxy', // TO-DO : why do this value is not a boolean?
+        },
+        /**
+         * If true debug logs are sent to the console
+         */
+        debug: {
+          type: Boolean,
+          value: false,
+        },
+        _rawWarpscriptScript: {
+          type: String,
+          value: '',
+        },
+        isCallerAttached: {
+          type: Boolean,
+          value: false,
+        },
+        _baseUrl: {
+          type: String,
+          computed: '_getBaseUrl(host,oldPath)',
+        },
+        _usingProxy: {
+          type: Boolean,
+          computed: '_isUsingProxy(host,proxy)',
+        },
+        _readyToCall: {
+          type: Boolean,
+          computed: '_isReadyToCall(host, _rawWarpscriptScript, noAuto, _usingProxy, isCallerAttached)',
+        },
+        _DEFAULT_WIDTH: {
+          type: Number,
+          value: 480,
+        },
+        _DEFAULT_HEIGHT: {
+          type: Number,
+          value: 320,
+        },
+      },
+
+
+      // ***********************************************************************
+      // Computed properties
+      // ***********************************************************************
+
+      _getBaseUrl: function() {
+        return this.host + '/exec' + this.oldPath;
+      },
+
+      _isReadyToCall: function() {
+        if (this.debug) {
+          console.log('[warp10-quantumviz] _isReadyToCall ',
+            (this.host.length > 0) && (this._rawWarpscriptScript.length > 0), (!this._usingProxy));}
+        return ((!this.noAuto) && (this.isCallerAttached) && (!this._usingProxy) && (this._rawWarpscriptScript.length > 0));
+      },
+
+      _isUsingProxy: function() {
+        if (this.debug) {console.log('[warp10-quantumviz] _isUsingProxy ', !this.host, this.host);}
+        if (this.host) {
+          return false;
+        }
+        return true;
+      },
+
+
+      // ***********************************************************************
+      // Observers
+      // ***********************************************************************
+      _annotationsSelectedTimestampChanged: function() {
+        if (this.debug) {
+          console.log('[warp10-quantumviz] _annotationsSelectedTimestampChanged',
+            this.annotationsSelectedTimestamp);
+        }
+      },
+
+      _paramsChanged: function() {
+        if (!this.isAttached) {
+          return;
+        }
+        this.generateWarpScript();
+
+        if (this.debug) {
+          console.log('[warp10-quantumviz] _paramsChanged()',
+              {host: this.host, rawWarpscriptScript: this._rawWarpscriptScript});
+          }
+
+        if (this._readyToCall) {
+          this.generateRequest();
+        }
+      },
+
+      _vertGuideChanged: function(event) {
+        if (this.vertGuide > 0) {
+          this.$.vertGuide.style.display = 'inline-block';
+          this.$.vertGuide.style.left = this.vertGuide + 'px';
+        } else {
+          this.$.vertGuide.style.display = 'none';
+        }
+      },
+
+
+      // ***********************************************************************
+      // Livecycle
+      // ***********************************************************************
+
+      ready: function() {
+      },
+
+      attached: function() {
+        if (this.debug) {console.log('[warp10-quantumviz] attached - calling configure()');}
+        if (this.debug) {console.log('[warp10-quantumviz] attached -  clientHeight', this.clientHeight);}
+        this.isAttached = true;
+        this.configure();
+        this.generateWarpScript();
+        if (this.debug) {console.log('[warp10-quantumviz] attached -  clientHeight', this.clientHeight);}
+      },
+
+      detached: function() {
+        if (this.debug) {console.log('[warp10-quantumviz] detached');}
+        this.isAttached = false;
+        this.isCallerAttached = false;
+      },
+
+
+      // ***********************************************************************
+      // Event listeners
+      // ***********************************************************************
+
+      _handleResponse: function(event, response) {
+        if (this.debug) {console.log('[warp10-quantumviz] _handleResponse', response);}
+        if (!response.stack ||
+          !(response.stack instanceof Array)) {
+          this.data = null;
+          return;
+        }
+        this.elapsed = response.options.elapsed;
+        this.data = response.stack;
+        this._hasAResponse = true;
+        this._hasAnError = false;
+
+        if (this.debug) {console.log('[warp10-quantumviz] _handleResponse - parsed - dataChanged', this.data);}
+      },
+
+      _handleError: function(event, error) {
+        if (error.request.xhr.responseText.match(/<pre>\s*(.*)\s*<\/prse>/)) {
+          this.errorMsg = error.request.xhr.responseText.match(/<pre>\s*(.*)\s*<\/prse>/)[1];
+        } else {
+          this.errorMsg = error.request.statusText;
+        }
+
+        if (this.debug) {console.log('[warp10-quantumviz] _handleError', {error: error, errorMsg: this.errorMsg});}
+
+        this.elapsed = error.elapsed;
+        this._hasAResponse = false;
+        this._hasAnError = true;
+      },
+
+      _handleCallerAttached: function() {
+        if (this.debug) {console.log('[warp10-quantumviz] _handleError - _handleCallerAttached');}
+        this.isCallerAttached = true;
+        if (this._readyToCall) {
+          this.generateRequest();
+        }
+      },
+
+      // ***********************************************************************
+      // Other methods
+      // ***********************************************************************
+
+      generateRequest: function() {
+        if (this.debug) {console.log('[warp10-quantumviz] generateRequest');}
+        this.$$('#warpscriptcaller').generateRequest();
+      },
+      configure: function() {
+        // Dimensions
+        if (this.debug) {console.log('[test-quantumviz] configure', this.clientWidth, this.clientHeight);}
+        if (this.clientWidth == 0) {
+          this.updateStyles({'--default-width': this._DEFAULT_WIDTH + 'px'});
+        }
+        if (this.clientHeight == 0) {
+          this.updateStyles({'--default-height': this._DEFAULT_HEIGHT + 'px'});
+        }
+        if (this.debug) {console.log('[test-quantumviz] configure - end');}
+      },
+
+      generateWarpScript: function() {
+        if (this.debug) {console.log('[warp10-quantumviz] generateWarpScript', this.warpscript);}
+        this._rawWarpscriptScript;
+        if (this.warpscript !== undefined && this.warpscript.length > 0) {
+          if (this.debug) {
+            console.log('[warp10-quantumviz] generateWarpScript - attribute warpscript found', this.warpscript);
+          }
+          this._rawWarpscriptScript = this.warpscript.trim();
+        } else {
+          if (this.debug) {console.log('[warp10-quantumviz] generateWarpScript - attribute warpscript not found');}
+          if (this.content !== undefined && this.content.length > 0) {
+            if (this.debug) {
+              console.log('[warp10-quantumviz] generateWarpScript - using content for WarpScript', this.content);
             }
-
-            .widget {
-                display: flex;
-                flex-flow: column nowrap;
-                height: 100%;
-                width: 100%;
+            this._rawWarpscriptScript =
+                this.content.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').trim();
+          } else {
+            if (this.debug) {
+              console.log('[warp10-quantumviz] generateWarpScript - using innerHTML', Polymer.dom(this).innerHTML);
             }
+            this._rawWarpscriptScript = Polymer.dom(this).innerHTML.replace(/&lt;/g, '<').replace(/&gt;/g, '>').trim();
+          }
+        }
 
-            #content {
-                display: none;
-            }
+        var inputWarpScriptVariables = `${Math.floor(this.getBoundingClientRect().width)} 'width' STORE `;
 
-            #vertGuide {
-                width: 0px;
-                height: 100%;
-                border: solid 1px #aaaaaa;
-                z-index: 500;
-                position: absolute;
-                left: 250px;
-                display: none;
-            }
+        if (this.debug) {
+          console.log('[warp10-quantumviz] generateWarpScript - about to change warpscriptScript',
+            inputWarpScriptVariables + this._rawWarpscriptScript);
+        }
 
-            .chartContainer {
-                height: 100%;
-                flex-grow: 1;
-                flex-shrink: 1;
-                flex-basis: auto;
-                display: flex;
-                flex-direction: row;
-            }
-        </style>
-        <div class="widget">
+        this.warpscriptScript = inputWarpScriptVariables + this._rawWarpscriptScript;
 
-            <spinner-widget id="spinner" active={{loading}} hover size="50" line-width="10px"
-                            container-height="{{height}}"></spinner-widget>
-
-            <div id="vertGuide"></div>
-
-            <div class="annotationsContainer">
-
-                <quantumviz-annotations
-                        time-bounds={{timeBounds}}
-                        chart-area={{chartArea}}
-                        data={{data}}
-                        vert-guide={{vertGuide}}
-                        selected-timestamp="{{annotationsSelectedTimestamp}}"
-                >
-                </quantumviz-annotations>
-            </div>
-
-            <div class="chartContainer">
-                <warp10-display-chart
-                        id="warp10-display-chart"
-                        data={{data}}
-                        current-values={{currentValues}}
-                        line-width={{lineWidth}}
-                        hide-axis={{hideAxis}}
-                        hide-tooltip={{hideTooltip}}
-                        show-legend={{showLegend}}
-                        time-bounds={{timeBounds}}
-                        chart-area={{chartArea}}></warp10-display-chart>
-            </div>
-
-            <template is="dom-if" if="[[!_usingProxy]]" restamp>
-                <warp10-warpscript-caller
-                        id="warpscriptcaller"
-                        url="{{_baseUrl}}"
-                        warpscript="{{warpscriptScript}}"
-                        on-response="_handleResponse"
-                        on-error="_handleError"
-                        on-attached="_handleCallerAttached"
-                        loading="{{loading}}"
-                        reload="{{reload}}"></warp10-warpscript-caller>
-            </template>
-            <template is="dom-if" if="[[_usingProxy]]" restamp>
-                <warp10-warpscript-request-gatherer
-                        proxy="[[proxy]]"
-                        warpscript="[[warpscriptScript]]"
-                        interval="[[reload]]"
-                        on-response="_handleResponse"
-                        on-attached="_handleCallerAttached"></warp10-warpscript-request-gatherer>
-            </template>
-        </div>
-    </template>
-
-    <script>
-        // element registration
-        Polymer({
-            is: "warp10-quantumviz",
-            properties: {
-                /**
-                 * The Warp 10 instance
-                 */
-                host: {
-                    type: String,
-                    value: "",
-                    observer: '_paramsChanged'
-                },
-                /**
-                 * The data of the chart
-                 */
-                data: {
-                    type: Array,
-                    notify: true
-                },
-                /**
-                 * The values of the lines on the chart at the mouseover postion
-                 */
-                currentValues: {
-                    type: Object,
-                    notify: true
-                },
-                /**
-                 * The width of the lines on the chart
-                 * It must be a number between warp10-display-chart's _MIN_LINE_WIDTH and _MAX_LINE_WIDTH
-                 */
-                lineWidth: {
-                    type: Number,
-                    value: 1.75
-                },
-                /**
-                 * If true, axis aren't shown
-                 */
-                hideAxis: {
-                    type: Boolean,
-                    value: false
-                },
-                /**
-                 * If true, tooltip isn't shown
-                 */
-                hideTooltip: {
-                    type: Boolean,
-                    value: false
-                },
-                /**
-                 * If true, legend is shown
-                 */
-                showLegend: {
-                    type: Boolean,
-                    value: false
-                },
-                reload: {
-                    type: Number,
-                    value: -1
-                },
-                content: {
-                    type: String,
-                    observer: '_paramsChanged'
-                },
-                timeBounds: {
-                    type: Object,
-                    notify: true
-                },
-                vertGuide: {
-                    type: Number,
-                    observer: '_vertGuideChanged'
-                },
-                warpscript: {
-                    type: String,
-                    observer: '_paramsChanged'
-                },
-                oldPath: {
-                    type: String,
-                    value: ""
-                },
-                loading: {
-                    type: Boolean,
-                    value: false,
-                    notify: true
-                },
-                annotationsSelectedTimestamp: {
-                    type: Number,
-                    notify: true,
-                    observer: "_annotationsSelectedTimestampChanged",
-                    value: -1
-                },
-                /**
-                 * When no-auto true, initial call isn't doing automatically but by calling generateRequest()
-                 */
-                noAuto: {
-                    type: Boolean,
-                    value: false
-                },
-                proxy: {
-                    type: Boolean,
-                    value: "proxy"
-                },
-                _rawWarpscriptScript: {
-                    type: String,
-                    value: ""
-                },
-                isCallerAttached: {
-                    type: Boolean,
-                    value: false
-                },
-                _baseUrl: {
-                    type: String,
-                    computed: "_getBaseUrl(host,oldPath)"
-                },
-                _usingProxy: {
-                    type: Boolean,
-                    computed: "_isUsingProxy(host,proxy)"
-                },
-                _readyToCall: {
-                    type: Boolean,
-                    computed: "_isReadyToCall(host, _rawWarpscriptScript, noAuto, _usingProxy, isCallerAttached)"
-                },
-                _DEFAULT_WIDTH: {
-                    type: Number,
-                    value: 480,
-                },
-                _DEFAULT_HEIGHT: {
-                    type: Number,
-                    value: 320,
-                },
-            },
-
-
-            //***********************************************************************
-            // Computed properties
-            //***********************************************************************
-
-            _getBaseUrl: function () {
-                return this.host + "/exec" + this.oldPath;
-            },
-
-            _isReadyToCall: function () {
-                //console.debug("[warp10-quantumviz] _isReadyToCall ",(this.host.length > 0) && ( this._rawWarpscriptScript.length > 0), (!this._usingProxy) );
-                return ((!this.noAuto) && (this.isCallerAttached) && (!this._usingProxy) && (this._rawWarpscriptScript.length > 0));
-            },
-
-            _isUsingProxy: function () {
-                // console.debug("[warp10-quantumviz] _isUsingProxy ",!this.host, this.host);
-                if (this.host) {
-                    return false;
-                }
-                return true;
-            },
-
-
-            //***********************************************************************
-            // Observers
-            //***********************************************************************
-            _annotationsSelectedTimestampChanged: function () {
-                // console.debug("[warp10-quantumviz] _annotationsSelectedTimestampChanged", this.annotationsSelectedTimestamp);
-            },
-
-            _paramsChanged: function () {
-                if (!this.isAttached) {
-                    return;
-                }
-                this.generateWarpScript();
-
-                // console.debug("[warp10-quantumviz] _paramsChanged()", { host: this.host, rawWarpscriptScript: this._rawWarpscriptScript });
-
-                if (this._readyToCall) {
-                    this.generateRequest();
-                }
-            },
-
-            _vertGuideChanged: function (event) {
-                if (this.vertGuide > 0) {
-                    this.$.vertGuide.style.display = "inline-block";
-                    this.$.vertGuide.style.left = this.vertGuide + "px";
-                } else {
-                    this.$.vertGuide.style.display = "none";
-                }
-            },
-
-
-            //***********************************************************************
-            // Livecycle
-            //***********************************************************************
-
-            ready: function () {
-            },
-
-            attached: function () {
-                // console.debug("[warp10-quantumviz] attached - calling configure()");
-                // console.debug("[warp10-quantumviz] attached -  clientHeight", this.clientHeight);
-                this.isAttached = true;
-                this.configure();
-                this.generateWarpScript();
-                // console.debug("[warp10-quantumviz] attached -  clientHeight", this.clientHeight);
-            },
-
-            detached: function () {
-                // console.debug("[warp10-quantumviz] detached");
-                this.isAttached = false;
-                this.isCallerAttached = false;
-            },
-
-
-            //***********************************************************************
-            // Event listeners
-            //***********************************************************************
-
-            _handleResponse: function (event, response) {
-
-                // console.debug("[warp10-quantumviz] _handleResponse", response);
-                if (!response.stack ||
-                    !response.stack instanceof Array) {
-                    this.data = null;
-                    return;
-                }
-                this.elapsed = response.options.elapsed;
-                this.data = response.stack;
-                this._hasAResponse = true;
-                this._hasAnError = false;
-
-
-                // console.debug("[warp10-quantumviz] _handleResponse - parsed - dataChanged", this.data);
-            },
-
-            _handleError: function (event, error) {
-                if (error.request.xhr.responseText.match(/<pre>\s*(.*)\s*<\/prse>/)) {
-                    this.errorMsg = error.request.xhr.responseText.match(/<pre>\s*(.*)\s*<\/prse>/)[1];
-                } else {
-                    this.errorMsg = error.request.statusText;
-                }
-
-                // console.debug("[warp10-quantumviz] _handleError", { error: error, errorMsg: this.errorMsg });
-
-                this.elapsed = error.elapsed;
-                this._hasAResponse = false;
-                this._hasAnError = true;
-            },
-
-            _handleCallerAttached: function () {
-                // console.debug("[warp10-quantumviz] _handleError - _handleCallerAttached");
-                this.isCallerAttached = true;
-                if (this._readyToCall) {
-                    this.generateRequest();
-                }
-            },
-
-            //***********************************************************************
-            // Other methods
-            //***********************************************************************
-
-            generateRequest: function () {
-                // console.debug("[warp10-quantumviz] generateRequest");
-                this.$$("#warpscriptcaller").generateRequest();
-            },
-            configure: function () {
-                // Dimensions
-                // console.debug("[test-quantumviz] configure", this.clientWidth, this.clientHeight);
-                if (this.clientWidth == 0) {
-                    this.updateStyles({'--default-width': this._DEFAULT_WIDTH + "px"});
-                }
-                if (this.clientHeight == 0) {
-                    this.updateStyles({'--default-height': this._DEFAULT_HEIGHT + "px"});
-                }
-                // console.debug("[test-quantumviz] configure - end");
-            },
-
-            generateWarpScript: function () {
-                // console.debug("[warp10-quantumviz] generateWarpScript", this.warpscript);
-                this._rawWarpscriptScript;
-                if (this.warpscript !== undefined && this.warpscript.length > 0) {
-                    // console.debug("[warp10-quantumviz] generateWarpScript - attribute warpscript found", this.warpscript);
-                    this._rawWarpscriptScript = this.warpscript.trim()
-                } else {
-                    // console.debug("[warp10-quantumviz] generateWarpScript - attribute warpscript not found");
-                    if (this.content !== undefined && this.content.length > 0) {
-                        // console.debug("[warp10-quantumviz] generateWarpScript - using content for WarpScript", this.content);
-                        this._rawWarpscriptScript = this.content.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').trim();
-                    } else {
-                        // console.debug("[warp10-quantumviz] generateWarpScript - content not found, using innerHTML",  Polymer.dom(this).innerHTML);
-                        this._rawWarpscriptScript = Polymer.dom(this).innerHTML.replace(/&lt;/g, '<').replace(/&gt;/g, '>').trim();
-                    }
-                }
-                // WarpScript
-                //this.inputWarpScriptVariables = ""+this.width<0?"100%":this.width+" 'width' STORE ";
-                // console.debug("[warp10-quantumviz] generateWarpScript getBoundingClientRect ",this.getBoundingClientRect().width)
-
-                var inputWarpScriptVariables = "" + Math.floor(this.getBoundingClientRect().width) + " 'width' STORE ";
-
-                // console.debug("[warp10-quantumviz] generateWarpScript - about to change warpscriptScript - warpscript", inputWarpScriptVariables+this._rawWarpscriptScript);
-
-                this.warpscriptScript = inputWarpScriptVariables + this._rawWarpscriptScript;
-
-                // console.debug("[warp10-quantumviz] generateWarpScript - _rawWarpscriptScript", this._rawWarpscriptScript);
-
-            },
-        });
-    </script>
+        if (this.debug) {
+          console.log('[warp10-quantumviz] generateWarpScript - _rawWarpscriptScript', this._rawWarpscriptScript);
+        }
+      },
+    });
+  </script>
 </dom-module>

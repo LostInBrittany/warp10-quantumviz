@@ -93,10 +93,17 @@
 
       /**
        * If true, X scale will be in timestamp
-        */
+       */
       timestamps: {
         type: Boolean,
         value: false
+      },
+      /**
+       * If true debug logs are sent to the console
+       */
+      debug: {
+          type: Boolean,
+          value: false
       },
 
       // Constants
@@ -136,7 +143,7 @@
     // Listeners
     // *************************************************************************
     _onIronResize:  function() {
-      // console.debug("[warp10-display-behavior] _onIronResize - OMG, I got resized!");
+      if (this.debug) { console.log("[warp10-display-behavior] _onIronResize - OMG, I got resized!"); }
     },
 
 
@@ -144,19 +151,19 @@
     // Lifecycle methods
     // *************************************************************************
     created: function () {
-      // console.debug("[warp10-display-behavior] created");
+      if (this.debug) { console.log("[warp10-display-behavior] created"); }
     },
     ready: function () {
-      // console.debug("[warp10-display-behavior] ready - begin", {width: this.style.width, height: this.style.height});
+      if (this.debug) { console.log("[warp10-display-behavior] ready - begin", {width: this.style.width, height: this.style.height}); }
 
       this.isReady = true;
       if (this.data != null) {
         this.dataChanged()
       }
-      // console.debug("[warp10-display-behavior] ready - end");
+      if (this.debug) { console.log("[warp10-display-behavior] ready - end"); }
     },
     attached: function () {
-    // console.debug("[warp10-display-behavior] attached -  clientHeight", this.clientHeight);
+    if (this.debug) { console.log("[warp10-display-behavior] attached -  clientHeight", this.clientHeight); }
     this.configure();
     },
 
@@ -174,7 +181,7 @@
         return;
       }
       this.debounce('dataChanged', function () {
-        // console.debug("[warp10-display-behavior] dataChanged() - ", this.data);
+        if (this.debug) { console.log("[warp10-display-behavior] dataChanged() - ", this.data); }
         this._dataToChart()
       }, 100);
     },
@@ -189,7 +196,7 @@
      * Initial settings
      */
     configure: function () {
-      // console.debug("[warp10-display-behavior] configure");
+      if (this.debug) { console.log("[warp10-display-behavior] configure"); }
 
       // Dimensions
       if (this.clientWidth == 0) {
@@ -213,14 +220,14 @@
       if (this.lineWidth < this._MIN_LINE_WIDTH || this.lineWidth > this._MAX_LINE_WIDTH) {
         this.lineWidth = 1.5;
       }
-      // console.debug("[warp10-display-behavior] configure -lineWidth", this.lineWidth);
+      if (this.debug) { console.log("[warp10-display-behavior] configure -lineWidth", this.lineWidth); }
     },
 
     /**
      * Remove chart when no data is present
      */
     _removeChartData: function () {
-      // console.debug("[warp10-display-behavior] _removeChartData");
+      if (this.debug) { console.log("[warp10-display-behavior] _removeChartData"); }
       if (this.chart) {
         this.chart.destroy();
         this.chart = null;
@@ -234,11 +241,11 @@
 
       var context = this;
 
-      // console.debug("[warp10-display-behavior] _dataToChart", {data: data});
+      if (this.debug) { console.log("[warp10-display-behavior] _dataToChart", {data: this.data}); }
 
       // If no data, we remove the chart
       if (!this.data) {
-        // console.debug("[warp10-display-behavior] No data");
+        if (this.debug) { console.log("[warp10-display-behavior] No data"); }
         this._removeChartData();
         return;
       }
@@ -249,7 +256,7 @@
         if (typeof this.data == 'array') {
           this.data = this.data[0];
         }
-        // console.debug("[warp10-display-chart] _dataToChart - Data from String", this.data);
+        if (this.debug) { console.log("[warp10-display-chart] _dataToChart - Data from String", this.data); }
       }
 
       if (!quantumvizGts.isValidResponse(this.data)) {
@@ -261,7 +268,7 @@
       var response = {};
       response = quantumvizGts.getValidResponse(this.data);
 
-      // console.debug("[warp10-display-behavior] _dataToChart - Data to plot", response);
+      if (this.debug) { console.log("[warp10-display-behavior] _dataToChart - Data to plot", response); }
 
       var range = quantumvizGts.getGtsListRange(response.gts);
       if (!this.timestamps) {
@@ -272,7 +279,7 @@
       } else {
         this.timeBounds = { min: range[0], max: range[1] };
       };
-      // console.debug("[warp10-display-behavior] _dataToChart - timeBounds", this.timeBounds);
+      if (this.debug) { console.log("[warp10-display-behavior] _dataToChart - timeBounds", this.timeBounds); }
 
       var filteredResponse = {
         gts: [],
@@ -281,13 +288,14 @@
       };
       // We filter to keep only the plottable gts
       for (var i = 0; i < response.gts.length; i++) {
+        if (this.debug) { console.log("[warp10-display-behavior] _dataToChart - gtsTools.isGtsToPlot",gtsTools.isGtsToPlot(response.gts[i]), response.gts[i]); }
         if (gtsTools.isGtsToPlot(response.gts[i])) {
           filteredResponse.gts.push(response.gts[i]);
           filteredResponse.params.push(response.params[i]);
         }
       }
 
-      // console.debug("[warp10-display-behavior] _dataToChart - Filtered data to plot", filteredResponse);
+      if (this.debug) { console.log("[warp10-display-behavior] _dataToChart - Filtered data to plot", filteredResponse); }
 
       if (filteredResponse.gts.length == 0) {
         // console.warn("[warp10-display-behavior] _dataToChart - Empty data set", filteredResponse);
@@ -305,8 +313,8 @@
       var strokeWidth = [];
       for (var i = 0; i < quantumvizObj.params.length; i++) {
 
-        // console.debug("[warp10-display-chart]  quantumvizObj.gts", quantumvizObj.gts[i]);
-        // console.debug("[warp10-display-chart]  quantumvizObj.params", quantumvizObj.params[i]);
+        if (this.debug) { console.log("[warp10-display-chart]  quantumvizObj.gts", quantumvizObj.gts[i]); }
+        if (this.debug) { console.log("[warp10-display-chart]  quantumvizObj.params", quantumvizObj.params[i]); }
 
 
         if (quantumvizObj.gts[i].a !== undefined) {
@@ -336,7 +344,7 @@
         if (quantumvizObj.params[i].key !== undefined) {
           labels[i] = quantumvizObj.params[i].key;
         } else {
-          // console.debug("[warp10-display-chart] _dataToChart -  key", quantumvizObj.gts[i]);
+          if (this.debug) { console.log("[warp10-display-chart] _dataToChart -  key", quantumvizObj.gts[i]); }
           labels[i] = gtsTools.serializeGtsMetadata(quantumvizObj.gts[i]);
         }
         if (quantumvizObj.params[i].color !== undefined) {
