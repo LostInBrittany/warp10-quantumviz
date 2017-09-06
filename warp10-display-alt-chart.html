@@ -101,29 +101,31 @@
 
 
   <script>
+    /* global Warp10DisplayBehavior, d3, Dygraph, smoothPlotter */
+
     // element registration
     Polymer({
-      is: "warp10-display-chart",
+      is: 'warp10-display-chart',
 
       behaviors: [
-        Warp10DisplayBehavior
+        Warp10DisplayBehavior,
       ],
 
 
       observers: [
-        'dataChanged(data.*, timestamps)'
+        'dataChanged(data.*, timestamps)',
       ],
       // Lifecycle methods
-      created: function () {
-        if (this.debug) { console.log("[warp10-display-chart] created"); }
+      created: function() {
+        if (this.debug) {console.log('[warp10-display-chart] created');}
       },
-      ready: function () {
-        if (this.debug) { console.log("[warp10-display-chart] ready"); }
+      ready: function() {
+        if (this.debug) {console.log('[warp10-display-chart] ready');}
       },
-      attached: function () {
-        if (this.debug) { console.log("[warp10-display-chart] attached", {width: this.width, height: this.height}); }
+      attached: function() {
+        if (this.debug) {console.log('[warp10-display-chart] attached', {width: this.width, height: this.height});}
         if (this.chart && this._resizeChart) {
-          if (this.debug) { console.log("[warp10-display-chart] attached - dimensionsChanged, resizing"); }
+          if (this.debug) {console.log('[warp10-display-chart] attached - dimensionsChanged, resizing');}
           this.configure();
           this.chart.resize();
         }
@@ -132,47 +134,48 @@
         }
       },
 
-      dimensionsChanged: function () {
+      dimensionsChanged: function() {
         if (!this.isReady) {
           // Component not ready yet
           return;
         }
-        if (this.debug) { console.log("[warp10-display-chart] dimensionsChanged"); }
+        if (this.debug) {console.log('[warp10-display-chart] dimensionsChanged');}
 
         this._resizeChart = true;
-
       },
-      currentValuesChanged: function () {
+
+      currentValuesChanged: function() {
         if (null !== this.isReady) {
-          if (this.debug) { console.log("[warp10-display-chart] currentValuesChanged() - currentValues", this.currentValues); }
+          if (this.debug) {
+            console.log('[warp10-display-chart] currentValuesChanged() - currentValues', this.currentValues);
+          }
           this._tooltipContent();
         }
       },
-      tooltipChanged: function (oldValue, newValue) {
-        if (this.debug) { console.log("[warp10-display-chart] tooltipChanged - oldValue", oldValue); }
-        if (this.debug) { console.log("[warp10-display-chart] tooltipChanged - newValue", newValue); }
+      tooltipChanged: function(oldValue, newValue) {
+        if (this.debug) {console.log('[warp10-display-chart] tooltipChanged - oldValue', oldValue);}
+        if (this.debug) {console.log('[warp10-display-chart] tooltipChanged - newValue', newValue);}
 
-        if (null === this.tooltip || "" === this.tooltip) {
+        if (null === this.tooltip || '' === this.tooltip) {
           // this.$$(".chart-tooltip").innerHTML = this.tooltip;
         } else {
-          if (this.debug) { console.log("[warp10-display-chart] tooltipChanged", this.tooltip); }
-          this.$$(".chart-tooltip").innerHTML = this.tooltip;
+          if (this.debug) {console.log('[warp10-display-chart] tooltipChanged', this.tooltip);}
+          this.$$('.chart-tooltip').innerHTML = this.tooltip;
         }
-
       },
 
-      _isTooltipHidden: function (tooltip) {
-
-        if (null === this.tooltip || "" === this.tooltip) {
-          if (this.debug) { console.log("[warp10-display-chart] _isTooltipHidden - true"); }
-          return "hidden";
+      _isTooltipHidden: function(tooltip) {
+        if (null === this.tooltip || '' === this.tooltip) {
+          if (this.debug) {console.log('[warp10-display-chart] _isTooltipHidden - true');}
+          return 'hidden';
         } else {
-          if (this.debug) { console.log("[warp10-display-chart] _isTooltipHidden - false"); }
-          return "";
+          if (this.debug) {console.log('[warp10-display-chart] _isTooltipHidden - false');}
+          return '';
         }
       },
-      _removeChartData: function () {
-        if (this.debug) { console.log("[warp10-display-chart] _removeChartData"); }
+
+      _removeChartData: function() {
+        if (this.debug) {console.log('[warp10-display-chart] _removeChartData');}
         if (this.chart) {
           this.chart.destroy();
           this.chart = null;
@@ -180,36 +183,37 @@
         }
       },
 
-      _updateChartData: function () {
-        if (this.debug) { console.log("[warp10-display-chart] _updateChartData - begin", this.data); }
+      _updateChartData: function() {
+        if (this.debug) {console.log('[warp10-display-chart] _updateChartData - begin', this.data);}
         this._data2dygraphs(this.data);
-        if (this.debug) { console.log("[warp10-display-chart] _updateChartData -end", this.data); }
-
+        if (this.debug) {console.log('[warp10-display-chart] _updateChartData -end', this.data);}
       },
-      _tooltipContent: function () {
 
+      _tooltipContent: function() {
         if (this.hideTooltip) {
           return;
         }
 
-        // console.debug("[warp10-display-chart] _tooltipContent", this.currentValues)
-        var d = this.currentValues;
+        let context = this;
 
-        var timestamps = this.timestamps;
+        // console.debug("[warp10-display-chart] _tooltipContent", this.currentValues)
+        let d = this.currentValues;
+
+        let timestamps = this.timestamps;
 
         if (d === null) {
           this.tooltip = null;
           return;
         }
 
-        var headerEnabled = true;
-        //Format function for the tooltip values column
-        var valueFormatter = function (d, i) {
-          return "<span class='gts-value'>" + (+d.toFixed(4)) + "</span>";
+        let headerEnabled = true;
+        // Format function for the tooltip values column
+        let valueFormatter = function(d, i) {
+          return `<span class='gts-value'>${+d.toFixed(4)}</span>`;
         };
 
-        //Format function for the tooltip header value.
-        var headerFormatter = function (d) {
+        // Format function for the tooltip header value.
+        let headerFormatter = function(d) {
           // console.debug("[warp10-display-chart] headerFormatter - timestamps", timestamps)
           if (!timestamps) {
             return d3.time.format.utc('%Y-%m-%dT%H:%M:%S.%LZ')(new Date(d));
@@ -217,311 +221,324 @@
           return d;
         };
 
-        var keyFormatter = function (d, i) {
-          if (this.debug) { console.log("[warp10-display-chart] keyFormatter ", d); }
-          var outsideCurlyBrackets = d.split(/\{[^\}]*\}/);
-          if (this.debug) { console.log("[warp10-display-chart] keyFormatter ", outsideCurlyBrackets); }
+        let keyFormatter = function(d, i) {
+          if (context.debug) {console.log('[warp10-display-chart] keyFormatter ', d);}
+          let outsideCurlyBrackets = d.split(/\{[^}]*\}/);
+          if (context.debug) {console.log('[warp10-display-chart] keyFormatter ', outsideCurlyBrackets);}
 
-          var insideCurlyBrackets = [];
-          var insideRegex = /\{([^\}]*)\}/g
-          var matches;
+          let insideCurlyBrackets = [];
+          let insideRegex = /\{([^}]*)\}/g;
+          let matches;
           while ((matches = insideRegex.exec(d)) !== null) {
             insideCurlyBrackets.push(matches[1]);
           }
-          if (this.debug) { console.log("[warp10-display-chart] keyFormatter ", insideCurlyBrackets, insideCurlyBrackets.length); }
-          var html = "";
+          if (context.debug) {
+            console.log('[warp10-display-chart] keyFormatter ', insideCurlyBrackets, insideCurlyBrackets.length);
+          }
+          let html = '';
 
-          for (var i in outsideCurlyBrackets) {
-            html += "<span class='gts-classname'>" + outsideCurlyBrackets[i] + "</span>";
+          for (let i in outsideCurlyBrackets) {
+            if (outsideCurlyBrackets.hasOwnProperty(i)) {
+              html += `<span class='gts-classname'>${outsideCurlyBrackets[i]}</span>`;
 
-            if (insideCurlyBrackets.length > i) {
-              html += "<span class='gts-separator'>{</span>";
-              var labels = []
-              insideCurlyBrackets[i].split(',').forEach(function (it) {
-                var item = it.split('=');
-                var label = "<span class='gts-labelname'>" + item[0] + "</span>";
-                if (item.length > 1) {
-                  label += "<span class='gts-separator'>=</span>" +
-                    "<span class='gts-labelvalue'>" + item[1] + "</span>"
-                }
-                labels.push(label);
-              });
-              html += labels.join("<span class='gts-separator'>,</span>") + "<span class='gts-separator'>}</span>"
+              if (insideCurlyBrackets.length > i) {
+                html += `<span class='gts-separator'>{</span>`;
+                let labels = [];
+                insideCurlyBrackets[i].split(',').forEach(function(it) {
+                  let item = it.split('=');
+                  let label = `<span class='gts-labelname'>${item[0]}</span>`;
+                  if (item.length > 1) {
+                    label += `<span class='gts-separator'>=</span><span class='gts-labelvalue'>${item[1]}</span>`;
+                  }
+                  labels.push(label);
+                });
+                html += `${labels.join(`<span class='gts-separator'>,</span>`)}<span class='gts-separator'>}</span>`;
+              }
             }
           }
-          console.debug("[warp10-display-chart] keyFormatter ", html);
+          console.debug('[warp10-display-chart] keyFormatter ', html);
           return html;
         };
 
 
-        var table = d3.select(document.createElement("div"));
-        table.classed("table");
+        let table = d3.select(document.createElement('div'));
+        table.classed('table');
 
         if (headerEnabled) {
-          var theadEnter = table.selectAll("div.thead")
+          let theadEnter = table.selectAll('div.thead')
             .data([d])
-            .enter().append("div").classed("thead", true);
-          theadEnter.append("div").classed("tr", true)
-            .append("div").classed("td", true)
-            .attr("colspan", 3)
-            .append("strong")
-            .classed("x-value", true)
+            .enter().append('div').classed('thead', true);
+          theadEnter.append('div').classed('tr', true)
+            .append('div').classed('td', true)
+            .attr('colspan', 3)
+            .append('strong')
+            .classed('x-value', true)
             .html(headerFormatter(d.xValue));
-
         }
 
-        var tbodyEnter = table.selectAll("div.tbody")
+        let tbodyEnter = table.selectAll('div.tbody')
           .data([d])
-          .enter().append("div").classed("tbody", true);
+          .enter().append('div').classed('tbody', true);
 
-        var trowEnter = tbodyEnter.selectAll("div.tr")
+        let trowEnter = tbodyEnter.selectAll('div.tr')
           .data(d.yValues)
           .enter()
-          .append("div").classed("tr", true)
-          .classed("highlight", function (p) {
-            if (this.debug) { console.log("[warp10-display-chart] hightlight", p); }
-            return p.highlight
+          .append('div').classed('tr', true)
+          .classed('highlight', function(p) {
+            if (context.debug) {console.log('[warp10-display-chart] hightlight', p);}
+            return p.highlight;
           });
 
-        trowEnter.append("div").classed("td", true)
-          .classed("legend-color-guide", true)
-          .append("div")
-          .style("background-color", function (p) { return p.color });
+        trowEnter.append('div').classed('td', true)
+          .classed('legend-color-guide', true)
+          .append('div')
+          .style('background-color', function(p) {return p.color;});
 
-        trowEnter.append("div").classed("td", true)
-          .classed("key", true)
-          .html(function (p, i) { return keyFormatter(p.name, i) });
+        trowEnter.append('div').classed('td', true)
+          .classed('key', true)
+          .html(function(p, i) {return keyFormatter(p.name, i);});
 
-        trowEnter.append("div").classed("td", true)
-          .classed("value", true)
-          .html(function (p, i) { return valueFormatter(p.yval, i) });
+        trowEnter.append('div').classed('td', true)
+          .classed('value', true)
+          .html(function(p, i) {return valueFormatter(p.yval, i);});
 
 
-        trowEnter.selectAll("div.td").each(function (p) {
+        trowEnter.selectAll('div.td').each(function(p) {
           if (p.highlight) {
-            var opacityScale = d3.scale.linear().domain([0, 1]).range(["#fff", p.color]);
-            var opacity = 0.6;
-            d3.select(this)
-              .style("border-bottom-color", opacityScale(opacity))
-              .style("border-top-color", opacityScale(opacity))
+            let opacityScale = d3.scale.linear().domain([0, 1]).range(['#fff', p.color]);
+            let opacity = 0.6;
+            d3.select(context)
+              .style('border-bottom-color', opacityScale(opacity))
+              .style('border-top-color', opacityScale(opacity));
           }
         });
 
-        var html = table.node().outerHTML;
+        let html = table.node().outerHTML;
         if (d.footer !== undefined)
-          html += "<div class='footer'>" + d.footer + "</div>";
+          {html += `<div class='footer'>${d.footer}</div>`;}
 
-        console.debug("[warp10-display-chart] _tooltipContent - html", html);
-        if (this.debug) { console.log("[warp10-display-chart] _tooltipContent - window.innerWidth",  window.innerWidth); }
-        if (this.debug) { console.log("[warp10-display-chart] _tooltipContent - chart width",  this.$$("#chart").style.width); }
-        if (this.debug) { console.log("[warp10-display-chart] _tooltipContent - chart getBoundingClientRect()",  this.$$("#chart").getBoundingClientRect().width); }
-        if (this.debug) { console.log("[warp10-display-chart] _tooltipContent - chart getBoundingClientRect()",  this.$$("#chart").getBoundingClientRect()); }
-        if (this.debug) { console.log("[warp10-display-chart] _tooltipContent - chart-tooltip getBoundingClientRect()",  this.$$(".chart-tooltip").getBoundingClientRect().width); }
+        console.debug('[warp10-display-chart] _tooltipContent - html', html);
+        if (this.debug) {
+          console.log('[warp10-display-chart] _tooltipContent - window.innerWidth', window.innerWidth);
+        }
+        if (this.debug) {
+          console.log('[warp10-display-chart] _tooltipContent - chart width', this.$$('#chart').style.width);
+        }
+        if (this.debug) {
+          console.log('[warp10-display-chart] _tooltipContent - chart getBoundingClientRect()',
+            this.$$('#chart').getBoundingClientRect().width);
+        }
+        if (this.debug) {
+          console.log('[warp10-display-chart] _tooltipContent - chart getBoundingClientRect()',
+            this.$$('#chart').getBoundingClientRect());
+        }
+        if (this.debug) {
+          console.log('[warp10-display-chart] _tooltipContent - chart-tooltip getBoundingClientRect()',
+            this.$$('.chart-tooltip').getBoundingClientRect().width);
+        }
 
+        let windowWidth = window.innerWidth;
+        let chartLeftOffset = this.$.chart.getBoundingClientRect().left;
+        let chartWidth = this.$.chart.getBoundingClientRect().width;
+        let xCoord = this.currentValues.xCoord;
+        let yCoord = this.currentValues.yCoord;
+        let tooltipWidth = this.$$('.chart-tooltip').getBoundingClientRect().width;
 
-
-        var windowWidth = window.innerWidth;
-        var chartLeftOffset = this.$.chart.getBoundingClientRect().left;
-        var chartWidth = this.$.chart.getBoundingClientRect().width;
-        var xCoord = this.currentValues.xCoord;
-        var yCoord = this.currentValues.yCoord;
-        var tooltipWidth = this.$$(".chart-tooltip").getBoundingClientRect().width
-
-        // console.debug("[warp10-display-chart] tooltip", xCoord, yCoord)
+        if (this.debug) {console.log('[warp10-display-chart] tooltip', xCoord, yCoord);}
 
         // Left, right or centerer
         if (chartLeftOffset + xCoord + tooltipWidth + 20 > windowWidth) {
           if (chartLeftOffset + xCoord - tooltipWidth - 20 < 0) {
             // Tooltip centered
-            this.$$(".chart-tooltip").style.left = (xCoord - tooltipWidth / 2) + "px";
-            this.$$(".chart-tooltip").style.right = "auto";
-            this.$$(".chart-tooltip").style.top = (yCoord + 50) + "px";
+            this.$$('.chart-tooltip').style.left = (xCoord - tooltipWidth / 2) + 'px';
+            this.$$('.chart-tooltip').style.right = 'auto';
+            this.$$('.chart-tooltip').style.top = (yCoord + 50) + 'px';
 
 
-            var deb = {
+            let deb = {
               innerWidth: window.innerWidth,
-              tooltip: this.$$(".chart-tooltip").getBoundingClientRect().width,
+              tooltip: this.$$('.chart-tooltip').getBoundingClientRect().width,
               xCoord: this.currentValues.xCoord,
               yCoord: this.currentValues.yCoord,
-              sum: this.currentValues.xCoord + this.$$(".chart-tooltip").getBoundingClientRect().width + 20,
-              left: this.$$(".chart-tooltip").style.left,
-              right: this.$$(".chart-tooltip").style.right,
-              top: this.$$(".chart-tooltip").style.top
-            }
+              sum: this.currentValues.xCoord + this.$$('.chart-tooltip').getBoundingClientRect().width + 20,
+              left: this.$$('.chart-tooltip').style.left,
+              right: this.$$('.chart-tooltip').style.right,
+              top: this.$$('.chart-tooltip').style.top,
+            };
 
-            if (this.debug) { console.log("[warp10-display-chart] _tooltipContent - tooltip to center", deb); }
-
+            if (this.debug) {console.log('[warp10-display-chart] _tooltipContent - tooltip to center', deb);}
           } else {
             // Tooltip to the left
 
-            this.$$(".chart-tooltip").style.left = "auto";
-            this.$$(".chart-tooltip").style.right = (chartWidth - xCoord + 20) + "px";
-            this.$$(".chart-tooltip").style.top = (yCoord - 50) + "px";
+            this.$$('.chart-tooltip').style.left = 'auto';
+            this.$$('.chart-tooltip').style.right = (chartWidth - xCoord + 20) + 'px';
+            this.$$('.chart-tooltip').style.top = (yCoord - 50) + 'px';
 
 
-            var deb = {
+            let deb = {
               innerWidth: window.innerWidth,
-              tooltip: this.$$(".chart-tooltip").getBoundingClientRect().width,
+              tooltip: this.$$('.chart-tooltip').getBoundingClientRect().width,
               xCoord: this.currentValues.xCoord,
               yCoord: this.currentValues.yCoord,
-              sum: this.currentValues.xCoord + this.$$(".chart-tooltip").getBoundingClientRect().width + 20,
-              left: this.$$(".chart-tooltip").style.left,
-              right: this.$$(".chart-tooltip").style.right,
-              top: this.$$(".chart-tooltip").style.top
-            }
+              sum: this.currentValues.xCoord + this.$$('.chart-tooltip').getBoundingClientRect().width + 20,
+              left: this.$$('.chart-tooltip').style.left,
+              right: this.$$('.chart-tooltip').style.right,
+              top: this.$$('.chart-tooltip').style.top,
+            };
 
-            if (this.debug) { console.log("[warp10-display-chart] _tooltipContent - tooltip to the left", deb); }
+            if (this.debug) {console.log('[warp10-display-chart] _tooltipContent - tooltip to the left', deb);}
           }
         } else {
           // Tooltip to the right
-          //this.$$(".chart-tooltip").style.right = "auto";
-          this.$$(".chart-tooltip").style.left = (xCoord + 20) + "px";
-          this.$$(".chart-tooltip").style.top = (yCoord - 50) + "px";
+          // this.$$(".chart-tooltip").style.right = "auto";
+          this.$$('.chart-tooltip').style.left = (xCoord + 20) + 'px';
+          this.$$('.chart-tooltip').style.top = (yCoord - 50) + 'px';
 
-          var deb = {
+          let deb = {
             innerWidth: window.innerWidth,
-            tooltip: this.$$(".chart-tooltip").getBoundingClientRect().width,
+            tooltip: this.$$('.chart-tooltip').getBoundingClientRect().width,
             xCoord: this.currentValues.xCoord,
             yCoord: this.currentValues.yCoord,
-            sum: this.currentValues.xCoord + this.$$(".chart-tooltip").getBoundingClientRect().width + 20,
-            left: this.$$(".chart-tooltip").style.left,
-            right: this.$$(".chart-tooltip").style.right,
-            top: this.$$(".chart-tooltip").style.top,
+            sum: this.currentValues.xCoord + this.$$('.chart-tooltip').getBoundingClientRect().width + 20,
+            left: this.$$('.chart-tooltip').style.left,
+            right: this.$$('.chart-tooltip').style.right,
+            top: this.$$('.chart-tooltip').style.top,
             width: tooltipWidth,
-          }
+          };
 
-          if (this.debug) { console.log("[warp10-display-chart] _tooltipContent - tooltip to the right", deb); }
-
+          if (this.debug) {console.log('[warp10-display-chart] _tooltipContent - tooltip to the right', deb);}
         }
 
         this.tooltip = html;
-        if (this.debug) { console.log("[warp10-display-chart] _tooltipContent", html); }
-
+        if (this.debug) {console.log('[warp10-display-chart] _tooltipContent', html);}
       },
-      _gts2dygraphs: function (gtsList) {
-       	//
-       	// Extract all the ticks from all the GTS
-       	//
+      _gts2dygraphs: function(gtsList) {
+        //
+        // Extract all the ticks from all the GTS
+        //
 
-       	var ticks = [];
+        let ticks = [];
 
-       	for (var i = 0; i < gtsList.length; i++) {
-       	  for (var t = 0; t < gtsList[i].v.length; t++) {
-       	    ticks.push(gtsList[i].v[t][0]);
-       	  }
-       	}
-
-       	// Sort the ticks
-       	ticks.sort(function (a, b) { return a - b; });
-
-       	// Keep unique ticks
-       	var uniqueTicks = [ticks[0]];
-
-       	for (var i = 1; i < ticks.length; i++) {
-       	  if (ticks[i] === uniqueTicks[uniqueTicks.length - 1]) {
-       	    continue;
-       	  }
-       	  uniqueTicks.push(ticks[i]);
-       	}
-       
-       	//
-       	// Now allocate one sparkline per GTS of length 'uniqueTicks.length'
-       	// and populate it with the values from the GTS
-       	//
-
-       	var sparklines = new Array(uniqueTicks.length);
-
-        for (var i = 0; i < sparklines.length; i++) {
-          sparklines[i] = new Array(gtsList.length + 1);
-          if (!this.timestamps) {
-       	    sparklines[i][0] = new Date(Math.floor(uniqueTicks[i] / 1000));
-       	  } else {
-       	    sparklines[i][0] = uniqueTicks[i];
-       	  }
+        for (let i = 0; i < gtsList.length; i++) {
+          for (let t = 0; t < gtsList[i].v.length; t++) {
+            ticks.push(gtsList[i].v[t][0]);
+          }
         }
 
-       	for (var i = 0; i < gtsList.length; i++) {
-       	  // Sort the GTS values according to tick
-       	  var values = gtsList[i].v.sort(function (a, b) { return a[0] - b[0]; });
+        // Sort the ticks
+        ticks.sort(function(a, b) {return a - b;});
 
-       	  var tickidx = 0;
-       	  var validx = 0;
+        // Keep unique ticks
+        let uniqueTicks = [ticks[0]];
 
-       	  while(validx < values.length && tickidx < uniqueTicks.length) {
-       	    // If the unique tick at 'tickidx' is below the tick of the GTS at 'validx',
-       	    // store null and increase tickidx
-       	    if (uniqueTicks[tickidx] < values[validx][0]) {
-       	      sparklines[tickidx][i + 1] = null;
-       	      tickidx++;
-       	      continue;
-       	    }
+         for (let i = 1; i < ticks.length; i++) {
+           if (ticks[i] === uniqueTicks[uniqueTicks.length - 1]) {
+             continue;
+           }
+           uniqueTicks.push(ticks[i]);
+         }
+    
+         //
+         // Now allocate one sparkline per GTS of length 'uniqueTicks.length'
+         // and populate it with the values from the GTS
+         //
 
-       	    // If the tick at 'validx' is == to the uniqueTick at 'tickidx', store the value
-       	    // and increase validx
-       	    if (uniqueTicks[tickidx] === values[validx][0]) {
+         let sparklines = new Array(uniqueTicks.length);
+
+        for (let i = 0; i < sparklines.length; i++) {
+          sparklines[i] = new Array(gtsList.length + 1);
+          if (!this.timestamps) {
+             sparklines[i][0] = new Date(Math.floor(uniqueTicks[i] / 1000));
+           } else {
+             sparklines[i][0] = uniqueTicks[i];
+           }
+        }
+
+         for (let i = 0; i < gtsList.length; i++) {
+           // Sort the GTS values according to tick
+           let values = gtsList[i].v.sort(function(a, b) {return a[0] - b[0];});
+
+           let tickidx = 0;
+           let validx = 0;
+
+           while (validx < values.length && tickidx < uniqueTicks.length) {
+             // If the unique tick at 'tickidx' is below the tick of the GTS at 'validx',
+             // store null and increase tickidx
+             if (uniqueTicks[tickidx] < values[validx][0]) {
+               sparklines[tickidx][i + 1] = null;
+               tickidx++;
+               continue;
+             }
+
+             // If the tick at 'validx' is == to the uniqueTick at 'tickidx', store the value
+             // and increase validx
+             if (uniqueTicks[tickidx] === values[validx][0]) {
               sparklines[tickidx][i + 1] = values[validx][values[validx].length - 1];
-       	      validx++;
-       	      tickidx++;
-       	      continue;
-       	    }
+               validx++;
+               tickidx++;
+               continue;
+             }
 
-       	    // Ignore successive identical ticks, we retain only the first value
-       	    validx++;
-       	  }
+             // Ignore successive identical ticks, we retain only the first value
+             validx++;
+           }
 
-       	  // Fill empty slots with 'nulls'
-       	  while(tickidx < uniqueTicks.length) {
-       	    sparklines[tickidx][i + 1] = null;
-       	    tickidx++;
-       	  }
-       	}
+           // Fill empty slots with 'nulls'
+           while (tickidx < uniqueTicks.length) {
+             sparklines[tickidx][i + 1] = null;
+             tickidx++;
+           }
+         }
 
         return sparklines;
       },
-      _dataToChartLib: function (filteredResponse) {
-          var min, max;
+      _dataToChartLib: function(filteredResponse) {
+          let min;
+          let max;
 
-        var context = this;
-        var sparklines = this._gts2dygraphs(filteredResponse.gts);
-          for(var i =0; i <sparklines.length; i++) {
-              for(var j =1; j <sparklines[i].length; j++) {
-                  if(!min && sparklines[i][j]) {min=sparklines[i][j];}
-                  if(!max && sparklines[i][j]) {max=sparklines[i][j];}
-                  if(sparklines[i][j]> max && sparklines[i][j]) { max = sparklines[i][j]};
-                  if(sparklines[i][j]< min && sparklines[i][j]) { min = sparklines[i][j]};
-              }
+        let context = this;
+        let sparklines = this._gts2dygraphs(filteredResponse.gts);
+          for (let i =0; i <sparklines.length; i++) {
+              for (let j =1; j <sparklines[i].length; j++) {
+                  if (!min && sparklines[i][j]) {min=sparklines[i][j];}
+                  if (!max && sparklines[i][j]) {max=sparklines[i][j];}
+                  if (sparklines[i][j]> max && sparklines[i][j]) {max = sparklines[i][j];}
+              if (sparklines[i][j]< min && sparklines[i][j]) {min = sparklines[i][j];}
           }
-        if (this.debug) { console.log("[warp10-display-chart] _data2dygraphs - sparklines", sparklines); }
-        if (this.debug) { console.log("[warp10-display-chart] _data2dygraphs - timeBounds", this.timeBounds); }
+          }
+        if (this.debug) {console.log('[warp10-display-chart] _data2dygraphs - sparklines', sparklines);}
+        if (this.debug) {console.log('[warp10-display-chart] _data2dygraphs - timeBounds', this.timeBounds);}
 
-        var labels = ['X'].concat(this._params.labels); // The first label is X-axis label
+        let labels = ['X'].concat(this._params.labels); // The first label is X-axis label
 
-        var options = {
+        let options = {
           file: sparklines,
           labels: labels,
           labelsUTC: true,
           connectSeparatedPoints: true,
           maxNumberWidth: 16,
           colors: this._params.colors,
-          legend: "never",
+          legend: 'never',
           gridLineColor: 'rgb(196, 196, 196)',
           xRangePad: 5,
           yRangePad: 5,
           dateWindow: [this.timeBounds.min, this.timeBounds.max],
-          drawCallback: function (me, initial) {
+          drawCallback: function(me, initial) {
             context.chartArea = me.getArea();
             context.timeBounds = {
               min: me.xAxisRange()[0],
-              max: me.xAxisRange()[1]
+              max: me.xAxisRange()[1],
             };
             context.valueBounds = {
               min: me.yAxisRange()[0],
-              max: me.yAxisRange()[1]
+              max: me.yAxisRange()[1],
             };
             // console.debug("[warp10-display-chart] drawCallback called", context.timeBounds, context.valueBounds)
           },
-            valueRange: [Math.min(filteredResponse.globalParams.min,min) , Math.max(filteredResponse.globalParams.max,max)], // Todo : trouver le GTS Max et min value
+          valueRange: [Math.min(filteredResponse.globalParams.min, min),
+            Math.max(filteredResponse.globalParams.max, max)], // Todo : trouver le GTS Max et min value
         };
+
         if (this.hideAxis) {
           options.drawAxis = false;
           options.drawGrid = false;
@@ -536,37 +553,38 @@
             x: {
               drawAxis: true,
               axisLabelFontSize: 12,
-              axisLineColor: 'rgb(196, 196, 196)'
+              axisLineColor: 'rgb(196, 196, 196)',
             },
             y: {
               drawAxis: true,
               axisLabelFontSize: 12,
-              axisLabelFormatter: function (y) {
-                var value = y.toFixed(5);
-                var splittedValue = value.split('.');
-                var formattedIntPart = splittedValue[0].replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
-                var formattedDecimalPart = splittedValue[1].replace(/0+$/g, '');
+              axisLabelFormatter: function(y) {
+                let value = y.toFixed(5);
+                let splittedValue = value.split('.');
+                let formattedIntPart = splittedValue[0].replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+                let formattedDecimalPart = splittedValue[1].replace(/0+$/g, '');
 
                 if (formattedDecimalPart.length === 0) {
                   return formattedIntPart;
                 }
                 return formattedIntPart + '.' + formattedDecimalPart;
-              }
-            }
+              },
+            },
           };
         }
-        options.highlightCallback = function (event, x, points, row, name) {
-          if (this.debug) { console.log("[warp10-display-chart] highlightCallback", {event:event, name:name, x:x, points:points, row:row, xCoord: context.chart.toDomXCoord(x)}); }
-          var labels = context.chart.getLabels();
-          var colors = context.chart.getColors();
-          for (var i = 0; i < points.length; i++) {
-            // console.debug("[warp10-display-chart] colors", {point: points[i], colors: colors, labels: labels, colorIndex: labels.indexOf(points[i].name)})
-            var colorIndex = context._params.labels.indexOf(points[i].name);
+
+        options.highlightCallback = function(event, x, points, row, name) {
+          if (this.debug) {
+            console.log('[warp10-display-chart] highlightCallback',
+              {event: event, name: name, x: x, points: points, row: row, xCoord: context.chart.toDomXCoord(x)});
+          }
+          for (let i = 0; i < points.length; i++) {
+            let colorIndex = context._params.labels.indexOf(points[i].name);
             if (colorIndex >= 0) {
               points[i].color = context._params.colors[colorIndex];
             }
 
-            if (this.debug) { console.log("[warp10-display-chart] color",  points[i].color); }
+            if (this.debug) {console.log('[warp10-display-chart] color', points[i].color);}
             // points[i].color = context.chart.colors_[i];
             if (name === points[i].name) {
               points[i].highlight = true;
@@ -574,24 +592,26 @@
               points[i].highlight = false;
             }
           }
-          if (this.debug) { console.log("[warp10-display-chart] highlightCallback - points", points); }
+          if (this.debug) {console.log('[warp10-display-chart] highlightCallback - points', points);}
 
           context.currentValues = {
             xValue: x,
             yValues: points,
             xCoord: context.chart.toDomXCoord(x),
-            yCoord: event.layerY
+            yCoord: event.layerY,
           };
         };
-        options.unhighlightCallback = function (event) {
-          if (this.debug) { console.log("[warp10-display-chart] unhighlightCallback"); }
+
+        options.unhighlightCallback = function(event) {
+          if (this.debug) {console.log('[warp10-display-chart] unhighlightCallback');}
           context.currentValues = null;
         };
+
         options.interactionModel = {
-          'mouseout': function (event) {
-            if (this.debug) { console.log("[warp10-display-chart] interactionModel mouseout"); }
+          'mouseout': function(event) {
+            if (this.debug) {console.log('[warp10-display-chart] interactionModel mouseout');}
             context.currentValues = null;
-          }
+          },
         };
 
         if (!this.hideTooltip) {
@@ -599,47 +619,48 @@
           options.highlightSeriesOpts = {
             strokeWidth: context.lineWidth + 1,
             strokeBorderWidth: 1,
-            highlightCircleSize: context.lineWidth + 3
+            highlightCircleSize: context.lineWidth + 3,
           };
         }
-        options.series = {}
-        for (var i = 0; i < this._params.labels.length; i++) {
+        options.series = {};
+        for (let i = 0; i < this._params.labels.length; i++) {
           options.series[this._params.labels[i]] = {
             strokeWidth: this._params.strokeWidth[i],
-            //stepPlot : true
+            // stepPlot : true
           };
           switch (this._params.interpolate[i]) {
-            case "cardinal":
+            case 'cardinal':
               options.series[this._params.labels[i]].plotter = smoothPlotter;
               options.series[this._params.labels[i]].stepPlot = false;
               break;
-            case "step":
-            case "step-after":
-            case "step-before":
+            case 'step':
+            case 'step-after':
+            case 'step-before':
               options.series[this._params.labels[i]].plotter = Dygraph.Plotters.linePlotter;
               options.series[this._params.labels[i]].stepPlot = true;
               break;
-            case "line":
-            case "linear":
+            case 'line':
+            case 'linear':
             default:
               options.series[this._params.labels[i]].plotter = Dygraph.Plotters.linePlotter;
               options.series[this._params.labels[i]].stepPlot = false;
               break;
           }
         }
-        if (this.debug) { console.log("[warp10-display-chart] _data2dygraphs - options", options); }
+        if (this.debug) {console.log('[warp10-display-chart] _data2dygraphs - options', options);}
         if (this.chart) {
           this.chart.updateOptions(options);
         } else {
-          if (this.debug) { console.log("[warp10-display-chart] _data2dygraphs - typeof this.$.chart", typeof(this.$.chart)); }
+          if (this.debug) {
+            console.log('[warp10-display-chart] _data2dygraphs - typeof this.$.chart', typeof(this.$.chart));
+          }
           this.chart = new Dygraph(this.$.chart, sparklines, options);
-          if (this.debug) { console.log("[warp10-display-chart] _data2dygraphs - chart", this.chart); }
+          if (this.debug) {console.log('[warp10-display-chart] _data2dygraphs - chart', this.chart);}
           this.chart.maindiv_ = this.$.chart;
-          if (this.debug) { console.log("[warp10-display-chart] _data2dygraphs - chart", this.chart); }
-
+          if (this.debug) {console.log('[warp10-display-chart] _data2dygraphs - chart', this.chart);}
         }
-        if (this.debug) { console.log("[warp10-display-chart] _data2dygraphs - chart", this.chart); }
-      }
+        if (this.debug) {console.log('[warp10-display-chart] _data2dygraphs - chart', this.chart);}
+      },
     });
 
   </script>
