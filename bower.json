@@ -32,7 +32,7 @@
     "spinner-widget": "LostInBrittany/spinner-widget#~1.0.3",
     "c3": "^0.4.11",
     "d3": "^3.5.17",
-    "warp10-iron": "cityzendata/warp10-iron#~1.4.4",
+    "warp10-iron": "cityzendata/warp10-iron#~1.4.6",
     "granite-spinner": "LostInBrittany/granite-spinner#^2.1.0"
   },
   "devDependencies": {
@@ -58,7 +58,7 @@
         "spinner-widget": "LostInBrittany/spinner-widget#~1.0.3",
         "c3": "^0.4.11",
         "d3": "^3.5.17",
-        "warp10-iron": "cityzendata/warp10-iron#~1.4.4",
+        "warp10-iron": "cityzendata/warp10-iron#~1.4.6",
         "granite-spinner": "LostInBrittany/granite-spinner#^2.1.0"
       },
       "devDependencies": {
