@@ -280,13 +280,14 @@
       } else {
         this.timeBounds = {min: range[0], max: range[1]};
       }
-    if (this.debug) {console.log('[warp10-display-behavior] _dataToChart - timeBounds', this.timeBounds);}
+      if (this.debug) {console.log('[warp10-display-behavior] _dataToChart - timeBounds', this.timeBounds);}
 
       let filteredResponse = {
         gts: [],
         params: [],
         globalParams: response.globalParams,
       };
+
       // We filter to keep only the plottable gts
       for (let i = 0; i < response.gts.length; i++) {
         if (this.debug) {
@@ -301,7 +302,7 @@
 
       if (this.debug) {console.log('[warp10-display-behavior] _dataToChart - Filtered data to plot', filteredResponse);}
 
-            if (filteredResponse.gts.length === 0) {
+      if (filteredResponse.gts.length === 0) {
         // console.warn("[warp10-display-behavior] _dataToChart - Empty data set", filteredResponse);
         this._removeChartData();
         return;
@@ -374,6 +375,7 @@
 
       let xlabel = quantumvizObj.globalParams.xLabel;
       let ylabel = quantumvizObj.globalParams.yLabel;
+      let tickList = quantumvizObj.globalParams.tickList;
 
       this._params = {
         labels: labels,
@@ -382,7 +384,11 @@
         strokeWidth: strokeWidth,
         xlabel: xlabel,
         ylabel: ylabel,
+        tickList: tickList,
       };
+      if (this.debug) {console.log('[warp10-display-chart] _dataToChart -  _params', 
+          quantumvizObj.globalParams, this._params);}
+
       if (quantumvizObj.globalParams.timestamps) {
         this.timestamps = true;
       }

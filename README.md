@@ -58,13 +58,15 @@ Available parameters are:
 `globalParams` is an optional MAP of parameters to apply to the whole chart.
 Available parameters are:
 
-* `interpolate`: the fefault interpolating function used.  Default mode is `linear`, other
+* `interpolate`: the default interpolating function used.  Default mode is `linear`, other
   usual modes are `step`  and `cardinal`. 
 
 * `strokeWidth`: the defaault global width in pixels of the GTS representation. If no set, it will be fixed by the element.
 
 * `timestamps`: if the value of this parameter is `true`, the time will be shown as timestaps (in microseconds) instead 
   of as UTC dates  
+
+* `tickList`: this parameter allows to set a list of ticks to be used to generate tick marks on x-axis instead of using default tick marks  
 
 
 ## Example of use ##

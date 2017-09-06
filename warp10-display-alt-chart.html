@@ -495,21 +495,20 @@
       },
 
       _dataToChartLib: function(filteredResponse) {
-
         let min;
         let max;
 
         let context = this;
 
         let sparklines = this._gts2dygraphs(filteredResponse.gts);
-          for (let i =0; i <sparklines.length; i++) {
-              for (let j =1; j <sparklines[i].length; j++) {
-                  if (!min && sparklines[i][j]) {min=sparklines[i][j];}
-                  if (!max && sparklines[i][j]) {max=sparklines[i][j];}
-                  if (sparklines[i][j]> max && sparklines[i][j]) {max = sparklines[i][j];}
-              if (sparklines[i][j]< min && sparklines[i][j]) {min = sparklines[i][j];}
+        for (let i =0; i <sparklines.length; i++) {
+          for (let j =1; j <sparklines[i].length; j++) {
+            if (!min && sparklines[i][j]) {min=sparklines[i][j];}
+            if (!max && sparklines[i][j]) {max=sparklines[i][j];}
+            if (sparklines[i][j]> max && sparklines[i][j]) {max = sparklines[i][j];}
+            if (sparklines[i][j]< min && sparklines[i][j]) {min = sparklines[i][j];}
           }
-          }
+        }
         if (this.debug) {console.log('[warp10-display-chart] _data2dygraphs - sparklines', sparklines);}
         if (this.debug) {console.log('[warp10-display-chart] _data2dygraphs - timeBounds', this.timeBounds);}
 
@@ -542,6 +541,24 @@
           valueRange: [Math.min(filteredResponse.globalParams.min, min),
             Math.max(filteredResponse.globalParams.max, max)], // Todo : trouver le GTS Max et min value
         };
+
+        if (Array.isArray(this._params.tickList)) {
+          if (this.timestamps) {
+            options.ticker = (a, b, pixels, optionsView, dygraph, forcedValues) => {
+              return this._params.tickList.map((it) => {return {v: it, label: it};});
+            };
+          } else {
+            options.axisLabelWidth = 100;
+            options.ticker = (a, b, pixels, optionsView, dygraph, forcedValues) => {
+              return this._params.tickList.map((it) => {
+                return {
+                  v: new Date(it/1000),
+                  label: d3.time.format.utc('%Y-%m-%d %H:%M:%S')(new Date(it/1000)),
+                };
+              });
+            };
+          }
+        }
 
         if (this.hideAxis) {
           options.drawAxis = false;
