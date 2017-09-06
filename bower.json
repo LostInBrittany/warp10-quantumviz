@@ -27,13 +27,13 @@
     "iron-resizable-behavior": "PolymerElements/iron-resizable-behavior#1 - 2",
     "nvd3": "LostInBrittany/nvd3#v1.8.2.1",
     "dygraphs": "~1.1.1",
-    "leaflet-map": "^1.2.0",
     "Leaflet.MakiMarkers": "LostInBrittany/Leaflet.MakiMarkers#~1.0.1",
     "spinner-widget": "LostInBrittany/spinner-widget#~1.0.3",
     "c3": "^0.4.11",
     "d3": "^3.5.17",
     "warp10-iron": "cityzendata/warp10-iron#~1.4.4",
-    "granite-spinner": "LostInBrittany/granite-spinner#^2.1.0"
+    "granite-spinner": "LostInBrittany/granite-spinner#^2.1.0",
+    "leaflet-map": "Giwi/leaflet-map#1.2.0-2"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#1 - 2",
@@ -78,6 +78,7 @@
   },
   "resolutions": {
     "polymer": "1.9 - 2",
-    "webcomponentsjs": "^v1.0.2"
+    "webcomponentsjs": "^v1.0.2",
+    "leaflet": "^1.2.0"
   }
 }
