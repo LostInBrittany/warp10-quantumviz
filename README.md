@@ -66,7 +66,11 @@ Available parameters are:
 * `timestamps`: if the value of this parameter is `true`, the time will be shown as timestaps (in microseconds) instead 
   of as UTC dates  
 
-* `tickList`: this parameter allows to set a list of ticks to be used to generate tick marks on x-axis instead of using default tick marks  
+* `tickList`: this parameter allows to generate custom-placed tick marks on x-axis instead of using default tick marks.
+  It can be:
+
+    * a list of ticks
+    * a map where keys are the ticks and the values are the label associated to the tick
 
 
 ## Example of use ##

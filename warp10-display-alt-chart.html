@@ -542,6 +542,17 @@
             Math.max(filteredResponse.globalParams.max, max)], // Todo : trouver le GTS Max et min value
         };
 
+        if (typeof this._params.tickList == 'object') {
+          options.ticker = (a, b, pixels, optionsView, dygraph, forcedValues) => {
+            return Object.entries(this._params.tickList).map(([key, value]) =>{
+              return {
+                v: parseInt(key),
+                label: value,
+              };
+            });
+          };
+        }
+
         if (Array.isArray(this._params.tickList)) {
           if (this.timestamps) {
             options.ticker = (a, b, pixels, optionsView, dygraph, forcedValues) => {
