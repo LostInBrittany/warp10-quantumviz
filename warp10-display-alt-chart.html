@@ -412,6 +412,7 @@
         this.tooltip = html;
         if (this.debug) {console.log('[warp10-display-chart] _tooltipContent', html);}
       },
+
       _gts2dygraphs: function(gtsList) {
         //
         // Extract all the ticks from all the GTS
@@ -492,11 +493,14 @@
 
         return sparklines;
       },
+
       _dataToChartLib: function(filteredResponse) {
-          let min;
-          let max;
+
+        let min;
+        let max;
 
         let context = this;
+
         let sparklines = this._gts2dygraphs(filteredResponse.gts);
           for (let i =0; i <sparklines.length; i++) {
               for (let j =1; j <sparklines[i].length; j++) {
