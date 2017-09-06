@@ -157,7 +157,7 @@
       if (this.debug) { console.log("[warp10-display-behavior] ready - begin", {width: this.style.width, height: this.style.height}); }
 
       this.isReady = true;
-      if (this.data != null) {
+            if (this.data !== null) {
         this.dataChanged()
       }
       if (this.debug) { console.log("[warp10-display-behavior] ready - end"); }
@@ -199,12 +199,12 @@
       if (this.debug) { console.log("[warp10-display-behavior] configure"); }
 
       // Dimensions
-      if (this.clientWidth == 0) {
+            if (this.clientWidth === 0) {
         this.updateStyles({
           '--default-width': this._DEFAULT_WIDTH + "px"
         });
       }
-      if (this.clientHeight == 0) {
+            if (this.clientHeight === 0) {
         this.updateStyles({
           '--default-height': this._DEFAULT_HEIGHT + "px"
         });
@@ -253,7 +253,7 @@
       // If data is an string, we parse it
       if (typeof this.data === 'string') {
         this.data = looseJSON.parse(this.data)
-        if (typeof this.data == 'array') {
+                if (typeof this.data === 'array') {
           this.data = this.data[0];
         }
         if (this.debug) { console.log("[warp10-display-chart] _dataToChart - Data from String", this.data); }
@@ -297,7 +297,7 @@
 
       if (this.debug) { console.log("[warp10-display-behavior] _dataToChart - Filtered data to plot", filteredResponse); }
 
-      if (filteredResponse.gts.length == 0) {
+            if (filteredResponse.gts.length === 0) {
         // console.warn("[warp10-display-behavior] _dataToChart - Empty data set", filteredResponse);
         this._removeChartData();
         return;
@@ -330,7 +330,7 @@
         }
         if (quantumvizObj.gts[i].a !== undefined && quantumvizObj.gts[i].a.quantumParams !== undefined) {
           var quantumParams = attributes.quantumParams;
-          if (typeof attributes.quantumParams == "string") {
+                    if (typeof attributes.quantumParams === "string") {
             quantumParams = looseJSON.parse(attributes.quantumParams);
           } 
 

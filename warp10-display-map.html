@@ -177,7 +177,6 @@
             },
             _currentValuesChanged: function () {
                 if (!this.currentValues) return;
-                var map = this.$.map.map;
                 // All works on seconds only now...
                 // console.log("Current time "+ this.currentValues.xValue + " - "+ new Date(this.currentValues.xValue) + " - " + (new Date(this.currentValues.xValue)).getTime() )
                 var currentTS = Math.floor((new Date(this.currentValues.xValue)).getTime() / 1000);
@@ -282,7 +281,6 @@
                 }
 
                 // console.debug("[warp10-display-map] Annotations added");
-
                 // Create the positions arrays
                 for (var i = 0; i < this.positionData.length; i++) {
                     this.positionArraysMarkers = this._updatePositionArray(this.positionData[i]);
@@ -294,9 +292,15 @@
                     // console.debug("[warp10-display-map] getBoundsArray", warp10DisplayMapTools.getBoundsArray(this.pathData,this.positionData))
                     // Fit map to curves
                     map.invalidateSize();
-                    map.fitBounds(warp10DisplayMapTools.getBoundsArray(this.pathData, this.positionData), {padding: [20, 20]});
+              //      map.fitBounds(warp10DisplayMapTools.getBoundsArray(this.pathData, this.positionData), {padding: [20, 20]});
                 }
-                // console.debug("[warp10-display-map] Fit bounds done", map);
+              /*  if(this.positionArraysMarkers.length > 0) {
+                    var group = new L.featureGroup(this.positionArraysMarkers);
+
+                    map.invalidateSize();
+                    map.fitBounds(group.getBounds());console.debug("[warp10-display-map] Fit bounds done", group);
+                }*/
+
             },
 
             _updateGtsPath: function (gts) {
@@ -381,7 +385,7 @@
                     case 'marker':
                         var icon = L.MakiMarkers.icon({icon: positionData.key, color: positionData.color, size: "m"});
                         for (var j = 0; j < positionData.positions.length; j++) {
-                            var marker = L.marker(positionData.positions[j], {icon: icon, opacity: 1});
+                            var marker = L.marker({lat:positionData.positions[j][0], lon:positionData.positions[j][1]}, {icon: icon, opacity: 1});
                             this.layerGroup.addLayer(marker);
                             positions.push(marker);
                         }
@@ -397,7 +401,7 @@
                         for (var j = 0; j < positionData.positions.length; j++) {
                             // console.debug('[warp10-display-map] _plotPositionArray, coloredWeightedDots', { j: j, gradient: positionData.colorGradient, position: positionData.positions[j]})
                             var marker = L.circleMarker(
-                                positionData.positions[j], {
+                                {lat:positionData.positions[j][0], lon:positionData.positions[j][1]}, {
                                     radius: positionData.baseRadius * (parseInt(positionData.positions[j][4]) + 1),
                                     color: positionData.borderColor,
                                     fillColor: warp10ColorTools.rgb2hex(
@@ -413,7 +417,7 @@
                     case 'weightedDots':
                         for (var j = 0; j < positionData.positions.length; j++) {
                             var marker = L.circleMarker(
-                                positionData.positions[j], {
+                                {lat:positionData.positions[j][0], lon:positionData.positions[j][1]}, {
                                     radius: positionData.baseRadius * (parseInt(positionData.positions[j][4]) + 1),
                                     color: positionData.borderColor,
                                     fillColor: positionData.color, fillOpacity: 1
@@ -426,7 +430,7 @@
                     default:
                         for (var j = 0; j < positionData.positions.length; j++) {
                             var marker = L.circleMarker(
-                                positionData.positions[j], {
+                                {lat:positionData.positions[j][0], lon:positionData.positions[j][1]}, {
                                     radius: positionData.baseRadius,
                                     color: positionData.borderColor,
                                     fillColor: positionData.color,

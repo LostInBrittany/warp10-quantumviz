@@ -273,7 +273,7 @@
         var tbodyEnter = table.selectAll("div.tbody")
           .data([d])
           .enter().append("div").classed("tbody", true);
-        console.log(d)
+
         var trowEnter = tbodyEnter.selectAll("div.tr")
           .data(d.yValues)
           .enter()
@@ -415,7 +415,7 @@
        	ticks.sort(function (a, b) { return a - b; });
 
        	// Keep unique ticks
-       	var uniqueTicks = [ticks[0]]
+       	var uniqueTicks = [ticks[0]];
 
        	for (var i = 1; i < ticks.length; i++) {
        	  if (ticks[i] === uniqueTicks[uniqueTicks.length - 1]) {
@@ -459,7 +459,7 @@
        	    // If the tick at 'validx' is == to the uniqueTick at 'tickidx', store the value
        	    // and increase validx
        	    if (uniqueTicks[tickidx] === values[validx][0]) {
-              sparklines[tickidx][i + 1] = values[validx][values[validx].length - 1];                     	      
+              sparklines[tickidx][i + 1] = values[validx][values[validx].length - 1];
        	      validx++;
        	      tickidx++;
        	      continue;
@@ -479,10 +479,18 @@
         return sparklines;
       },
       _dataToChartLib: function (filteredResponse) {
+          var min, max;
 
         var context = this;
         var sparklines = this._gts2dygraphs(filteredResponse.gts);
-
+          for(var i =0; i <sparklines.length; i++) {
+              for(var j =1; j <sparklines[i].length; j++) {
+                  if(!min && sparklines[i][j]) {min=sparklines[i][j];}
+                  if(!max && sparklines[i][j]) {max=sparklines[i][j];}
+                  if(sparklines[i][j]> max && sparklines[i][j]) { max = sparklines[i][j]};
+                  if(sparklines[i][j]< min && sparklines[i][j]) { min = sparklines[i][j]};
+              }
+          }
         if (this.debug) { console.log("[warp10-display-chart] _data2dygraphs - sparklines", sparklines); }
         if (this.debug) { console.log("[warp10-display-chart] _data2dygraphs - timeBounds", this.timeBounds); }
 
@@ -511,7 +519,8 @@
               max: me.yAxisRange()[1]
             };
             // console.debug("[warp10-display-chart] drawCallback called", context.timeBounds, context.valueBounds)
-          }
+          },
+            valueRange: [Math.min(filteredResponse.globalParams.min,min) , Math.max(filteredResponse.globalParams.max,max)], // Todo : trouver le GTS Max et min value
         };
         if (this.hideAxis) {
           options.drawAxis = false;
