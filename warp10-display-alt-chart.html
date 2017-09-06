@@ -542,35 +542,6 @@
             Math.max(filteredResponse.globalParams.max, max)], // Todo : trouver le GTS Max et min value
         };
 
-        if (typeof this._params.tickList == 'object') {
-          options.ticker = (a, b, pixels, optionsView, dygraph, forcedValues) => {
-            return Object.entries(this._params.tickList).map(([key, value]) =>{
-              return {
-                v: parseInt(key),
-                label: value,
-              };
-            });
-          };
-        }
-
-        if (Array.isArray(this._params.tickList)) {
-          if (this.timestamps) {
-            options.ticker = (a, b, pixels, optionsView, dygraph, forcedValues) => {
-              return this._params.tickList.map((it) => {return {v: it, label: it};});
-            };
-          } else {
-            options.axisLabelWidth = 100;
-            options.ticker = (a, b, pixels, optionsView, dygraph, forcedValues) => {
-              return this._params.tickList.map((it) => {
-                return {
-                  v: new Date(it/1000),
-                  label: d3.time.format.utc('%Y-%m-%d %H:%M:%S')(new Date(it/1000)),
-                };
-              });
-            };
-          }
-        }
-
         if (this.hideAxis) {
           options.drawAxis = false;
           options.drawGrid = false;
@@ -603,6 +574,45 @@
               },
             },
           };
+          if (typeof this._params.tickList == 'object') {
+            if (this.timestamps) {
+              options.axes.x.ticker = (a, b, pixels, optionsView, dygraph, forcedValues) => {
+                return Object.entries(this._params.tickList).map(([key, value]) =>{
+                  return {
+                    v: parseInt(key),
+                    label: value,
+                  };
+                });
+              };
+            } else {
+              options.axisLabelWidth = 100;
+              options.axes.x.ticker = (a, b, pixels, optionsView, dygraph, forcedValues) => {
+                return Object.entries(this._params.tickList).map(([key, value]) =>{
+                  return {
+                    v: new Date(parseInt(key)/1000),
+                    label: value,
+                  };
+                });
+              };
+            }
+          }
+          if (Array.isArray(this._params.tickList)) {
+            if (this.timestamps) {
+              options.axes.x.ticker = (a, b, pixels, optionsView, dygraph, forcedValues) => {
+                return this._params.tickList.map((it) => {return {v: it, label: it};});
+              };
+            } else {
+              options.axisLabelWidth = 100;
+              options.axes.x.ticker = (a, b, pixels, optionsView, dygraph, forcedValues) => {
+                return this._params.tickList.map((it) => {
+                  return {
+                    v: new Date(it/1000),
+                    label: d3.time.format.utc('%Y-%m-%d %H:%M:%S')(new Date(it/1000)),
+                  };
+                });
+              };
+            }
+          }
         }
 
         options.highlightCallback = function(event, x, points, row, name) {
