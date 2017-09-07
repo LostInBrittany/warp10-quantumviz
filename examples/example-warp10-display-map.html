@@ -24,7 +24,37 @@
 
 <div class="container">
     <h1>Quantumviz - Display map</h1>
-
+    <warp10-display-map
+            data='[
+        {
+          "gts": [
+            {
+              "c": "",
+              "l": {},
+              "a": {},
+              "v": [
+                [
+                  1504713600000000,
+                  18.565799980424345,
+                  -72.33240002766252,
+                  46800,
+                  "1"
+                ]
+              ]
+            }
+          ],
+          "params": [
+            {
+                "render": "marker"
+            }
+          ],
+          "globalParams": {
+            "interpolate": "cardinal"
+          }
+        }
+      ]'
+    ></warp10-display-map>
+    <br/>
     <warp10-display-map
             zoom="14"
             longitude="-72.33"
@@ -59,8 +89,7 @@
     }
 ]'
     ></warp10-display-map>
-
-    <br />
+    <br/>
 
     <warp10-display-map
             data='[
