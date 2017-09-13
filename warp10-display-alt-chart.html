@@ -585,7 +585,7 @@
                 });
               };
             } else {
-              options.axisLabelWidth = 100;
+              options.axes.x.axisLabelWidth = 100;
               options.axes.x.ticker = (a, b, pixels, optionsView, dygraph, forcedValues) => {
                 return Object.entries(this._params.tickList).map(([key, value]) =>{
                   return {
@@ -602,7 +602,7 @@
                 return this._params.tickList.map((it) => {return {v: it, label: it};});
               };
             } else {
-              options.axisLabelWidth = 100;
+              options.axes.x.axisLabelWidth = 100;
               options.axes.x.ticker = (a, b, pixels, optionsView, dygraph, forcedValues) => {
                 return this._params.tickList.map((it) => {
                   return {
