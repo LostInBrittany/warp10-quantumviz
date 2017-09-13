@@ -126,17 +126,10 @@
       ],
 
       properties: {
-
-        min: {
-          type: Number,
-        },
-        max: {
-          type: Number,
-        }
       },
 
       observers: [
-        'dataChanged(data.*, timestamps, min, max)',
+        'dataChanged(data.*, timestamps, yLowerBound, yUpperBound)',
       ],
       // Lifecycle methods
       created: function() {
@@ -617,8 +610,8 @@
             };
             // console.debug("[warp10-display-chart] drawCallback called", context.timeBounds, context.valueBounds)
           },
-          valueRange: [Math.min(this.min, min),
-            Math.max(this.max, max)],
+          valueRange: [Math.min(this.yLowerBound, min),
+            Math.max(this.yUpperBound, max)],
         };
 
         if (this.hideAxis) {
