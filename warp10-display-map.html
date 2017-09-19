@@ -44,7 +44,7 @@
 <script>
   // element registration
   Polymer({
-        is: "warp10-display-map",
+        is: 'warp10-display-map',
 
         // Properties
         properties: {
@@ -54,7 +54,7 @@
           data: {
             type: Object,
             notify: true,
-            observer: '_dataChanged'
+            observer: '_dataChanged',
           },
           /**
            * The level of zoom
@@ -62,21 +62,21 @@
           zoom: {
             type: Number,
             notify: true,
-            value: 10
+            value: 10,
           },
           /**
            * The longitude of the map center
            */
           longitude: {
             type: Number,
-            notify: true
+            notify: true,
           },
           /**
            * The latitude of the map center
            */
           latitude: {
             type: Number,
-            notify: true
+            notify: true,
           },
           /**
            * The selected value set
@@ -84,7 +84,7 @@
           currentValues: {
             type: Object,
             observer: '_currentValuesChanged',
-            notify: true
+            notify: true,
           },
           /**
            * The timestamp of the selected annotationsSelectedTimestamp
@@ -92,15 +92,18 @@
           annotationsSelectedTimestamp: {
             type: Number,
             notify: true,
-            observer: "_annotationsSelectedTimestampChanged",
-            value: -1
+            observer: '_annotationsSelectedTimestampChanged',
+            value: -1,
           },
           /**
            * If true use Google maps instead of Open Street Map
            */
           useGoogleMap: {
             type: Boolean,
-            value: false
+            value: false,
+          },
+          googleApiKey: {
+            type: String,
           },
           googleApiKey: {
             type: String,
@@ -110,16 +113,16 @@
            */
           debug: {
             type: Boolean,
-            value: false
+            value: false,
           },
           _DEFAULT_WIDTH: {
             type: Number,
-            value: 640
+            value: 640,
           },
           _DEFAULT_HEIGHT: {
             type: Number,
-            value: 480
-          }
+            value: 480,
+          },
         },
 
 
@@ -129,7 +132,7 @@
 
         created: function() {
           if (this.debug) {
-            console.debug("[warp10-display-map] created");
+            console.debug('[warp10-display-map] created');
           }
 
           // GTS paths
@@ -147,18 +150,18 @@
 
         ready: function() {
           if (this.debug) {
-            console.debug("[warp10-display-map] ready");
+            console.debug('[warp10-display-map] ready');
           }
         },
         attached: function() {
           window.warp10DisplayMapTools.debug = this.debug;
           if (this.debug) {
-            console.debug("[warp10-display-map] attached");
+            console.debug('[warp10-display-map] attached');
           }
           this.configure();
           this.isAttached = true;
           if (this.data !== null) {
-            this._dataChanged()
+            this._dataChanged();
           }
         },
 
@@ -180,24 +183,24 @@
         },
         _annotationsSelectedTimestampChanged: function() {
           if (this.debug) {
-            console.debug("[warp10-display-map] _annotationsSelectedTimestampChanged", this.annotationsSelectedTimestamp);
+            console.debug('[warp10-display-map] _annotationsSelectedTimestampChanged', this.annotationsSelectedTimestamp);
           }
           for (var i = 0; i < this.annotationsMarkers.length; i++) {
             for (var tick = 0; tick < this.annotationsMarkers[i].length; tick++) {
               if (this.debug) {
-                console.debug("[warp10-display-map] _annotationsSelectedTimestampChanged - this.annotationsMarkers[i][tick].options.timestamp", this.annotationsMarkers[i][tick].options.timestamp);
+                console.debug('[warp10-display-map] _annotationsSelectedTimestampChanged - this.annotationsMarkers[i][tick].options.timestamp', this.annotationsMarkers[i][tick].options.timestamp);
               }
               // We divide by 10 because d3.x precision problem
               if (Math.floor(this.annotationsMarkers[i][tick].options.timestamp / 10) === Math.floor(this.annotationsSelectedTimestamp / 10)) {
                 if (this.debug) {
-                  console.debug("[warp10-display-map] _annotationsSelectedTimestampChanged - found", this.annotationsMarkers[i][tick]);
+                  console.debug('[warp10-display-map] _annotationsSelectedTimestampChanged - found', this.annotationsMarkers[i][tick]);
                 }
                 this.annotationsMarkers[i][tick].options.oldStyle = this.annotationsMarkers[i][tick].options.fillColor;
                 this.annotationsMarkers[i][tick].setStyle({fillColor: 'orange'});
               } else {
                 if (this.annotationsMarkers[i][tick].options.oldStyle) {
                   this.annotationsMarkers[i][tick].setStyle({
-                    fillColor: this.annotationsMarkers[i][tick].options.oldStyle
+                    fillColor: this.annotationsMarkers[i][tick].options.oldStyle,
                   });
                   this.annotationsMarkers[i][tick].options.oldStyle = null;
                 }
@@ -234,56 +237,56 @@
 
         _mapLoadedEvt: function() {
           if (this.debug) {
-            console.debug("[warp10-display-map] Map loaded!", {
+            console.debug('[warp10-display-map] Map loaded!', {
               obj: this.$.map,
               map: this.$.map.map,
               longitude: this.$.map.longitude,
               latitude: this.$.map.latitude,
-              zoom: this.$.map.zoom
+              zoom: this.$.map.zoom,
             });
           }
           this.mapLoaded = true;
           if (this.data !== null) {
-            this._dataChanged()
+            this._dataChanged();
           }
         },
 
         _mapReadyEvt: function() {
           if (this.debug) {
-            console.debug("[warp10-display-map] Map ready!", {
+            console.debug('[warp10-display-map] Map ready!', {
               obj: this.$.map,
               map: this.$.map.map,
               longitude: this.$.map.longitude,
               latitude: this.$.map.latitude,
-              zoom: this.$.map.zoom
+              zoom: this.$.map.zoom,
             });
           }
           this.mapReady = true;
           if (this.data !== null) {
-            this._dataChanged()
+            this._dataChanged();
           }
         },
 
         _mapResizeEvt: function() {
           if (this.debug) {
-            console.debug("[warp10-display-map] Map resize!", {
+            console.debug('[warp10-display-map] Map resize!', {
               obj: this.$.map,
               map: this.$.map.map,
               longitude: this.$.map.longitude,
               latitude: this.$.map.latitude,
-              zoom: this.$.map.zoom
+              zoom: this.$.map.zoom,
             });
           }
         },
 
         _mapEvt: function(evt) {
           if (this.debug) {
-            console.debug("[warp10-display-map] Map evt!", evt, {
+            console.debug('[warp10-display-map] Map evt!', evt, {
               obj: this.$.map,
               map: this.$.map.map,
               longitude: this.$.map.longitude,
               latitude: this.$.map.latitude,
-              zoom: this.$.map.zoom
+              zoom: this.$.map.zoom,
             });
           }
         },
@@ -295,7 +298,7 @@
 
         configure: function() {
           if (this.debug) {
-            console.debug("[warp10-display-map] configure");  // Dimensions
+            console.debug('[warp10-display-map] configure'); // Dimensions
           }
 
           if (this.debug) {
@@ -304,22 +307,22 @@
           }
           // Dimensions
           if (this.clientWidth === 0) {
-            this.updateStyles({'--default-width': this._DEFAULT_WIDTH + "px"});
+            this.updateStyles({'--default-width': this._DEFAULT_WIDTH + 'px'});
           }
           if (this.clientHeight === 0) {
-            this.updateStyles({'--default-height': this._DEFAULT_HEIGHT + "px"});
+            this.updateStyles({'--default-height': this._DEFAULT_HEIGHT + 'px'});
           }
 
           if (this.debug) {
-            console.debug("[warp10-display-map] configure", this.clientWidth, this.clientHeight);
-            console.debug("[warp10-display-map] configure", this.$.map.clientWidth, this.$.map.clientHeight);
-            console.debug("[warp10-display-map] Dimensions", this.$.map.style);
+            console.debug('[warp10-display-map] configure', this.clientWidth, this.clientHeight);
+            console.debug('[warp10-display-map] configure', this.$.map.clientWidth, this.$.map.clientHeight);
+            console.debug('[warp10-display-map] Dimensions', this.$.map.style);
           }
         },
 
         _updateMapData: function() {
           if (this.debug) {
-            console.debug("[warp10-display-map] _updateMapData", this.data);
+            console.debug('[warp10-display-map] _updateMapData', this.data);
           }
 
           if (this.layerGroup) {
@@ -330,9 +333,9 @@
           this.annotationsData = warp10DisplayMapTools.annotationsToLeafletPositions(this.data);
           this.positionData = warp10DisplayMapTools.toLeafletMapPositionArray(this.data);
           if (this.debug) {
-            console.debug("[warp10-display-map] Data changed - path data", this.pathData);
-            console.debug("[warp10-display-map] Data changed - position arrays", this.positionData);
-            console.debug("[warp10-display-map] Data changed - annotations data", this.annotationsData);
+            console.debug('[warp10-display-map] Data changed - path data', this.pathData);
+            console.debug('[warp10-display-map] Data changed - position arrays', this.positionData);
+            console.debug('[warp10-display-map] Data changed - annotations data', this.annotationsData);
           }
 
           var map = this.$.map.map;
@@ -340,7 +343,7 @@
           this.layerGroup = L.layerGroup().addTo(map);
 
           if (this.debug) {
-            console.debug("[warp10-display-map] Data changed - map", this.$.map);
+            console.debug('[warp10-display-map] Data changed - map', this.$.map);
           }
 
 
@@ -354,14 +357,14 @@
           }
 
           if (this.debug) {
-            console.debug("[warp10-display-map] GTS path added", this.pathData);
+            console.debug('[warp10-display-map] GTS path added', this.pathData);
           }
 
           for (var i = 0; i < this.annotationsData.length; i++) {
             this.annotationsMarkers.push(this._updateAnnotation(this.annotationsData[i]));
           }
           if (this.debug) {
-            console.debug("[warp10-display-map] Annotations added", this.annotationsMarkers);
+            console.debug('[warp10-display-map] Annotations added', this.annotationsMarkers);
           }
 
           // Create the positions arrays
@@ -369,7 +372,7 @@
             this.positionArraysMarkers = this._updatePositionArray(this.positionData[i]);
           }
           if (this.debug) {
-            console.debug("[warp10-display-map] Position array added", this.positionArraysMarkers);
+            console.debug('[warp10-display-map] Position array added', this.positionArraysMarkers);
           }
 
 
@@ -379,7 +382,7 @@
             var bounds = warp10DisplayMapTools.getBoundsArray(this.pathData, this.positionData, this.annotationsData);
 
             if (this.debug) {
-              console.debug("[warp10-display-map] getBoundsArray", bounds);
+              console.debug('[warp10-display-map] getBoundsArray', bounds);
             }
             if (bounds.length > 1) {
               map.fitBounds(bounds, {padding: [20, 20]});
@@ -387,7 +390,7 @@
                 map.setZoom(this.zoom);
               }
             } else {
-              map.setView(bounds[0], this.zoom)
+              map.setView(bounds[0], this.zoom);
             }
           }
         },
@@ -397,13 +400,13 @@
               L.polyline(
                   warp10DisplayMapTools.pathDataToLeaflet(gts.path, {to: 0}), {
                     color: gts.color,
-                    opacity: 1
+                    opacity: 1,
                   });
           this.layerGroup.addLayer(beforeCurrentValue);
           var afterCurrentValue = L.polyline(
               warp10DisplayMapTools.pathDataToLeaflet(gts.path, {from: 0}), {
                 color: gts.color,
-                opacity: 0.5
+                opacity: 0.5,
               });
           this.layerGroup.addLayer(afterCurrentValue);
 
@@ -411,10 +414,10 @@
           // this.polylinesAfterCurrentValue.push(afterCurrentValue);
 
           var currentValue;
-          //Let's verify we have a path... No path, no marker
+          // Let's verify we have a path... No path, no marker
           if (gts.path[0] !== undefined) {
             currentValue = L.circleMarker([gts.path[0].lat, gts.path[0].lon],
-                {radius: 5, color: "#fff", fillColor: gts.color, fillOpacity: 1});
+                {radius: 5, color: '#fff', fillColor: gts.color, fillOpacity: 1});
           } else {
             currentValue = L.circleMarker();
           }
@@ -423,8 +426,8 @@
           return {
             beforeCurrentValue: beforeCurrentValue,
             afterCurrentValue: afterCurrentValue,
-            currentValue: currentValue
-          }
+            currentValue: currentValue,
+          };
         },
 
         _updateAnnotation: function(gts) {
@@ -432,7 +435,7 @@
 
           switch (gts.render) {
             case 'marker':
-              var icon = L.MakiMarkers.icon({icon: gts.marker, color: gts.color, size: "m"});
+              var icon = L.MakiMarkers.icon({icon: gts.marker, color: gts.color, size: 'm'});
               for (var j = 0; j < gts.path.length; j++) {
                 var marker = L.marker(gts.path[j], {icon: icon, opacity: 1});
                 marker.bindPopup(gts.path[j].val.toString());
@@ -449,13 +452,13 @@
                       color: gts.color,
                       fillColor: gts.color,
                       fillOpacity: 1,
-                      timestamp: gts.path[j].ts
+                      timestamp: gts.path[j].ts,
                     }
                 );
                 marker.bindPopup(gts.path[j].val.toString());
                 this.layerGroup.addLayer(marker);
                 if (this.debug) {
-                  console.debug("[warp10-display-map] _plotAnnotation - gts", gts);
+                  console.debug('[warp10-display-map] _plotAnnotation - gts', gts);
                 }
                 positions.push(marker);
               }
@@ -476,11 +479,11 @@
               positions.push(polyline);
               break;
             case 'marker':
-              var icon = L.MakiMarkers.icon({icon: positionData.key, color: positionData.color, size: "m"});
+              var icon = L.MakiMarkers.icon({icon: positionData.key, color: positionData.color, size: 'm'});
               for (var j = 0; j < positionData.positions.length; j++) {
                 var marker = L.marker({lat: positionData.positions[j][0], lon: positionData.positions[j][1]}, {
                   icon: icon,
-                  opacity: 1
+                  opacity: 1,
                 });
                 this.layerGroup.addLayer(marker);
                 positions.push(marker);
@@ -498,7 +501,7 @@
                   console.debug('[warp10-display-map] _plotPositionArray, coloredWeightedDots', {
                     j: j,
                     gradient: positionData.colorGradient,
-                    position: positionData.positions[j]
+                    position: positionData.positions[j],
                   });
                 }
                 var marker = L.circleMarker(
@@ -509,7 +512,7 @@
                           positionData.colorGradient[positionData.positions[j][5]].r,
                           positionData.colorGradient[positionData.positions[j][5]].g,
                           positionData.colorGradient[positionData.positions[j][5]].b),
-                      fillOpacity: 1
+                      fillOpacity: 1,
                     });
                 this.layerGroup.addLayer(marker);
                 positions.push(marker);
@@ -521,7 +524,7 @@
                     {lat: positionData.positions[j][0], lon: positionData.positions[j][1]}, {
                       radius: positionData.baseRadius * (parseInt(positionData.positions[j][4]) + 1),
                       color: positionData.borderColor,
-                      fillColor: positionData.color, fillOpacity: 1
+                      fillColor: positionData.color, fillOpacity: 1,
                     });
                 this.layerGroup.addLayer(marker);
                 positions.push(marker);
@@ -535,7 +538,7 @@
                       radius: positionData.baseRadius,
                       color: positionData.borderColor,
                       fillColor: positionData.color,
-                      fillOpacity: 1
+                      fillOpacity: 1,
                     });
                 this.layerGroup.addLayer(marker);
                 positions.push(marker);
@@ -548,7 +551,7 @@
         _removeMapData: function() {
           var map = this.$.map.map;
           map.removeLayer(this.layerGroup);
-        }
+        },
       }
   );
 </script>
