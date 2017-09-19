@@ -685,7 +685,7 @@
         line: line,
         tooltip: tooltip,
         grid: grid,
-      }
+      };
       console.debug('[warp10-display-chart] _dataToChart - c3Data', JSON.stringify(c3Data));
       c3Data.bindto = this.$.chart;
       this.chart = c3.generate(c3Data);

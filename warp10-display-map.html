@@ -32,12 +32,11 @@
         on-load="_mapLoadedEvt"
         on-map-ready="_mapReadyEvt"
         on-resize="_mapResizeEvt"
-        on-viewreset="_mapEvt" ,
+        on-viewreset="_mapEvt"
         use-google-map="[[useGoogleMap]]"
         google-api-key="[[googleApiKey]]"
         fit-to-markers>
     </leaflet-map>
-
   </template>
 
 </dom-module>
@@ -102,6 +101,9 @@
           useGoogleMap: {
             type: Boolean,
             value: false,
+          },
+          googleApiKey: {
+            type: String,
           },
           googleApiKey: {
             type: String,
@@ -210,14 +212,14 @@
           if (!this.currentValues) return;
           // All works on seconds only now...
           if (this.debug) {
-            console.log('Current time ' + this.currentValues.xValue + ' - ' + new Date(this.currentValues.xValue) + ' - ' + (new Date(this.currentValues.xValue)).getTime());
+            console.log("[warp10-display-map] _currentValuesChanged - Current time " + this.currentValues.xValue + " - " + new Date(this.currentValues.xValue) + " - " + (new Date(this.currentValues.xValue)).getTime());
           }
           var currentTS = Math.floor((new Date(this.currentValues.xValue)).getTime() / 1000);
           this.pathData = this.pathData || [];
           for (var i = 0; i < this.pathData.length; i++) {
             for (var j = 0; j < this.pathData[i].path.length; j++) {
               if (this.debug) {
-                console.log('Do they match? ' + currentTS + ' - ' + this.pathData[i].path[j].ts);
+                console.log("[warp10-display-map] _currentValuesChanged - Do they match? " + currentTS + " - " + this.pathData[i].path[j].ts);
               }
               if (currentTS <= Math.floor(this.pathData[i].path[j].ts / 1000)) {
                 this.currentValuesMarkers[i].setLatLng([this.pathData[i].path[j].lat, this.pathData[i].path[j].lon]);
@@ -300,7 +302,8 @@
           }
 
           if (this.debug) {
-            console.debug('[warp10-display-map] configure', this.clientWidth, this.clientHeight);
+            console.debug("[warp10-display-map] configure", this.clientWidth, this.clientHeight);
+            console.debug("[warp10-display-map] configure", this._DEFAULT_WIDTH, this._DEFAULT_HEIGHT);
           }
           // Dimensions
           if (this.clientWidth === 0) {
@@ -547,7 +550,6 @@
 
         _removeMapData: function() {
           var map = this.$.map.map;
-
           map.removeLayer(this.layerGroup);
         },
       }

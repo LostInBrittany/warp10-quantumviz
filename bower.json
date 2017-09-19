@@ -33,7 +33,8 @@
     "d3": "^3.5.17",
     "warp10-iron": "cityzendata/warp10-iron#^1.4.9",
     "granite-spinner": "LostInBrittany/granite-spinner#^2.1.0",
-    "leaflet-map": "Giwi/leaflet-map#v1.2.0-7"
+    "leaflet-map": "Giwi/leaflet-map#v1.2.0-8",
+    "granite-c3": "LostInBrittany/granite-c3#^2.1.0"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#1 - 2",
