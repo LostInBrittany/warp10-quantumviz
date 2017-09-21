@@ -107,8 +107,6 @@
         text-align: right;
       }
     </style>
-
-
     <div class$="chart-tooltip {{_isTooltipHidden(tooltip)}}"></div>
     <div id="chart"></div>
   </template>
@@ -125,8 +123,7 @@
         Warp10DisplayBehavior,
       ],
 
-      properties: {
-      },
+      properties: {},
 
       observers: [
         'dataChanged(data.*, timestamps, yLowerBound, yUpperBound)',
@@ -142,10 +139,34 @@
           console.log('[warp10-display-chart] ready');
         }
       },
+      /**
+       * Component attached
+       */
       attached: function() {
+        this._isAttached = true;
+
+        if (this.timezone && this.timezone !== '') {
+          if (this.debug) {
+            console.log('[warp10-display-chart] attached - Go grab the dependencies!', this.timezone);
+          }
+          let chain = Promise.resolve();
+
+          chain.then(this._getDependency(this._getDependencyPromiseResolve(
+              'moment',
+              `${this.importPath}../moment/moment.js`))).then(this._getDependency(this._getDependencyPromiseResolve(
+              'moment.tz',
+              `${this.importPath}../moment-timezone/builds/moment-timezone-with-data.min.js`))).then(this.domReady.bind(this));
+
+        } else {
+          this.domReady.bind(this);
+        }
         if (this.debug) {
           console.log('[warp10-display-chart] attached', {width: this.width, height: this.height});
         }
+
+      },
+
+      domReady: function() {
         if (this.chart && this._resizeChart) {
           if (this.debug) {
             console.log('[warp10-display-chart] attached - dimensionsChanged, resizing');
@@ -157,6 +178,90 @@
           this.chart.resize();
         }
       },
+
+      _getDependency: function(resolve) {
+        if (this.debug) {
+          console.log('[warp10-display-chart] _getDependency');
+        }
+        return () => {
+          return new Promise(resolve);
+        };
+      },
+
+      /**
+       * @param {string} name
+       * @param {string} url
+       * @return {void}
+       * @private
+       */
+      _getDependencyPromiseResolve: function(name, url) {
+        return (resolve) => {
+          console.log('[leaflet-core] _getDependencyPromiseResolve', name, url);
+          if (!this._windowHasObject(name)) {
+            if (!window[`_downloading_${name}`]) {
+              window[`_downloading_${name}`] = true;
+              this._loadDependency(name, url, resolve);
+            } else {
+              this._waitToLoadDependency(name, url, resolve);
+            }
+          } else {
+            this.dispatchEvent(new CustomEvent('dependency-is-ready',
+                {detail: {name: name, url: url}}));
+            resolve();
+          }
+        };
+      },
+
+
+      /**
+       * @param {string} name
+       * @param {string} url
+       * @param {function} resolve
+       * @return {void}
+       * @private
+       */
+      _loadDependency: function(name, url, resolve) {
+        let script = document.createElement('script');
+        script.src = this.resolveUrl(url);
+        script.onload = () => {
+          this._waitToLoadDependency(name, url, resolve);
+        };
+        document.head.appendChild(script);
+      },
+
+
+      /**
+       * @param {string} name
+       * @param {string} url
+       * @param {function} resolve
+       * @return {void}
+       * @private
+       */
+      _waitToLoadDependency: function(name, url, resolve) {
+        if (this._windowHasObject(name)) {
+          this.dispatchEvent(new CustomEvent('dependency-is-ready',
+              {detail: {name: name, url: url}}));
+          resolve();
+        } else {
+          window.setTimeout(() => {
+            this._waitToLoadDependency(name, url, resolve);
+          }, 5);
+        }
+      },
+
+
+      _windowHasObject: function(name) {
+        let items = name.split('.');
+        let obj = 'window';
+        for (let i in items) {
+          obj += `.${items[i]}`;
+          if (eval(obj) === undefined) {
+            return false;
+          }
+        }
+        return true;
+      },
+
 
       dimensionsChanged: function() {
         if (!this.isReady) {
@@ -237,8 +342,6 @@
         }
 
         let context = this;
-
-        // console.debug("[warp10-display-chart] _tooltipContent", this.currentValues)
         let d = this.currentValues;
 
         let timestamps = this.timestamps;
@@ -258,7 +361,9 @@
         let headerFormatter = function(d) {
           // console.debug("[warp10-display-chart] headerFormatter - timestamps", timestamps)
           if (!timestamps) {
-            return d3.time.format.utc('%Y-%m-%dT%H:%M:%S.%LZ')(new Date(d));
+
+            return moment.tz(d, this.timezone).format('MM/DD/YYYY, kk:mm:ss.SSS');
+            //   return d3.time.format.utc('%Y-%m-%dT%H:%M:%S.%LZ')(new Date(d));
           }
           return d;
         };
@@ -557,6 +662,7 @@
 
       _dataToChartLib: function(filteredResponse) {
         console.log('[warp10-display-chart] _data2dygraphs - filteredResponse', filteredResponse);
+        console.log('[warp10-display-chart] _data2dygraphs - timezone', this.timezone)
         let min;
         let max;
 
@@ -646,6 +752,17 @@
               },
             },
           };
+          if (this.timezone) {
+            let me = this;
+            options.axes.x.axisLabelFormatter = function(x, utc) {
+              console.log('[warp10-display-chart] _data2dygraphs - timezone 2', me.timezone)
+              let date = moment.tz(x, me.timezone);
+              let frac = date.hour() * 3600 + date.minute() * 60 + date.second() + 1e-3 * date.millisecond();
+              let ret = date.format('DD/MM') + '\n' + date.format('HH:mm');
+              return ret;
+            }
+          }
+          console.log('[warp10-display-chart] _data2dygraphs - timezone 3', options)
           if (typeof this._params.tickList === 'object') {
             if (this.timestamps) {
               options.axes.x.ticker = (a, b, pixels, optionsView, dygraph, forcedValues) => {
@@ -681,7 +798,8 @@
                 return this._params.tickList.map((it) => {
                   return {
                     v: new Date(it / 1000),
-                    label: d3.time.format.utc('%Y-%m-%d %H:%M:%S')(new Date(it / 1000)),
+                    label: moment.tz(it / 1000, this.timezone).format('YYYY-MM-DD, kk:mm:ss.SSS'),
+                    //  label: d3.time.format.utc('%Y-%m-%d %H:%M:%S')(new Date(it / 1000)),
                   };
                 });
               };

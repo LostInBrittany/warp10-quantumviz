@@ -34,7 +34,9 @@
     "warp10-iron": "cityzendata/warp10-iron#^1.4.9",
     "granite-spinner": "LostInBrittany/granite-spinner#^2.1.0",
     "leaflet-map": "Giwi/leaflet-map#v1.2.0-9",
-    "granite-c3": "LostInBrittany/granite-c3#^2.1.0"
+    "granite-c3": "LostInBrittany/granite-c3#^2.1.0",
+    "moment-timezone": "^0.5.13",
+    "moment": "^2.18.1"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#1 - 2",
@@ -60,7 +62,10 @@
         "c3": "^0.4.11",
         "d3": "^3.5.17",
         "warp10-iron": "cityzendata/warp10-iron#^1.4.9",
-        "granite-spinner": "LostInBrittany/granite-spinner#^2.1.0"
+        "granite-spinner": "LostInBrittany/granite-spinner#^2.1.0",
+        "moment-timezone": "^0.5.13",
+        "granite-c3": "LostInBrittany/granite-c3#^2.1.0",
+        "moment": "^2.18.1"
       },
       "devDependencies": {
         "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
