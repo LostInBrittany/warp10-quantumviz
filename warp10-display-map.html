@@ -56,6 +56,12 @@
             notify: true,
             observer: '_dataChanged',
           },
+
+          tiles: {
+            type: Array,
+            observer: '_dataChanged',
+            value: [],
+          },
           /**
            * The level of zoom
            */
@@ -372,6 +378,10 @@
             console.debug('[warp10-display-map] Position array added', this.positionArraysMarkers);
           }
 
+          this.tiles.forEach(function(t) {
+            console.log('Adding tiles : ', t);
+            this.addLayer(L.tileLayer(t));
+          }, this.layerGroup);
 
           if (this.pathData.length > 0 || this.positionData.length > 0 || this.annotationsData.length > 0) {
             // Fit map to curves
@@ -390,6 +400,7 @@
               map.setView(bounds[0], this.zoom);
             }
           }
+          this.layerGroup.addLayer(L.tileLayer('http://tiles-{s}.cityzendata.net/@paris%2Fmacro-custom-gmao/\\\'cause\\\'/\'ALL\'/\'ALL\'/\'0026\'/\'C013\'/2/10/{z}/{x}/{y}'));
         },
 
         _updateGtsPath: function(gts) {
@@ -406,10 +417,6 @@
                 opacity: 0.5,
               });
           this.layerGroup.addLayer(afterCurrentValue);
-
-          // this.polylinesBeforeCurrentValue.push(beforeCurrentValue);
-          // this.polylinesAfterCurrentValue.push(afterCurrentValue);
-
           var currentValue;
           // Let's verify we have a path... No path, no marker
           if (gts.path[0] !== undefined) {
@@ -419,7 +426,6 @@
             currentValue = L.circleMarker();
           }
           this.layerGroup.addLayer(currentValue);
-          // this.currentValuesMarkers.push(currentValue);
           return {
             beforeCurrentValue: beforeCurrentValue,
             afterCurrentValue: afterCurrentValue,
