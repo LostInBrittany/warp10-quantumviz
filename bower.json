@@ -28,7 +28,6 @@
     "nvd3": "LostInBrittany/nvd3#v1.8.2.1",
     "dygraphs": "~1.1.1",
     "Leaflet.MakiMarkers": "LostInBrittany/Leaflet.MakiMarkers#~1.0.1",
-    "spinner-widget": "LostInBrittany/spinner-widget#~1.0.3",
     "c3": "^0.4.11",
     "d3": "^3.5.17",
     "warp10-iron": "cityzendata/warp10-iron#^1.4.9",
@@ -36,7 +35,8 @@
     "leaflet-map": "Giwi/leaflet-map#v1.2.0-9",
     "granite-c3": "LostInBrittany/granite-c3#^2.1.0",
     "moment-timezone": "^0.5.13",
-    "moment": "^2.18.1"
+    "moment": "^2.18.1",
+    "granite-js-dependencies-grabber": "LostInBrittany/granite-js-dependencies-grabber#^1.1.0"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#1 - 2",

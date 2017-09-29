@@ -7,7 +7,8 @@
 
 <link rel="import" href="./warp10-display-behavior.html">
 
-<script src="../d3/d3.min.js"></script>
+<link rel="import" href="../granite-js-dependencies-grabber/granite-js-dependencies-grabber.html">
+
 <script src="../dygraphs/dygraph-combined-dev.js"></script>
 <script type="text/javascript" src="../dygraphs/extras/smooth-plotter.js"></script>
 
@@ -109,6 +110,13 @@
     </style>
     <div class$="chart-tooltip {{_isTooltipHidden(tooltip)}}"></div>
     <div id="chart"></div>
+
+    <granite-js-dependencies-grabber 
+        id="granite-js-dependencies-grabber-demo"
+        dependencies="[[_dependencies]]"
+        on-dependency-is-ready="_onDependencyReady"
+        debug="[[debug]]"></granite-js-dependencies-grabber>
+
   </template>
 
 
@@ -123,7 +131,17 @@
         Warp10DisplayBehavior,
       ],
 
-      properties: {},
+      properties: {
+        /**
+         * The application dependencies
+         */
+        _dependencies: {
+          type: Array,
+          value: [
+            {name: 'd3', url: '../d3/d3.min.js'},
+          ],
+        },
+      },
 
       observers: [
         'dataChanged(data.*, timestamps, yLowerBound, yUpperBound)',
@@ -156,14 +174,12 @@
               `${this.importPath}../moment/moment.js`))).then(this._getDependency(this._getDependencyPromiseResolve(
               'moment.tz',
               `${this.importPath}../moment-timezone/builds/moment-timezone-with-data.min.js`))).then(this.domReady.bind(this));
-
         } else {
           this.domReady.bind(this);
         }
         if (this.debug) {
           console.log('[warp10-display-chart] attached', {width: this.width, height: this.height});
         }
-
       },
 
       domReady: function() {
@@ -361,9 +377,10 @@
         let headerFormatter = function(d) {
           // console.debug("[warp10-display-chart] headerFormatter - timestamps", timestamps)
           if (!timestamps) {
-
-            return moment.tz(d, this.timezone).format('MM/DD/YYYY, kk:mm:ss.SSS');
-            //   return d3.time.format.utc('%Y-%m-%dT%H:%M:%S.%LZ')(new Date(d));
+            if (context.timezone && context.timezone !== '') {
+              return moment.tz(d, context.timezone).format('MM/DD/YYYY, kk:mm:ss.SSS');
+            }
+            return d3.time.format.utc('%Y-%m-%dT%H:%M:%S.%LZ')(new Date(d));
           }
           return d;
         };
@@ -662,7 +679,7 @@
 
       _dataToChartLib: function(filteredResponse) {
         console.log('[warp10-display-chart] _data2dygraphs - filteredResponse', filteredResponse);
-        console.log('[warp10-display-chart] _data2dygraphs - timezone', this.timezone)
+        console.log('[warp10-display-chart] _data2dygraphs - timezone', this.timezone);
         let min;
         let max;
 
@@ -755,14 +772,14 @@
           if (this.timezone) {
             let me = this;
             options.axes.x.axisLabelFormatter = function(x, utc) {
-              console.log('[warp10-display-chart] _data2dygraphs - timezone 2', me.timezone)
+              console.log('[warp10-display-chart] _data2dygraphs - timezone 2', me.timezone);
               let date = moment.tz(x, me.timezone);
-              let frac = date.hour() * 3600 + date.minute() * 60 + date.second() + 1e-3 * date.millisecond();
+              // let frac = date.hour() * 3600 + date.minute() * 60 + date.second() + 1e-3 * date.millisecond();
               let ret = date.format('DD/MM') + '\n' + date.format('HH:mm');
               return ret;
-            }
+            };
           }
-          console.log('[warp10-display-chart] _data2dygraphs - timezone 3', options)
+          console.log('[warp10-display-chart] _data2dygraphs - timezone 3', options);
           if (typeof this._params.tickList === 'object') {
             if (this.timestamps) {
               options.axes.x.ticker = (a, b, pixels, optionsView, dygraph, forcedValues) => {

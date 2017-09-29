@@ -12,6 +12,7 @@
     "rules": {
       "max-len": ["error", { "code": 120, "tabWidth": 2 }],
       "no-console": "off",
+      "block-spacing": ["error", "always"],
       "brace-style": "off",
       "new-cap": ["error", { "capIsNewExceptions": ["Polymer"] }],
       "no-var": "off",

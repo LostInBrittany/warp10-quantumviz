@@ -10,6 +10,8 @@
 
 <link rel="import" href=" ../warp10-iron/warp10-warpscript-request-gatherer.html">
 
+<link rel="import" href=" ../granite-spinner/granite-spinner.html">
+
 <link rel="import" href="./warp10-display-alt-chart.html">
 <link rel="import" href="./quantumviz-tools.html">
 <link rel="import" href="./quantumviz-annotations.html">
@@ -67,13 +69,13 @@ Viz-only version of Quantum widget
     </style>
     <div class="widget">
 
-      <spinner-widget
+      <granite-spinner
           id="spinner"
           active="{{loading}}"
           size="50"
           line-width="10px"
           container-height="{{height}}"
-          hover ></spinner-widget>
+          hover ></granite-spinner>
 
       <div id="vertGuide"></div>
 

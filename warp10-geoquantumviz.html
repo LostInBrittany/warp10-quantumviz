@@ -26,9 +26,7 @@
     }
   </style>
   <template>
-    <!--
-    <spinner-widget id="map-spinner" active="{{loading}}" hover container-height="{{mapHeight}}" size="{{_mapSpinnerSize}}" ></spinner-widget>
-    -->
+    <granite-spinner id="map-spinner" active="{{loading}}" hover container-height="{{mapHeight}}" size="{{_mapSpinnerSize}}" ></granite-spinner>
     <warp10-display-map
       width={{mapWidth}} height={{mapHeight}} data={{data}}
       latitude="{{mapLat}}" longitude="{{mapLon}}" zoom="{{mapZoom}}"
