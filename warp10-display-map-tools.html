@@ -9,42 +9,55 @@
 
 <script>
 
-  (function () {
+  (function() {
+    let  warp10DisplayMapTools = {};
 
-    var warp10DisplayMapTools = {};
-
-    /***********************************************************************************
-     * Constants
-     ***********************************************************************************/
+    // **********************************************************************************
+    // Constants
+    // **********************************************************************************
     warp10DisplayMapTools.BASE_RADIUS = 10;
 
-    /***********************************************************************************
-     * Helper to calculate map bounds
-     ***********************************************************************************/
-    warp10DisplayMapTools.getBoundsArray = function (paths, positionsData, annotationsData) {
-      var boundsArray = [];
-      for (var i = 0; i < paths.length; i++) {
-        for (var j = 0; j < paths[i].path.length; j++) {
-          boundsArray.push([parseFloat(paths[i].path[j].lat), paths[i].path[j].lon])
+    // **********************************************************************************
+    // Helper to calculate map bounds
+    // **********************************************************************************
+    warp10DisplayMapTools.getBoundsArray = function(paths, positionsData, annotationsData) {
+      let pointsArray = [];
+      for (let i = 0; i < paths.length; i++) {
+        for (let j = 0; j < paths[i].path.length; j++) {
+          pointsArray.push([parseFloat(paths[i].path[j].lat), paths[i].path[j].lon]);
         }
       }
-      for (var i = 0; i < positionsData.length; i++) {
-        for (var j = 0; j < positionsData[i].positions.length; j++) {
-          boundsArray.push([positionsData[i].positions[j][0], positionsData[i].positions[j][1]])
+      for (let i = 0; i < positionsData.length; i++) {
+        for (let j = 0; j < positionsData[i].positions.length; j++) {
+          pointsArray.push([positionsData[i].positions[j][0], positionsData[i].positions[j][1]]);
         }
       }
-      for (var i = 0; i < annotationsData.length; i++) {
-        for (var j = 0; j < annotationsData[i].path.length; j++) {
-          boundsArray.push([annotationsData[i].path[j].lat, annotationsData[i].path[j].lon])
+      for (let i = 0; i < annotationsData.length; i++) {
+        for (let j = 0; j < annotationsData[i].path.length; j++) {
+          pointsArray.push([annotationsData[i].path[j].lat, annotationsData[i].path[j].lon]);
         }
       }
-      return boundsArray;
+      if (pointsArray.length == 1) {
+        return pointsArray;
+      }
+      let south=90;
+      let west=-180;
+      let north=-90;
+      let east=180;
+      pointsArray.forEach((point) => {  
+        if (point[0] > north) north = point[0];
+        if (point[0] < south) south = point[0];
+        if (point[1] > west) west = point[1];
+        if (point[1] < east) east = point[1];
+      });
+
+      return [[south, west], [north, east]];
     };
 
 
-    /***********************************************************************************
-     * Tranform a pathData @pathData into Leaflet path
-     ***********************************************************************************/
+    // **********************************************************************************
+    // Tranform a pathData @pathData into Leaflet path
+    // **********************************************************************************
     warp10DisplayMapTools.pathDataToLeaflet = function (pathData, options) {
 
       var path = [];
