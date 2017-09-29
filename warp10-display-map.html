@@ -34,9 +34,7 @@
         on-resize="_mapResizeEvt"
         on-viewreset="_mapEvt"
         use-google-map="[[useGoogleMap]]"
-        google-api-key="[[googleApiKey]]"
-        fit-to-markers>
-    </leaflet-map>
+        google-api-key="[[googleApiKey]]"></leaflet-map>
   </template>
 
 </dom-module>
@@ -408,11 +406,13 @@
             if (this.debug) {
               console.log('[warp10-display-map] getBoundsArray', bounds);
             }
+            
             setTimeout(() => {
               // Without the timeout tiles doesn't show, see https://github.com/Leaflet/Leaflet/issues/694
               map.invalidateSize();
               if (bounds.length > 1) {
                 map.fitBounds(L.latLngBounds(bounds[0], bounds[1], {padding: [20, 20]}));
+                console.log('[ZOOM]', this.zoom, map.getZoom());
                 if (this.zoom < map.getZoom()) {
                   map.setZoom(this.zoom);
                 }
