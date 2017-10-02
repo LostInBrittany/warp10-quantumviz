@@ -46,7 +46,9 @@
     "iron-test-helpers": "PolymerElements/iron-test-helpers#1 - 2",
     "test-fixture": "PolymerElements/test-fixture#^3.0.0-rc.1",
     "web-component-tester": "^6.0.0",
-    "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0"
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0",
+    "prism": "PrismJS/prism#^1.8.1",
+    "bootstrap": "twbs/bootstrap#^4.0.0-beta"
   },
   "variants": {
     "1.x": {
@@ -75,7 +77,8 @@
         "iron-test-helpers": "PolymerElements/iron-test-helpers#^1.0.0",
         "test-fixture": "PolymerElements/test-fixture#^1.0.0",
         "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0",
-        "web-component-tester": "Polymer/web-component-tester#^4.0.0"
+        "web-component-tester": "Polymer/web-component-tester#^4.0.0",
+        "prism": "PrismJS/prism#^1.8.1"
       },
       "resolutions": {
         "webcomponentsjs": "^0.7"
