@@ -121,7 +121,7 @@
 
 
   <script>
-    /* global Warp10DisplayBehavior, d3, Dygraph, smoothPlotter */
+    /* global Warp10DisplayBehavior, d3, moment, Dygraph, smoothPlotter */
 
     // element registration
     Polymer({
@@ -170,10 +170,10 @@
           let chain = Promise.resolve();
 
           chain.then(this._getDependency(this._getDependencyPromiseResolve(
-              'moment',
-              `${this.importPath}../moment/moment.js`))).then(this._getDependency(this._getDependencyPromiseResolve(
-              'moment.tz',
-              `${this.importPath}../moment-timezone/builds/moment-timezone-with-data.min.js`))).then(this.domReady.bind(this));
+                  'moment', `${this.importPath}../moment/moment.js`))).
+              then(this._getDependency(this._getDependencyPromiseResolve(
+                  'moment.tz', `${this.importPath}../moment-timezone/builds/moment-timezone-with-data.min.js`))).
+              then(this.domReady.bind(this));
         } else {
           this.domReady.bind(this);
         }
@@ -270,9 +270,11 @@
         let items = name.split('.');
         let obj = 'window';
         for (let i in items) {
-          obj += `.${items[i]}`;
-          if (eval(obj) === undefined) {
-            return false;
+          if (items[i]) {
+            obj += `.${items[i]}`;
+            if (eval(obj) === undefined) {
+              return false;
+            }
           }
         }
         return true;
@@ -813,10 +815,15 @@
               options.axes.x.axisLabelWidth = 100;
               options.axes.x.ticker = (a, b, pixels, optionsView, dygraph, forcedValues) => {
                 return this._params.tickList.map((it) => {
+                  if (this.timezone) {
+                    return {
+                      v: new Date(it / 1000),
+                      label: moment.tz(it / 1000, this.timezone).format('YYYY-MM-DD, kk:mm:ss.SSS'),
+                    };
+                  }
                   return {
                     v: new Date(it / 1000),
-                    label: moment.tz(it / 1000, this.timezone).format('YYYY-MM-DD, kk:mm:ss.SSS'),
-                    //  label: d3.time.format.utc('%Y-%m-%d %H:%M:%S')(new Date(it / 1000)),
+                    label: d3.time.format.utc('%Y-%m-%d %H:%M:%S')(new Date(it / 1000)),
                   };
                 });
               };
