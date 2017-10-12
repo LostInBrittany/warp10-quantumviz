@@ -63,10 +63,10 @@
         "spinner-widget": "LostInBrittany/spinner-widget#~1.0.3",
         "c3": "^0.4.11",
         "d3": "^3.5.17",
-        "warp10-iron": "cityzendata/warp10-iron#^1.4.13",
+        "warp10-iron": "cityzendata/warp10-iron#^1.4.14",
         "granite-spinner": "LostInBrittany/granite-spinner#^2.1.0",
         "moment-timezone": "^0.5.13",
-        "granite-c3": "LostInBrittany/granite-c3#^2.1.0",
+        "granite-c3": "LostInBrittany/granite-c3#^2.4.0",
         "moment": "^2.18.1"
       },
       "devDependencies": {
