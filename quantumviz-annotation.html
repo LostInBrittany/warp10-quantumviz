@@ -87,50 +87,49 @@
       return {
         width: {
           type: Number,
-          value: -1
+          value: -1,
         },
         /**
          * Displayed data time bounds
          */
         timeBounds: {
           type: Object,
-          observer: 'contentChanged'
+          observer: 'contentChanged',
         },
         /**
          * The chart area
          */
         chartArea: {
           type: Array,
-          observer: '_changeDimensions'
+          observer: '_changeDimensions',
         },
         annotation: {
-          type: Array
+          type: Array,
         },
         vertGuide: {
           type: Number,
-          notify: true
+          notify: true,
         },
         selectedTimestamp: {
           type: Number,
           notify: true,
           observer: "_selectedTimestampChanged",
-          value: -1
+          value: -1,
         },
         debug: {
           type: Boolean,
-          value: false
+          value: false,
         },
       };
     }
 
-    created() {
-      this.SVG_MARGIN_LEFT = 110;
+    connectedCallback() {
+      super.connectedCallback();
+      this.SVG_MARGIN_LEFT = 55;
+      this.SVG_MARGIN_RIGHT = 8;
       this.SVG_STROKE_WIDTH = 2;
       this.NVD3_CHART_RIGHT_MARGIN = 20;
       this.MAX_MARKER_WIDTH = 10;
-    }
-
-    attached() {
       this.setDimensions();
       if (this.debug) {
         console.debug('[quantumviz-annotation] attached()');
@@ -147,8 +146,9 @@
         console.debug('[quantumviz-annotation] setDimensions');
       }
       this.$$('.annotation').style.paddingLeft = this.SVG_MARGIN_LEFT + 'px';
+      this.$$('.annotation').style.paddingRight = this.SVG_MARGIN_RIGHT + 'px';
       // Dimensions
-      this.$$('.annotation').style.width = 'calc(100% -' + this.$$('.annotation').style.paddingLeft + ');';
+      this.$$('.annotation').style.width = 'calc(100% -' + this.$$('.annotation').style.paddingLeft + ' -' + this.$$('.annotation').style.paddingRight +');';
       this.$$('svg').style.width = '100%';
     }
 
@@ -167,10 +167,13 @@
         console.debug('[quantumviz-annotation] _selectedTimestampChanged', this.selectedTimestamp);
       }
     }
+    $$(slctr) {
+      return this.root.querySelector(slctr);
+    }
 
     contentChanged() {
       if (this.debug) {
-        console.debug('[quantumviz-annotation] Content changed');
+        console.debug('[quantumviz-annotation] Content changed', this.annotation);
       }
 
       let context = this;
@@ -269,7 +272,7 @@
       let keyFormatter = function(d, i) {
 
         let outsideCurlyBrackets = d.split(/\{[^\}]*\}/);
-        if (this.debug) {
+        if (context.debug) {
           console.debug('[quantumviz-annotation] keyFormatter ', outsideCurlyBrackets);
         }
 
@@ -279,7 +282,7 @@
         while ((matches = insideRegex.exec(d)) !== null) {
           insideCurlyBrackets.push(matches[1]);
         }
-        if (this.debug) {
+        if (context.debug) {
           console.debug('[quantumviz-annotation] keyFormatter ', insideCurlyBrackets);
         }
 
@@ -303,7 +306,7 @@
             html += labels.join('<span class="gts-separator">,</span>') + '<span class="gts-separator">}</span>';
           }
         }
-        if (this.debug) {
+        if (context.debug) {
           console.debug('[quantumviz-annotation] keyFormatter ', html);
         }
         return html;
