@@ -8,7 +8,7 @@
 <link rel="import" href="./warp10-display-behavior.html">
 <link rel="import" href="../granite-c3/granite-c3.html">
 
-<dom-module id="warp10-display-chart">
+<dom-module id="warp10-display-bar-chart">
   <template>
     <style>
       :host {
@@ -47,6 +47,7 @@
         padding="[[chart.padding]]"
         point="[[chart.point]]"
         tooltip="[[chart.tooltip]]"
+        bar="[[_getBarOptions(data)]]"
         data="[[chart.data]]"
         axis="[[chart.axis]]"></granite-c3>
     <div id="chart"></div>
@@ -57,7 +58,7 @@
 <script>
   // element registration
   Polymer({
-    is: 'warp10-display-chart',
+    is: 'warp10-display-bar-chart',
 
     behaviors: [
       Warp10DisplayBehavior
@@ -74,7 +75,7 @@
      */
     currentValuesChanged: function () {
       if (null !== this.isReady) {
-        console.debug('[warp10-display-chart] currentValuesChanged() - currentValues', this.currentValues);
+        console.debug('[warp10-display-bar-chart] currentValuesChanged() - currentValues', this.currentValues);
       }
     },
     /**
@@ -84,6 +85,15 @@
      */
     tooltipChanged: function (oldValue, newValue) {
     },
+
+    _getBarOptions: function() {
+      return {
+        width: {
+          ratio: 0.5 // this makes bar width 50% of length between ticks
+        }
+      };
+    },
+
     /**
      *
      * @param tooltip
@@ -127,18 +137,6 @@
           y.push(value)
         }
         data.xs['Y' + i] = 'X' + i;
-        switch (this._params.interpolate[i]) {
-          case 'linear':
-            this._params.interpolate[i] = 'line';
-            break;
-          case 'step-before':
-          case 'step-after':
-            this._params.interpolate[i] = 'step';
-            break;
-          case 'cardinal':
-            this._params.interpolate[i] = 'spline';
-            break;
-        }
         data.types['Y' + i] = this._params.interpolate[i];
         data.names['Y' + i] = this._params.labels[i];
         data.colors['Y' + i] = this._params.colors[i];
@@ -146,7 +144,7 @@
         data.columns.push(y);
       }
 
-      console.debug('[warp10-display-chart] _gtsToC3Data', data);
+      console.debug('[warp10-display-bar-chart] _gtsToC3Data', data);
       return data;
     },
 
@@ -157,7 +155,7 @@
      */
     _dataToChartLib: function (filteredResponse) {
       var data = this._gtsToC3Data(filteredResponse.gts);
-      console.debug('[warp10-display-chart] _dataToChart - data', data);
+      console.debug('[warp10-display-bar-bar-chart] _dataToChart - data', data);
 
       var point = {
         r: 0.5,
@@ -255,7 +253,7 @@
         tooltip: tooltip,
         grid: grid,
       };
-      console.debug('[warp10-display-chart] _dataToChart - c3Data', c3Data);
+      console.debug('[warp10-display-bar-chart] _dataToChart - c3Data', c3Data);
       this.chart = c3Data;
     }
   });
