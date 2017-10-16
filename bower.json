@@ -23,7 +23,7 @@
   ],
   "dependencies": {
     "polymer": "Polymer/polymer#^2.1.2",
-    "iron-image": "PolymerElements/iron-image#^2.1.2",
+    "iron-image": "PolymerElements/iron-image#^2.0.1",
     "iron-resizable-behavior": "PolymerElements/iron-resizable-behavior#^2.1.2",
     "nvd3": "LostInBrittany/nvd3#v1.8.2.1",
     "dygraphs": "~1.1.1",
