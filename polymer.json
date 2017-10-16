@@ -1,7 +1,0 @@
-{
-  "entrypoint": "examples/index.html",
-  "lint": {
-    "rules": ["polymer-2"],
-    "ignoreWarnings": []
-  }
-}
