@@ -10,7 +10,7 @@
 <script>
 
   (function() {
-    let  warp10DisplayMapTools = {};
+    let warp10DisplayMapTools = {};
 
     // **********************************************************************************
     // Constants
@@ -37,14 +37,14 @@
           pointsArray.push([annotationsData[i].path[j].lat, annotationsData[i].path[j].lon]);
         }
       }
-      if (pointsArray.length == 1) {
+      if (pointsArray.length === 1) {
         return pointsArray;
       }
-      let south=90;
-      let west=-180;
-      let north=-90;
-      let east=180;
-      pointsArray.forEach((point) => {  
+      let south = 90;
+      let west = -180;
+      let north = -90;
+      let east = 180;
+      pointsArray.forEach((point) => {
         if (point[0] > north) north = point[0];
         if (point[0] < south) south = point[0];
         if (point[1] > west) west = point[1];
@@ -58,14 +58,14 @@
     // **********************************************************************************
     // Tranform a pathData @pathData into Leaflet path
     // **********************************************************************************
-    warp10DisplayMapTools.pathDataToLeaflet = function (pathData, options) {
+    warp10DisplayMapTools.pathDataToLeaflet = function(pathData, options) {
 
-      var path = [];
+      let path = [];
 
-      var firstIndex = ((options === undefined) || (options.from === undefined) || (options.from < 0) ) ? 0 : options.from;
-      var lastIndex = ((options === undefined) || (options.to === undefined) || (options.to >= pathData.length) ) ? pathData.length - 1 : options.to;
+      let firstIndex = ((options === undefined) || (options.from === undefined) || (options.from < 0) ) ? 0 : options.from;
+      let lastIndex = ((options === undefined) || (options.to === undefined) || (options.to >= pathData.length) ) ? pathData.length - 1 : options.to;
 
-      for (var i = firstIndex; i <= lastIndex; i++) {
+      for (let i = firstIndex; i <= lastIndex; i++) {
         path.push([pathData[i].lat, pathData[i].lon]);
       }
 
@@ -75,7 +75,7 @@
     /***********************************************************************************
      * Transforms quantumviz response object into leaflet-map position array
      ***********************************************************************************/
-    warp10DisplayMapTools.toLeafletMapPositionArray = function (data) {
+    warp10DisplayMapTools.toLeafletMapPositionArray = function(data) {
 
       if (this.debug) {
         console.debug("[warp10-display-map-tools] toLeafletMapPositionArray", data, quantumvizGts.isValidResponse(data));
@@ -84,20 +84,20 @@
         return false;
       }
 
-      var response = data[0];
+      let response = data[0];
 
 
-      var positions = [];
+      let positions = [];
 
-      for (var i = 0; i < response.gts.length; i++) {
+      for (let i = 0; i < response.gts.length; i++) {
 
         if (this.debug) {
           console.debug("[quantumviz-tools] toLeafletMapPositionArray - response.gts[i]", gtsTools.isPositionArray(response.gts[i]), response.gts[i]);
         }
         if (gtsTools.isPositionArray(response.gts[i])) {
 
-          var posArray = response.gts[i];
-          var params = response.params[i];
+          let posArray = response.gts[i];
+          let params = response.params[i];
           warp10DisplayMapTools.extractCommonParameters(posArray, params, i);
           if (params.render !== undefined) {
             posArray.render = params.render;
@@ -124,7 +124,7 @@
     /***********************************************************************************
      * Extracts common parameters form response
      ***********************************************************************************/
-    warp10DisplayMapTools.extractCommonParameters = function (obj, params, index) {
+    warp10DisplayMapTools.extractCommonParameters = function(obj, params, index) {
 
       if (params.key !== undefined) {
         obj.key = params.key;
@@ -153,7 +153,7 @@
     /***********************************************************************************
      * Transforms GTS from quantumviz response object into leaflet-map paths
      ***********************************************************************************/
-    warp10DisplayMapTools.toLeafletMapPaths = function (data) {
+    warp10DisplayMapTools.toLeafletMapPaths = function(data) {
       if (this.debug) {
         console.debug("[warp10-display-map-tools] toLeafletMapPaths", data, quantumvizGts.isValidResponse(data));
       }
@@ -161,12 +161,12 @@
         return false;
       }
 
-      var response = data[0];
+      let response = data[0];
 
-      var paths = [];
-      for (var i = 0; i < response.gts.length; i++) {
+      let paths = [];
+      for (let i = 0; i < response.gts.length; i++) {
         if (gtsTools.isGtsToPlot(response.gts[i])) {
-          var sl = {};
+          let sl = {};
 
           sl.path = gtsTools.gtsToPath(response.gts[i]);
 
@@ -194,7 +194,7 @@
      * Transforms annotations GTS from quantumviz response object into leaflet-map
      * positions arrays
      ***********************************************************************************/
-    warp10DisplayMapTools.annotationsToLeafletPositions = function (data) {
+    warp10DisplayMapTools.annotationsToLeafletPositions = function(data) {
       if (this.debug) {
         console.debug("[warp10-display-map-tools] annotationsToLeafletPositions", data, quantumvizGts.isValidResponse(data));
       }
@@ -202,14 +202,14 @@
         return false;
       }
 
-      var response = data[0];
+      let response = data[0];
 
-      var annotations = [];
+      let annotations = [];
 
-      for (var i = 0; i < response.gts.length; i++) {
+      for (let i = 0; i < response.gts.length; i++) {
         if (gtsTools.isGtsToAnnotate(response.gts[i])) {
-          var annotation = {};
-          var params = response.params[i];
+          let annotation = {};
+          let params = response.params[i];
 
           annotation.path = gtsTools.gtsToPath(response.gts[i]);
 
@@ -241,7 +241,7 @@
     /***********************************************************************************
      * Validates weightedDots position array and parameters
      ***********************************************************************************/
-    warp10DisplayMapTools.validateWeightedDotsPositionArray = function (posArray, params) {
+    warp10DisplayMapTools.validateWeightedDotsPositionArray = function(posArray, params) {
       if (params.minValue === undefined || params.maxValue === undefined) {
         console.error("[quantumviz-tools] validateWeightedDotsPositionArray() - When using 'weightedDots' or 'weightedColoredDots' rendering, 'maxValue' and 'minValue' parameters are compulsory");
         posArray.render = undefined;
@@ -268,9 +268,9 @@
       } else {
         posArray.numSteps = params.numSteps;
       }
-      var step = (posArray.maxValue - posArray.minValue) / posArray.numSteps;
-      var steps = [];
-      for (var j = 0; j < posArray.numSteps - 1; j++) {
+      let step = (posArray.maxValue - posArray.minValue) / posArray.numSteps;
+      let steps = [];
+      for (let j = 0; j < posArray.numSteps - 1; j++) {
         steps[j] = posArray.minValue + (j + 1) * step;
       }
       steps[posArray.numSteps - 1] = posArray.maxValue;
@@ -278,13 +278,12 @@
       if (this.debug) {
         console.debug("[quantumviz-tools] validateWeightedDotsPositionArray() - steps", steps);
       }
-      for (var j in posArray.positions) {
-        var value = posArray.positions[j][2];
+      for (let j in posArray.positions) {
+        let value = posArray.positions[j][2];
         posArray.positions[j][4] = posArray.numSteps - 1;
-        for (var k in steps) {
+        for (let k in steps) {
           if (value <= steps[k]) {
-            var stepAssociatedToValue = k;
-            posArray.positions[j][4] = stepAssociatedToValue;
+            posArray.positions[j][4] = k;
             break;
           }
         }
@@ -295,7 +294,7 @@
     /***********************************************************************************
      * Validates coloredWeightedDots position array and parameters
      ***********************************************************************************/
-    warp10DisplayMapTools.validateWeightedColoredDotsPositionArray = function (posArray, params) {
+    warp10DisplayMapTools.validateWeightedColoredDotsPositionArray = function(posArray, params) {
       if (!warp10DisplayMapTools.validateWeightedDotsPositionArray(posArray, params)) {
         return;
       }
@@ -320,12 +319,12 @@
         return;
       }
 
-      var re = /^#(?:[0-9a-f]{3}){1,2}$/i;
+      let re = /^#(?:[0-9a-f]{3}){1,2}$/i;
 
       if (typeof params.startColor !== "string"
-        || typeof params.endColor !== "string"
-        || !re.test(params.startColor)
-        || !re.test(params.endColor)) {
+          || typeof params.endColor !== "string"
+          || !re.test(params.startColor)
+          || !re.test(params.endColor)) {
         console.error("[quantumviz-tools] validateWeightedColoredDotsPositionArray() - When using weightedColoredDots' rendering, 'startColor' and 'endColor' parameters must be RGB colors in #rrggbb format", {
           startColor: params.startColor,
           endColor: params.endColor,
@@ -359,21 +358,20 @@
         console.debug("[quantumviz-tools] validateWeightedColoredDotsPositionArray", posArray);
       }
 
-      var step = (posArray.maxColorValue - posArray.minColorValue) / posArray.numColorSteps;
-      var steps = [];
-      for (var j = 0; j < posArray.numColorSteps; j++) {
+      let step = (posArray.maxColorValue - posArray.minColorValue) / posArray.numColorSteps;
+      let steps = [];
+      for (let j = 0; j < posArray.numColorSteps; j++) {
         steps[j] = posArray.minColorValue + (j + 1) * step;
       }
 
       posArray.steps = steps;
 
-      for (var j in posArray.positions) {
-        var colorValue = posArray.positions[j][3];
+      for (let j in posArray.positions) {
+        let colorValue = posArray.positions[j][3];
         posArray.positions[j][5] = posArray.numColorSteps - 1;
-        for (var k = 0; k < steps.length - 1; k++) {
+        for (let k = 0; k < steps.length - 1; k++) {
           if (colorValue < steps[k]) {
-            var stepAssociatedToValue = k;
-            posArray.positions[j][5] = stepAssociatedToValue;
+            posArray.positions[j][5] = k;
             break;
           }
         }
@@ -389,7 +387,6 @@
     };
 
     window.warp10DisplayMapTools = warp10DisplayMapTools;
-
 
   }());
 

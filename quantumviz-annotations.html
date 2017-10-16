@@ -26,10 +26,11 @@
         <quantumviz-annotation 
           time-bounds="{{timeBounds}}" 
           chart-area="{{chartArea}}"
-          annotation="{{annotation}}" 
-          vert-guide="{{vertGuide}}" 
+          annotation="[[annotation]]"
+          vert-guide="{{vertGuide}}"
           selected-timestamp="{{selectedTimestamp}}"
-          timestamps="{{timestamps}}">
+          timestamps="{{timestamps}}"
+          debug="[[debug]]">
         </quantumviz-annotation>
       </template>
     </div>
@@ -77,6 +78,10 @@
         value: false
       },
 
+      debug: {
+        type: Boolean,
+        value: false,
+      },
       _newData: {
         type: Number,
         value: 0
@@ -104,11 +109,11 @@
     },
     getAnnotations: function(){
       var annotations = quantumvizGts.getAnnotations(this.data, this.timestamps)
-      // console.debug("[quantumviz-annotations] getAnnotations", annotations);
+      console.debug("[quantumviz-annotations] getAnnotations", annotations);
       return annotations;
     },
     dataChanged: function(){
-      // console.debug("[quantumviz-annotations] dataChanged", this.data);
+      console.debug("[quantumviz-annotations] dataChanged", this.data);
       this._newData++;
     }
   });

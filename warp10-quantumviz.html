@@ -12,7 +12,7 @@
 
 <link rel="import" href=" ../granite-spinner/granite-spinner.html">
 
-<link rel="import" href="./warp10-display-alt-chart.html">
+<link rel="import" href="./warp10-display-c3-chart.html">
 <link rel="import" href="./quantumviz-tools.html">
 <link rel="import" href="./quantumviz-annotations.html">
 
@@ -30,7 +30,7 @@ Viz-only version of Quantum widget
 <dom-module id="warp10-quantumviz">
   <template>
     <style>
-       :host {
+      :host {
         display: block;
         width: var(--default-width, 100%);
         height: var(--default-height, 100%);
@@ -75,7 +75,7 @@ Viz-only version of Quantum widget
           size="50"
           line-width="10px"
           container-height="{{height}}"
-          hover ></granite-spinner>
+          hover></granite-spinner>
 
       <div id="vertGuide"></div>
 
@@ -277,17 +277,16 @@ Viz-only version of Quantum widget
 
       _isReadyToCall: function() {
         if (this.debug) {
-          console.log('[warp10-quantumviz] _isReadyToCall ',
-            (this.host.length > 0) && (this._rawWarpscriptScript.length > 0), (!this._usingProxy));}
+          console.log('[warp10-quantumviz] _isReadyToCall ', (this.host.length > 0) && (this._rawWarpscriptScript.length > 0), (!this._usingProxy));
+        }
         return ((!this.noAuto) && (this.isCallerAttached) && (!this._usingProxy) && (this._rawWarpscriptScript.length > 0));
       },
 
       _isUsingProxy: function() {
-        if (this.debug) {console.log('[warp10-quantumviz] _isUsingProxy ', !this.host, this.host);}
-        if (this.host) {
-          return false;
+        if (this.debug) {
+          console.log('[warp10-quantumviz] _isUsingProxy ', !this.host, this.host);
         }
-        return true;
+        return !this.host;
       },
 
 
@@ -297,7 +296,7 @@ Viz-only version of Quantum widget
       _annotationsSelectedTimestampChanged: function() {
         if (this.debug) {
           console.log('[warp10-quantumviz] _annotationsSelectedTimestampChanged',
-            this.annotationsSelectedTimestamp);
+              this.annotationsSelectedTimestamp);
         }
       },
 
@@ -310,7 +309,7 @@ Viz-only version of Quantum widget
         if (this.debug) {
           console.log('[warp10-quantumviz] _paramsChanged()',
               {host: this.host, rawWarpscriptScript: this._rawWarpscriptScript});
-          }
+        }
 
         if (this._readyToCall) {
           this.generateRequest();
@@ -335,16 +334,24 @@ Viz-only version of Quantum widget
       },
 
       attached: function() {
-        if (this.debug) {console.log('[warp10-quantumviz] attached - calling configure()');}
-        if (this.debug) {console.log('[warp10-quantumviz] attached -  clientHeight', this.clientHeight);}
+        if (this.debug) {
+          console.log('[warp10-quantumviz] attached - calling configure()');
+        }
+        if (this.debug) {
+          console.log('[warp10-quantumviz] attached -  clientHeight', this.clientHeight);
+        }
         this.isAttached = true;
         this.configure();
         this.generateWarpScript();
-        if (this.debug) {console.log('[warp10-quantumviz] attached -  clientHeight', this.clientHeight);}
+        if (this.debug) {
+          console.log('[warp10-quantumviz] attached -  clientHeight', this.clientHeight);
+        }
       },
 
       detached: function() {
-        if (this.debug) {console.log('[warp10-quantumviz] detached');}
+        if (this.debug) {
+          console.log('[warp10-quantumviz] detached');
+        }
         this.isAttached = false;
         this.isCallerAttached = false;
       },
@@ -355,9 +362,11 @@ Viz-only version of Quantum widget
       // ***********************************************************************
 
       _handleResponse: function(event, response) {
-        if (this.debug) {console.log('[warp10-quantumviz] _handleResponse', response);}
+        if (this.debug) {
+          console.log('[warp10-quantumviz] _handleResponse', response);
+        }
         if (!response.stack ||
-          !(response.stack instanceof Array)) {
+            !(response.stack instanceof Array)) {
           this.data = null;
           return;
         }
@@ -366,7 +375,9 @@ Viz-only version of Quantum widget
         this._hasAResponse = true;
         this._hasAnError = false;
 
-        if (this.debug) {console.log('[warp10-quantumviz] _handleResponse - parsed - dataChanged', this.data);}
+        if (this.debug) {
+          console.log('[warp10-quantumviz] _handleResponse - parsed - dataChanged', this.data);
+        }
       },
 
       _handleError: function(event, error) {
@@ -376,7 +387,9 @@ Viz-only version of Quantum widget
           this.errorMsg = error.request.statusText;
         }
 
-        if (this.debug) {console.log('[warp10-quantumviz] _handleError', {error: error, errorMsg: this.errorMsg});}
+        if (this.debug) {
+          console.log('[warp10-quantumviz] _handleError', {error: error, errorMsg: this.errorMsg});
+        }
 
         this.elapsed = error.elapsed;
         this._hasAResponse = false;
@@ -384,7 +397,9 @@ Viz-only version of Quantum widget
       },
 
       _handleCallerAttached: function() {
-        if (this.debug) {console.log('[warp10-quantumviz] _handleError - _handleCallerAttached');}
+        if (this.debug) {
+          console.log('[warp10-quantumviz] _handleError - _handleCallerAttached');
+        }
         this.isCallerAttached = true;
         if (this._readyToCall) {
           this.generateRequest();
@@ -396,23 +411,31 @@ Viz-only version of Quantum widget
       // ***********************************************************************
 
       generateRequest: function() {
-        if (this.debug) {console.log('[warp10-quantumviz] generateRequest');}
+        if (this.debug) {
+          console.log('[warp10-quantumviz] generateRequest');
+        }
         this.$$('#warpscriptcaller').generateRequest();
       },
       configure: function() {
         // Dimensions
-        if (this.debug) {console.log('[test-quantumviz] configure', this.clientWidth, this.clientHeight);}
-        if (this.clientWidth == 0) {
+        if (this.debug) {
+          console.log('[test-quantumviz] configure', this.clientWidth, this.clientHeight);
+        }
+        if (this.clientWidth === 0) {
           this.updateStyles({'--default-width': this._DEFAULT_WIDTH + 'px'});
         }
-        if (this.clientHeight == 0) {
+        if (this.clientHeight === 0) {
           this.updateStyles({'--default-height': this._DEFAULT_HEIGHT + 'px'});
         }
-        if (this.debug) {console.log('[test-quantumviz] configure - end');}
+        if (this.debug) {
+          console.log('[test-quantumviz] configure - end');
+        }
       },
 
       generateWarpScript: function() {
-        if (this.debug) {console.log('[warp10-quantumviz] generateWarpScript', this.warpscript);}
+        if (this.debug) {
+          console.log('[warp10-quantumviz] generateWarpScript', this.warpscript);
+        }
         this._rawWarpscriptScript;
         if (this.warpscript !== undefined && this.warpscript.length > 0) {
           if (this.debug) {
@@ -420,7 +443,9 @@ Viz-only version of Quantum widget
           }
           this._rawWarpscriptScript = this.warpscript.trim();
         } else {
-          if (this.debug) {console.log('[warp10-quantumviz] generateWarpScript - attribute warpscript not found');}
+          if (this.debug) {
+            console.log('[warp10-quantumviz] generateWarpScript - attribute warpscript not found');
+          }
           if (this.content !== undefined && this.content.length > 0) {
             if (this.debug) {
               console.log('[warp10-quantumviz] generateWarpScript - using content for WarpScript', this.content);
@@ -439,7 +464,7 @@ Viz-only version of Quantum widget
 
         if (this.debug) {
           console.log('[warp10-quantumviz] generateWarpScript - about to change warpscriptScript',
-            inputWarpScriptVariables + this._rawWarpscriptScript);
+              inputWarpScriptVariables + this._rawWarpscriptScript);
         }
 
         this.warpscriptScript = inputWarpScriptVariables + this._rawWarpscriptScript;

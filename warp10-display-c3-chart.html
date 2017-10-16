@@ -48,6 +48,7 @@
         point="[[chart.point]]"
         tooltip="[[chart.tooltip]]"
         data="[[chart.data]]"
+        chart="{{c3Chart}}"
         axis="[[chart.axis]]"></granite-c3>
     <div id="chart"></div>
   </template>
@@ -244,7 +245,7 @@
           show: true
         },
       };
-
+      var context = this;
       var c3Data = {
         data: data,
         axis: axis,
@@ -254,7 +255,21 @@
         line: line,
         tooltip: tooltip,
         grid: grid,
+        onrendered: function() {
+          context.chartArea = {x: 10, y: 100};
+          context.timeBounds = {
+            min: context.c3Chart.axis.min().x,
+            max: context.c3Chart.axis.max().x,
+          };
+          context.valueBounds = {
+            min: context.c3Chart.axis.min().y,
+            max: context.c3Chart.axis.max().y,
+          };
+        }
       };
+
+
+
       console.debug('[warp10-display-chart] _dataToChart - c3Data', c3Data);
       this.chart = c3Data;
     }
