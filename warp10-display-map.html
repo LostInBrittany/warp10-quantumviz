@@ -260,6 +260,7 @@
           longitude: this.$.map.longitude,
           latitude: this.$.map.latitude,
           zoom: this.$.map.zoom,
+          size: {w: this.$.map.style.width, h: this.$.map.style.height}
         });
       }
       this.mapLoaded = true;
@@ -276,9 +277,12 @@
           longitude: this.$.map.longitude,
           latitude: this.$.map.latitude,
           zoom: this.$.map.zoom,
+          size: {w: this.$.map.style.width, h: this.$.map.style.height}
         });
       }
       this.mapReady = true;
+      /*      this.$.map.style.width = '640px';
+            this.$.map.style.height = '480px';*/
       if (this.data !== null) {
         this._dataChanged();
       }
@@ -292,6 +296,7 @@
           longitude: this.$.map.longitude,
           latitude: this.$.map.latitude,
           zoom: this.$.map.zoom,
+          size: {w: this.$.map.style.width, h: this.$.map.style.height}
         });
       }
     }
@@ -304,6 +309,7 @@
           longitude: this.$.map.longitude,
           latitude: this.$.map.latitude,
           zoom: this.$.map.zoom,
+          size: {w: this.$.map.style.width, h: this.$.map.style.height}
         });
       }
     }
@@ -397,7 +403,6 @@
 
       if (this.pathData.length > 0 || this.positionData.length > 0 || this.annotationsData.length > 0) {
         // Fit map to curves
-        map.invalidateSize();
         let bounds = warp10DisplayMapTools.getBoundsArray(
             this.pathData,
             this.positionData,
@@ -406,8 +411,10 @@
         if (this.debug) {
           console.log('[warp10-display-map] getBoundsArray', bounds);
         }
-
-        setTimeout(() => {
+        window.setTimeout(() => {
+          if (this.debug) {
+            console.log('[warp10-display-map] invalidateSize', this.map);
+          }
           // Without the timeout tiles doesn't show, see https://github.com/Leaflet/Leaflet/issues/694
           map.invalidateSize();
           if (bounds.length > 1) {
@@ -420,6 +427,13 @@
             map.setView(bounds[0], this.zoom);
           }
         }, 1000);
+      } else {
+        window.setTimeout(() => {
+          if (this.debug) {
+            console.log('[warp10-display-map] invalidateSize', this.map);
+          }
+          map.invalidateSize();
+        });
       }
     }
 
