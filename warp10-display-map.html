@@ -320,19 +320,19 @@
 
     configure() {
       if (this.debug) {
-        console.log('[warp10-display-map] configure'); // Dimensions
-      }
-
-      if (this.debug) {
         console.log('[warp10-display-map] configure', this.clientWidth, this.clientHeight);
         console.log('[warp10-display-map] configure', this._DEFAULT_WIDTH, this._DEFAULT_HEIGHT);
       }
       // Dimensions
       if (this.clientWidth === 0) {
         this.updateStyles({'--default-width': this._DEFAULT_WIDTH + 'px'});
+      } else {
+        this.updateStyles({'--default-width': this.clientWidth + 'px'});
       }
       if (this.clientHeight === 0) {
         this.updateStyles({'--default-height': this._DEFAULT_HEIGHT + 'px'});
+      } else {
+        this.updateStyles({'--default-height': this.clientHeight + 'px'});
       }
 
       if (this.debug) {
@@ -417,6 +417,7 @@
           }
           // Without the timeout tiles doesn't show, see https://github.com/Leaflet/Leaflet/issues/694
           map.invalidateSize();
+          this.configure();
           if (bounds.length > 1) {
             map.fitBounds(L.latLngBounds(bounds[0], bounds[1], {padding: [20, 20]}));
             console.log('[ZOOM]', this.zoom, map.getZoom());
@@ -433,6 +434,7 @@
             console.log('[warp10-display-map] invalidateSize', this.map);
           }
           map.invalidateSize();
+          this.configure();
         },1000);
       }
     }

@@ -3,7 +3,7 @@
 @copyright (c) 2016 Cityzen Data
 @license Apache 2.0
 -->
-<link rel="import" href=" ../polymer/polymer.html">
+<link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="./warp10-quantumviz.html">
 <link rel="import" href="./warp10-display-map.html">
 <dom-module id="warp10-geoquantumviz">
@@ -153,12 +153,11 @@
         },
       };
     }
-
     connectedCallback() {
       super.connectedCallback();
-      this.configure();
       this.isAttached = true;
       this._getWarpScript();
+      this.configure();
     }
 
     _getMapSpinnerSize() {
