@@ -3,34 +3,37 @@
 @copyright (c) 2016 Cityzen Data
 @license Apache 2.0
 -->
-<link rel="import" href=" ../polymer/polymer.html">
-<link   rel="import" href="./warp10-quantumviz.html">
-<link   rel="import" href="./warp10-display-map.html">
-<dom-module id="warp10-geoquantumviz" >
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="./warp10-quantumviz.html">
+<link rel="import" href="./warp10-display-map.html">
+<dom-module id="warp10-geoquantumviz">
   <style>
     :host {
       display: block;
       width: var(--default-width, 100%);
       height: var(--default-height, 100%);
     }
-  	warp10-display-map,
+
+    warp10-display-map,
     warp10-quantumviz {
       width: var(--default-width, 100%);
-      height: calc( var(--default-height, 100%) / 2);
-  	}
+      height: calc(var(--default-height, 100%) / 2);
+    }
+
     /deep/ .leaflet-control-attribution {
       display: none;
     }
+
     #map-spinner {
       z-index: 1000;
     }
   </style>
   <template>
-    <granite-spinner 
-        id="map-spinner" 
-        active="{{loading}}" 
-        hover container-height="{{mapHeight}}" 
-        size="{{_mapSpinnerSize}}" ></granite-spinner>
+    <granite-spinner
+        id="map-spinner"
+        active="{{loading}}"
+        hover container-height="{{mapHeight}}"
+        size="{{_mapSpinnerSize}}"></granite-spinner>
     <warp10-display-map
         width={{mapWidth}} height={{mapHeight}} data={{data}}
         latitude="{{mapLat}}" longitude="{{mapLon}}" zoom="{{mapZoom}}"
@@ -40,14 +43,14 @@
 
     <warp10-quantumviz
         width="{{width}}" height="{{height}}"
-        show-axis="{{showAxis}}"  tooltip="{{tooltip}}"
-        line-width="{{lineWidth}}" 
+        show-axis="{{showAxis}}" tooltip="{{tooltip}}"
+        line-width="{{lineWidth}}"
         current-values="{{currentValues}}"
-        annotations-selected-timestamp="{{annotationsSelectedTimestamp}}" 
+        annotations-selected-timestamp="{{annotationsSelectedTimestamp}}"
         host="{{host}}"
         old-path="{{oldPath}}"
-        warpscript="{{_warpscript}}" 
-        data="{{data}}" 
+        warpscript="{{_warpscript}}"
+        data="{{data}}"
         reload="{{reload}}"
         loading="{{loading}}"
         debug="[[debug]]"></warp10-quantumviz>
@@ -55,11 +58,16 @@
   </template>
 </dom-module>
 
-  <script>
-    // element registration
-    Polymer({
-      is: 'warp10-geoquantumviz',
-      properties: {
+<script>
+  // Extend Polymer.Element base class
+  class Warp10GeoQuantumviz extends Polymer.Element {
+
+    static get is() {
+      return 'warp10-geoquantumviz'
+    }
+
+    static get properties() {
+      return {
         /**
          * The Warp 10 instance
          */
@@ -68,9 +76,9 @@
           value: '',
         },
         /**
-        * The width of the lines on the chart
-        * It must be a number between warp10-display-chart's _MIN_LINE_WIDTH and _MAX_LINE_WIDTH
-        */
+         * The width of the lines on the chart
+         * It must be a number between warp10-display-chart's _MIN_LINE_WIDTH and _MAX_LINE_WIDTH
+         */
         lineWidth: {
           type: Number,
           value: 1.75,
@@ -136,73 +144,78 @@
           type: Number,
           value: 320,
         },
-          /**
-           * If true debug logs are sent to the console
-           */
-          debug: {
-            type: Boolean,
-            value: false,
-          },
-      },
-      created: function() {
-      },
-      ready: function() {
-      },
-      attached: function() {
-        /*
-        if (!this.content) {
-          this.content = Polymer.dom(this).innerHTML.replace(/&lt;/g,'<').replace(/&gt;/g,'>');
-        } else {
-          this.content =  this.content.replace(/&lt;/g,'<').replace(/&gt;/g,'>');
-        }
-        */
-        this.configure();
-        this.isAttached = true;
-        this._getWarpScript();
-      },
+        /**
+         * If true debug logs are sent to the console
+         */
+        debug: {
+          type: Boolean,
+          value: false,
+        },
+      };
+    }
+    connectedCallback() {
+      super.connectedCallback();
+      this.isAttached = true;
+      this._getWarpScript();
+      this.configure();
+    }
 
-      _getMapSpinnerSize: function() {
+    _getMapSpinnerSize() {
+      if (this.debug) {
         console.debug('[warp10-geoquantumviz] _getMapSpinnerSize called', Math.floor(this.mapHeight * 0.75));
-        return Math.floor(this.mapHeight * 0.75);
-      },
-      _getWarpScript: function() {
-        if (!this.isAttached) {
-          return;
+      }
+      return Math.floor(this.mapHeight * 0.75);
+    }
+
+    _getWarpScript() {
+      if (!this.isAttached) {
+        return;
+      }
+      let warpscript = `${this.mapLat} 'lat' STORE ${this.mapLon} 'lon' STORE ${this.mapZoom} 'zoom' STORE `;
+      if (this.warpscript !== undefined && this.warpscript.length > 0) {
+        if (this.debug) {
+          console.debug("[warp10-geoquantumviz] _getWarpScript - attribute warpscript found", this.warpscript);
         }
-        var warpscript = '';
-        warpscript += this.mapLat +' \'lat\' STORE ';
-        warpscript += this.mapLon +' \'lon\' STORE ';
-        warpscript += this.mapZoom +' \'zoom\' STORE ';
-        if (this.warpscript !== undefined && this.warpscript.length > 0) {
-          // console.debug("[warp10-geoquantumviz] _getWarpScript - attribute warpscript found", this.warpscript);
-          warpscript += this.warpscript.trim();
+        warpscript += this.warpscript.trim();
+      } else {
+        if (this.debug) {
+          console.debug("[warp10-geoquantumviz] _getWarpScript - attribute warpscript not found");
+        }
+        if (this.content !== undefined && this.content.length > 0) {
+          if (this.debug) {
+            console.debug("[warp10-geoquantumviz] _getWarpScript - using content for WarpScript", this.content);
+          }
+          warpscript += this.content.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').trim();
         } else {
-          // console.debug("[warp10-geoquantumviz] _getWarpScript - attribute warpscript not found");
-          if (this.content !== undefined && this.content.length > 0) {
-            // console.debug("[warp10-geoquantumviz] _getWarpScript - using content for WarpScript", this.content);
-            warpscript += this.content.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').trim();
-          } else {
-            // console.debug("[warp10-geoquantumviz] _getWarpScript - content not found, using innerHTML",  Polymer.dom(this).innerHTML);
-            warpscript += Polymer.dom(this).innerHTML.replace(/&lt;/g, '<').replace(/&gt;/g, '>').trim();
+          if (this.debug) {
+            console.debug("[warp10-geoquantumviz] _getWarpScript - content not found, using innerHTML", Polymer.dom(this).innerHTML);
           }
+          warpscript += Polymer.dom(this).innerHTML.replace(/&lt;/g, '<').replace(/&gt;/g, '>').trim();
         }
+      }
 
-        // Setting lat, lon and zoom as script variables
-        // console.debug("[warp10-geoquantumviz] _getWarpScript - Generated warpscript: ", warpscript);
-        this._warpscript = warpscript;
-        return warpscript;
-      },
+      // Setting lat, lon and zoom as script variables
+      if (this.debug) {
+        console.debug("[warp10-geoquantumviz] _getWarpScript - Generated warpscript: ", warpscript);
+      }
+      this._warpscript = warpscript;
+      return warpscript;
+    }
 
-      configure: function() {
-          // Dimensions
-          console.debug('[warp10-geoquantumviz] configure', this.clientWidth, this.clientHeight);
-          if (this.clientWidth == 0) {
-            this.updateStyles({'--default-width': this._DEFAULT_WIDTH + 'px'});
-          }
-          if (this.clientHeight == 0) {
-            this.updateStyles({'--default-height': this._DEFAULT_HEIGHT + 'px'});
-          }
-      },
+    configure() {
+      // Dimensions
+      if (this.debug) {
+        console.debug('[warp10-geoquantumviz] configure', this.clientWidth, this.clientHeight);
+      }
+      if (this.clientWidth === 0) {
+        this.updateStyles({'--default-width': this._DEFAULT_WIDTH + 'px'});
+      }
+      if (this.clientHeight === 0) {
+        this.updateStyles({'--default-height': this._DEFAULT_HEIGHT + 'px'});
+      }
+    }
+  }
 
-    });
-  </script>
+  // Register custom element definition using standard platform API
+  customElements.define(Warp10GeoQuantumviz.is, Warp10GeoQuantumviz);
+</script>

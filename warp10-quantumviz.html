@@ -128,212 +128,212 @@ Viz-only version of Quantum widget
   </template>
 
   <script>
-    // element registration
-    Polymer({
-      is: 'warp10-quantumviz',
-      properties: {
-        /**
-         * The Warp 10 instance
-         */
-        host: {
-          type: String,
-          value: '',
-          observer: '_paramsChanged',
-        },
-        /**
-         * The data of the chart
-         */
-        data: {
-          type: Array,
-          notify: true,
-        },
-        /**
-         * The values of the lines on the chart at the mouseover postion
-         */
-        currentValues: {
-          type: Object,
-          notify: true,
-        },
-        /**
-         * The width of the lines on the chart
-         * It must be a number between warp10-display-chart's _MIN_LINE_WIDTH and _MAX_LINE_WIDTH
-         */
-        lineWidth: {
-          type: Number,
-          value: 1.75,
-        },
-        /**
-         * If true, axis aren't shown
-         */
-        hideAxis: {
-          type: Boolean,
-          value: false,
-        },
-        /**
-         * If true, tooltip isn't shown
-         */
-        hideTooltip: {
-          type: Boolean,
-          value: false,
-        },
-        /**
-         * If true, legend is shown
-         */
-        showLegend: {
-          type: Boolean,
-          value: false,
-        },
-        reload: {
-          type: Number,
-          value: -1,
-        },
-        content: {
-          type: String,
-          observer: '_paramsChanged',
-        },
-        timeBounds: {
-          type: Object,
-          notify: true,
-        },
-        vertGuide: {
-          type: Number,
-          observer: '_vertGuideChanged',
-        },
-        warpscript: {
-          type: String,
-          observer: '_paramsChanged',
-        },
-        oldPath: {
-          type: String,
-          value: '',
-        },
-        loading: {
-          type: Boolean,
-          value: false,
-          notify: true,
-        },
-        annotationsSelectedTimestamp: {
-          type: Number,
-          notify: true,
-          observer: '_annotationsSelectedTimestampChanged',
-          value: -1,
-        },
-        /**
-         * When no-auto true, initial call isn't doing automatically but by calling generateRequest()
-         */
-        noAuto: {
-          type: Boolean,
-          value: false,
-        },
-        proxy: {
-          type: Boolean,
-          value: 'proxy', // TO-DO : why do this value is not a boolean?
-        },
-        /**
-         * If true debug logs are sent to the console
-         */
-        debug: {
-          type: Boolean,
-          value: false,
-        },
-        _rawWarpscriptScript: {
-          type: String,
-          value: '',
-        },
-        isCallerAttached: {
-          type: Boolean,
-          value: false,
-        },
-        _baseUrl: {
-          type: String,
-          computed: '_getBaseUrl(host,oldPath)',
-        },
-        _usingProxy: {
-          type: Boolean,
-          computed: '_isUsingProxy(host,proxy)',
-        },
-        _readyToCall: {
-          type: Boolean,
-          computed: '_isReadyToCall(host, _rawWarpscriptScript, noAuto, _usingProxy, isCallerAttached)',
-        },
-        _DEFAULT_WIDTH: {
-          type: Number,
-          value: 480,
-        },
-        _DEFAULT_HEIGHT: {
-          type: Number,
-          value: 320,
-        },
-      },
+    // Extend Polymer.Element base class
+    class Warp10Quantumviz extends Polymer.Element {
+
+      static get is() {
+        return 'warp10-quantumviz'
+      }
+
+      static get properties() {
+        return {
+          /**
+           * The Warp 10 instance
+           */
+          host: {
+            type: String,
+            value: '',
+            observer: '_paramsChanged',
+          },
+          /**
+           * The data of the chart
+           */
+          data: {
+            type: Array,
+            notify: true,
+          },
+          /**
+           * The values of the lines on the chart at the mouseover postion
+           */
+          currentValues: {
+            type: Object,
+            notify: true,
+          },
+          /**
+           * The width of the lines on the chart
+           * It must be a number between warp10-display-chart's _MIN_LINE_WIDTH and _MAX_LINE_WIDTH
+           */
+          lineWidth: {
+            type: Number,
+            value: 1.75,
+          },
+          /**
+           * If true, axis aren't shown
+           */
+          hideAxis: {
+            type: Boolean,
+            value: false,
+          },
+          /**
+           * If true, tooltip isn't shown
+           */
+          hideTooltip: {
+            type: Boolean,
+            value: false,
+          },
+          /**
+           * If true, legend is shown
+           */
+          showLegend: {
+            type: Boolean,
+            value: false,
+          },
+          reload: {
+            type: Number,
+            value: -1,
+          },
+          content: {
+            type: String,
+            observer: '_paramsChanged',
+          },
+          timeBounds: {
+            type: Object,
+            notify: true,
+          },
+          vertGuide: {
+            type: Number,
+            observer: '_vertGuideChanged',
+          },
+          warpscript: {
+            type: String,
+            observer: '_paramsChanged',
+          },
+          oldPath: {
+            type: String,
+            value: '',
+          },
+          loading: {
+            type: Boolean,
+            value: false,
+            notify: true,
+          },
+          annotationsSelectedTimestamp: {
+            type: Number,
+            notify: true,
+            observer: '_annotationsSelectedTimestampChanged',
+            value: -1,
+          },
+          /**
+           * When no-auto true, initial call isn't doing automatically but by calling generateRequest()
+           */
+          noAuto: {
+            type: Boolean,
+            value: false,
+          },
+          proxy: {
+            type: Boolean,
+            value: 'proxy', // TO-DO : why do this value is not a boolean?
+          },
+          /**
+           * If true debug logs are sent to the console
+           */
+          debug: {
+            type: Boolean,
+            value: false,
+          },
+          _rawWarpscriptScript: {
+            type: String,
+            value: '',
+          },
+          isCallerAttached: {
+            type: Boolean,
+            value: false,
+          },
+          _baseUrl: {
+            type: String,
+            computed: '_getBaseUrl(host,oldPath)',
+          },
+          _usingProxy: {
+            type: Boolean,
+            computed: '_isUsingProxy(host,proxy)',
+          },
+          _readyToCall: {
+            type: Boolean,
+            computed: '_isReadyToCall(host, _rawWarpscriptScript, noAuto, _usingProxy, isCallerAttached)',
+          },
+          _DEFAULT_WIDTH: {
+            type: Number,
+            value: 480,
+          },
+          _DEFAULT_HEIGHT: {
+            type: Number,
+            value: 320,
+          },
+        };
+      }
 
 
       // ***********************************************************************
       // Computed properties
       // ***********************************************************************
 
-      _getBaseUrl: function() {
+      _getBaseUrl() {
         return this.host + '/exec' + this.oldPath;
-      },
+      }
 
-      _isReadyToCall: function() {
+      _isReadyToCall() {
         if (this.debug) {
           console.log('[warp10-quantumviz] _isReadyToCall ', (this.host.length > 0) && (this._rawWarpscriptScript.length > 0), (!this._usingProxy));
         }
         return ((!this.noAuto) && (this.isCallerAttached) && (!this._usingProxy) && (this._rawWarpscriptScript.length > 0));
-      },
+      }
 
-      _isUsingProxy: function() {
+      _isUsingProxy() {
         if (this.debug) {
           console.log('[warp10-quantumviz] _isUsingProxy ', !this.host, this.host);
         }
         return !this.host;
-      },
-
+      }
 
       // ***********************************************************************
       // Observers
       // ***********************************************************************
-      _annotationsSelectedTimestampChanged: function() {
+      _annotationsSelectedTimestampChanged() {
         if (this.debug) {
           console.log('[warp10-quantumviz] _annotationsSelectedTimestampChanged',
               this.annotationsSelectedTimestamp);
         }
-      },
+      }
 
-      _paramsChanged: function() {
+      _paramsChanged() {
         if (!this.isAttached) {
           return;
         }
         this.generateWarpScript();
-
         if (this.debug) {
           console.log('[warp10-quantumviz] _paramsChanged()',
               {host: this.host, rawWarpscriptScript: this._rawWarpscriptScript});
         }
-
         if (this._readyToCall) {
           this.generateRequest();
         }
-      },
+      }
 
-      _vertGuideChanged: function(event) {
+      _vertGuideChanged(event) {
         if (this.vertGuide > 0) {
           this.$.vertGuide.style.display = 'inline-block';
           this.$.vertGuide.style.left = this.vertGuide + 'px';
         } else {
           this.$.vertGuide.style.display = 'none';
         }
-      },
-
+      }
 
       // ***********************************************************************
       // Livecycle
       // ***********************************************************************
 
-      ready: function() {
-      },
-
-      attached: function() {
+      connectedCallback() {
+        super.connectedCallback();
         if (this.debug) {
           console.log('[warp10-quantumviz] attached - calling configure()');
         }
@@ -346,22 +346,21 @@ Viz-only version of Quantum widget
         if (this.debug) {
           console.log('[warp10-quantumviz] attached -  clientHeight', this.clientHeight);
         }
-      },
+      }
 
-      detached: function() {
+      detached() {
         if (this.debug) {
           console.log('[warp10-quantumviz] detached');
         }
         this.isAttached = false;
         this.isCallerAttached = false;
-      },
-
+      }
 
       // ***********************************************************************
       // Event listeners
       // ***********************************************************************
 
-      _handleResponse: function(event, response) {
+      _handleResponse(event, response) {
         if (this.debug) {
           console.log('[warp10-quantumviz] _handleResponse', response);
         }
@@ -378,9 +377,9 @@ Viz-only version of Quantum widget
         if (this.debug) {
           console.log('[warp10-quantumviz] _handleResponse - parsed - dataChanged', this.data);
         }
-      },
+      }
 
-      _handleError: function(event, error) {
+      _handleError(event, error) {
         if (error.request.xhr.responseText.match(/<pre>\s*(.*)\s*<\/prse>/)) {
           this.errorMsg = error.request.xhr.responseText.match(/<pre>\s*(.*)\s*<\/prse>/)[1];
         } else {
@@ -394,9 +393,9 @@ Viz-only version of Quantum widget
         this.elapsed = error.elapsed;
         this._hasAResponse = false;
         this._hasAnError = true;
-      },
+      }
 
-      _handleCallerAttached: function() {
+      _handleCallerAttached() {
         if (this.debug) {
           console.log('[warp10-quantumviz] _handleError - _handleCallerAttached');
         }
@@ -404,19 +403,20 @@ Viz-only version of Quantum widget
         if (this._readyToCall) {
           this.generateRequest();
         }
-      },
+      }
 
       // ***********************************************************************
       // Other methods
       // ***********************************************************************
 
-      generateRequest: function() {
+      generateRequest() {
         if (this.debug) {
           console.log('[warp10-quantumviz] generateRequest');
         }
         this.$$('#warpscriptcaller').generateRequest();
-      },
-      configure: function() {
+      }
+
+      configure() {
         // Dimensions
         if (this.debug) {
           console.log('[test-quantumviz] configure', this.clientWidth, this.clientHeight);
@@ -430,13 +430,13 @@ Viz-only version of Quantum widget
         if (this.debug) {
           console.log('[test-quantumviz] configure - end');
         }
-      },
+      }
 
-      generateWarpScript: function() {
+      generateWarpScript() {
         if (this.debug) {
           console.log('[warp10-quantumviz] generateWarpScript', this.warpscript);
         }
-        this._rawWarpscriptScript;
+        this._rawWarpscriptScript = '';
         if (this.warpscript !== undefined && this.warpscript.length > 0) {
           if (this.debug) {
             console.log('[warp10-quantumviz] generateWarpScript - attribute warpscript found', this.warpscript);
@@ -460,7 +460,7 @@ Viz-only version of Quantum widget
           }
         }
 
-        var inputWarpScriptVariables = `${Math.floor(this.getBoundingClientRect().width)} 'width' STORE `;
+        let inputWarpScriptVariables = `${Math.floor(this.getBoundingClientRect().width)} 'width' STORE `;
 
         if (this.debug) {
           console.log('[warp10-quantumviz] generateWarpScript - about to change warpscriptScript',
@@ -472,7 +472,15 @@ Viz-only version of Quantum widget
         if (this.debug) {
           console.log('[warp10-quantumviz] generateWarpScript - _rawWarpscriptScript', this._rawWarpscriptScript);
         }
-      },
-    });
+      }
+
+      $$(slctr) {
+        return this.root.querySelector(slctr);
+      }
+    }
+
+
+    // Register custom element definition using standard platform API
+    customElements.define(Warp10Quantumviz.is, Warp10Quantumviz);
   </script>
 </dom-module>
