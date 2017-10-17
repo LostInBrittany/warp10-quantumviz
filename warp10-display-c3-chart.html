@@ -56,50 +56,47 @@
 
 
 <script>
-  // element registration
-  Polymer({
-    is: 'warp10-display-chart',
 
-    behaviors: [
-      Warp10DisplayBehavior
-    ],
-
-    /**
-     * Ready
-     */
-    ready: function () {
-    },
+  class Warp10DisplayC3Chart extends Polymer.mixinBehaviors([Warp10DisplayBehavior], Polymer.Element) {
+    static get is() {
+      return 'warp10-display-chart'
+    }
 
     /**
      *
      */
-    currentValuesChanged: function () {
+    currentValuesChanged() {
       if (null !== this.isReady) {
-        console.debug('[warp10-display-chart] currentValuesChanged() - currentValues', this.currentValues);
+        if (this.debug) {
+          console.debug('[warp10-display-chart] currentValuesChanged() - currentValues', this.currentValues);
+        }
       }
-    },
+    }
+
     /**
      *
      * @param oldValue
      * @param newValue
      */
-    tooltipChanged: function (oldValue, newValue) {
-    },
+    tooltipChanged(oldValue, newValue) {
+    }
+
     /**
      *
      * @param tooltip
      * @returns {string}
      * @private
      */
-    _isTooltipHidden: function (tooltip) {
+    _isTooltipHidden(tooltip) {
       return 'hidden';
-    },
+    }
+
     /**
      *
      * @private
      */
-    _tooltipContent: function () {
-    },
+    _tooltipContent() {
+    }
 
     /**
      *
@@ -107,20 +104,20 @@
      * @returns {{xs: {}, types: {}, names: {}, colors: {}, columns: Array}}
      * @private
      */
-    _gtsToC3Data: function (gtsList) {
-      var data = {
+    _gtsToC3Data(gtsList) {
+      let data = {
         xs: {},
         types: {},
         names: {},
         colors: {},
         columns: [],
       };
-      for (var i in gtsList) {
-        var x = ['X' + i];
-        var y = ['Y' + i];
-        for (var j in gtsList[i].v) {
-          var ts = gtsList[i].v[j][0];
-          var value = gtsList[i].v[j][gtsList[i].v[j].length - 1];
+      for (let i in gtsList) {
+        let x = ['X' + i];
+        let y = ['Y' + i];
+        for (let j in gtsList[i].v) {
+          let ts = gtsList[i].v[j][0];
+          let value = gtsList[i].v[j][gtsList[i].v[j].length - 1];
           if (!this.timestamp) {
             ts = Math.round(ts / 1000);
           }
@@ -146,21 +143,23 @@
         data.columns.push(x);
         data.columns.push(y);
       }
-
-      console.debug('[warp10-display-chart] _gtsToC3Data', data);
+      if (this.debug) {
+        console.debug('[warp10-display-chart] _gtsToC3Data', data);
+      }
       return data;
-    },
+    }
 
     /**
      *
      * @param filteredResponse
      * @private
      */
-    _dataToChartLib: function (filteredResponse) {
-      var data = this._gtsToC3Data(filteredResponse.gts);
-      console.debug('[warp10-display-chart] _dataToChart - data', data);
-
-      var point = {
+    _dataToChartLib(filteredResponse) {
+      let data = this._gtsToC3Data(filteredResponse.gts);
+      if (this.debug) {
+        console.debug('[warp10-display-chart] _dataToChart - data', data);
+      }
+      let point = {
         r: 0.5,
         focus: {
           expand: {
@@ -170,12 +169,12 @@
         }
       };
 
-      var line = {
+      let line = {
         step: {
           type: 'step-before'
         }
       };
-      var axis = {
+      let axis = {
         x: {
           tick: {}
         },
@@ -197,11 +196,11 @@
         };
         if (this.timestamps) {
           axis.x.type = 'indexed';
-          axis.x.format = function (y) {
-            var value = y.toFixed(5);
-            var splittedValue = value.split('.');
-            var formattedIntPart = splittedValue[0].replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
-            var formattedDecimalPart = splittedValue[1].replace(/0+$/g, '');
+          axis.x.format = function(y) {
+            let value = y.toFixed(5);
+            let splittedValue = value.split('.');
+            let formattedIntPart = splittedValue[0].replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+            let formattedDecimalPart = splittedValue[1].replace(/0+$/g, '');
             if (formattedDecimalPart.length === 0) {
               return formattedIntPart;
             }
@@ -215,11 +214,11 @@
           centered: true,
           outer: false,
           fit: true,
-          format: function (y) {
-            var value = y.toFixed(5);
-            var splittedValue = value.split('.');
-            var formattedIntPart = splittedValue[0].replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
-            var formattedDecimalPart = splittedValue[1].replace(/0+$/g, '');
+          format: function(y) {
+            let value = y.toFixed(5);
+            let splittedValue = value.split('.');
+            let formattedIntPart = splittedValue[0].replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+            let formattedDecimalPart = splittedValue[1].replace(/0+$/g, '');
             if (formattedDecimalPart.length === 0) {
               return formattedIntPart;
             }
@@ -227,17 +226,17 @@
           }
         };
       }
-      var legend = {
+      let legend = {
         hide: true,
       };
-      var padding = {
+      let padding = {
         right: 30
       };
-      var tooltip = {
+      let tooltip = {
         format: {},
         grouped: false // Default true
       };
-      var grid = {
+      let grid = {
         x: {
           show: true
         },
@@ -245,8 +244,8 @@
           show: true
         },
       };
-      var context = this;
-      var c3Data = {
+      let context = this;
+      let c3Data = {
         data: data,
         axis: axis,
         legend: legend,
@@ -267,13 +266,15 @@
           };
         }
       };
-
-
-
-      console.debug('[warp10-display-chart] _dataToChart - c3Data', c3Data);
+      if (this.debug) {
+        console.debug('[warp10-display-chart] _dataToChart - c3Data', c3Data);
+      }
       this.chart = c3Data;
     }
-  });
+
+  }
+
+  customElements.define(Warp10DisplayC3Chart.is, Warp10DisplayC3Chart);
 
 
 </script>
