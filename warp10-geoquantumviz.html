@@ -33,16 +33,15 @@
         id="map-spinner"
         active="{{loading}}"
         hover container-height="{{mapHeight}}"
-        size="{{_mapSpinnerSize}}"></granite-spinner>
+       size="{{_mapSpinnerSize}}"></granite-spinner>
     <warp10-display-map
-        width={{mapWidth}} height={{mapHeight}} data={{data}}
+        data={{data}}
         latitude="{{mapLat}}" longitude="{{mapLon}}" zoom="{{mapZoom}}"
         current-values="{{currentValues}}"
         annotations-selected-timestamp="{{annotationsSelectedTimestamp}}"
         debug="[[debug]]"></warp10-display-map>
 
     <warp10-quantumviz
-        width="{{width}}" height="{{height}}"
         show-axis="{{showAxis}}" tooltip="{{tooltip}}"
         line-width="{{lineWidth}}"
         current-values="{{currentValues}}"
@@ -113,6 +112,7 @@
         },
         mapZoom: {
           type: Number,
+          value: 10,
         },
         mapLon: {
           type: Number,
@@ -136,10 +136,6 @@
           type: String,
           computed: '_getWarpScript(content, warpscript)',
         },
-        _DEFAULT_WIDTH: {
-          type: Number,
-          value: 480,
-        },
         _DEFAULT_HEIGHT: {
           type: Number,
           value: 320,
@@ -153,6 +149,7 @@
         },
       };
     }
+
     connectedCallback() {
       super.connectedCallback();
       this.isAttached = true;
@@ -171,7 +168,16 @@
       if (!this.isAttached) {
         return;
       }
-      let warpscript = `${this.mapLat} 'lat' STORE ${this.mapLon} 'lon' STORE ${this.mapZoom} 'zoom' STORE `;
+      let warpscript = '';
+      if(this.mapLat) {
+        warpscript += ` ${this.mapLat} 'lat' STORE `;
+      }
+      if(this.mapLon) {
+        warpscript += ` ${this.mapLon} 'lon' STORE `;
+      }
+      if(this.mapZoom) {
+        warpscript += ` ${this.mapZoom} 'zoom' STORE `;
+      }
       if (this.warpscript !== undefined && this.warpscript.length > 0) {
         if (this.debug) {
           console.debug("[warp10-geoquantumviz] _getWarpScript - attribute warpscript found", this.warpscript);
@@ -208,10 +214,14 @@
         console.debug('[warp10-geoquantumviz] configure', this.clientWidth, this.clientHeight);
       }
       if (this.clientWidth === 0) {
-        this.updateStyles({'--default-width': this._DEFAULT_WIDTH + 'px'});
+        this.updateStyles({'--default-width': '100%'});
+      } else {
+        this.updateStyles({'--default-width': this.clientWidth + 'px'});
       }
       if (this.clientHeight === 0) {
         this.updateStyles({'--default-height': this._DEFAULT_HEIGHT + 'px'});
+      } else {
+        this.updateStyles({'--default-height': this.clientHeight + 'px'});
       }
     }
   }

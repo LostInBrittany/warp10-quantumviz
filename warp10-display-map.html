@@ -122,10 +122,6 @@
           type: Boolean,
           value: false,
         },
-        _DEFAULT_WIDTH: {
-          type: Number,
-          value: 640,
-        },
         _DEFAULT_HEIGHT: {
           type: Number,
           value: 480,
@@ -325,7 +321,7 @@
       }
       // Dimensions
       if (this.clientWidth === 0) {
-        this.updateStyles({'--default-width': this._DEFAULT_WIDTH + 'px'});
+        this.updateStyles({'--default-width': '100%'});
       } else {
         this.updateStyles({'--default-width': this.clientWidth + 'px'});
       }
@@ -420,8 +416,10 @@
           this.configure();
           if (bounds.length > 1) {
             map.fitBounds(L.latLngBounds(bounds[0], bounds[1], {padding: [20, 20]}));
-            console.log('[ZOOM]', this.zoom, map.getZoom());
-            if (this.zoom < map.getZoom()) {
+            if (this.debug) {
+              console.log('[warp10-display-map] zoom', this.zoom, map.getZoom());
+            }
+            if (map.getZoom() === 0 || this.zoom < map.getZoom()) {
               map.setZoom(this.zoom);
             }
           } else {
