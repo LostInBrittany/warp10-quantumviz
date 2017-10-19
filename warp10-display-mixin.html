@@ -4,13 +4,14 @@
 @author Xavier MARIN @xavmarin
 -->
 
-<!-- Load the Polymer.Element base class
-<link rel="import" href="../iron-resizable-behavior/iron-resizable-behavior.html"> -->
+<!-- Load the Polymer.Element base class -->
+<link rel="import" href="../iron-resizable-behavior/iron-resizable-behavior.html">
 <link rel="import" href="../warp10-iron/warp10-color-tools.html">
 <link rel="import" href="./quantumviz-tools.html">
 <script>
   /* eslint no-unused-vars: "off" */
-  const Warp10DisplayMixin = (superClass) => class extends superClass {
+  /* global looseJSON, quantumvizGts, gtsTools, warp10ColorTools */
+  const Warp10DisplayMixin = (superClass) => class extends Polymer.mixinBehaviors([Polymer.IronResizableBehavior], superClass) {
 
     /**
      * Properties
@@ -159,28 +160,18 @@
       }
     }
 
-    // *************************************************************************
-    // Lifecycle methods
-    // *************************************************************************
-    ready() {
-      if (this.debug) {
-        console.log('[warp10-display-mixin] ready - begin', {width: this.style.width, height: this.style.height});
-      }
-      this.isReady = true;
-      if (this.data !== null) {
-        this.dataChanged();
-      }
-      if (this.debug) {
-        console.log('[warp10-display-mixin] ready - end');
-      }
-    }
-
     connectedCallback() {
       super.connectedCallback();
-      if (this.debug) {
-        console.log('[warp10-display-mixin] attached -  clientHeight', this.clientHeight);
-      }
-      this.configure();
+      Polymer.RenderStatus.beforeNextRender(this, function() {
+        if (this.debug) {
+          console.log('[warp10-display-mixin] connectedCallback -  clientHeight', this.clientHeight);
+        }
+        this.configure();
+        this.isReady = true;
+        if (this.data !== null) {
+          this.dataChanged();
+        }
+      });
     }
 
     //* ************************************************************************
