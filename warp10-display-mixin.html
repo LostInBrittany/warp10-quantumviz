@@ -1,194 +1,190 @@
+<!--
+@license Apache 2.0
+@copyright Cityzen Data 2017
+@author Xavier MARIN @xavmarin
+-->
+
+<!-- Load the Polymer.Element base class -->
 <link rel="import" href="../iron-resizable-behavior/iron-resizable-behavior.html">
-
 <link rel="import" href="../warp10-iron/warp10-color-tools.html">
-
 <link rel="import" href="./quantumviz-tools.html">
-
-
 <script>
-  /**
-   * Implementation of behavior to display Warp10 graphs
-   *
-   * @polymerBehavior
-   */
-  
+  /* eslint no-unused-vars: "off" */
   /* global looseJSON, quantumvizGts, gtsTools, warp10ColorTools */
-  window.Warp10DisplayBehaviorImpl = {
-    // Properties
-    properties: {
-      /**
-       * The data of the chart
-       */
-      data: {
-        type: Object,
-        notify: true,
-        observer: 'dataChanged',
-      },
-      /**
-       * The values of the lines at the mouseover postion
-       */
-      currentValues: {
-        type: Object,
-        notify: true,
-        observer: 'currentValuesChanged',
-      },
-      /**
-       * The width of the lines on the chart
-       * It must be a number between _MIN_LINE_WIDTH and _MAX_LINE_WIDTH
-       */
-      lineWidth: {
-        type: Number,
-        value: 1.75,
-      },
-      /**
-       * If true, axis aren't shown
-       */
-      hideAxis: {
-        type: Boolean,
-        value: false,
-      },
-      /**
-       * If true, tooltip isn't shown
-       */
-      hideTooltip: {
-        type: Boolean,
-        value: false,
-      },
-      /**
-       * If true, legend isn't shown
-       */
-      showLegend: {
-        type: Boolean,
-        value: false,
-      },
-      /**
-       * Displayed data time bounds
-       */
-      timeBounds: {
-        type: Object,
-        notify: true,
-      },
-      /**
-       * Displayed data value bounds
-       */
-      valueBounds: {
-        type: Object,
-        notify: true,
-      },
-      /**
-        * The chart area
-        */
-      chartArea: {
-        type: Array,
-        notify: true,
-      },
+  const Warp10DisplayMixin = (superClass) => class extends Polymer.mixinBehaviors([Polymer.IronResizableBehavior], superClass) {
 
-      timezone: {
-        type: String,
-      },
-      /**
-        * The tooltip
-        */
-      tooltip: {
-        type: String,
-        observer: 'tooltipChanged',
-        notify: true,
-        value: '',
-      },
-      /**
-       * y-lower-bound and y-lower-bound attributes set the minimal vertical span of the Y axis  
-       */
-      yLowerBound: {
-        type: Number,
-      },
-      /**
-       * y-lower-bound and y-lower-bound attributes set the minimal vertical span of the Y axis  
-       */
-      yUpperBound: {
-        type: Number,
-      },
-      /**
-       * If true, X scale will be in timestamp
-       */
-      timestamps: {
-        type: Boolean,
-        value: false,
-      },
-      /**
-       * If true debug logs are sent to the console
-       */
-      debug: {
+    /**
+     * Properties
+     *
+     * @returns {{}}
+     */
+    static get properties() {
+      return {
+        /**
+         * The data of the chart
+         */
+        data: {
+          type: Object,
+          notify: true,
+          observer: 'dataChanged',
+        },
+        /**
+         * The values of the lines at the mouseover postion
+         */
+        currentValues: {
+          type: Object,
+          notify: true,
+          observer: 'currentValuesChanged',
+        },
+        /**
+         * The width of the lines on the chart
+         * It must be a number between _MIN_LINE_WIDTH and _MAX_LINE_WIDTH
+         */
+        lineWidth: {
+          type: Number,
+          value: 1.75,
+        },
+        /**
+         * If true, axis aren't shown
+         */
+        hideAxis: {
+          type: Boolean,
+          value: false,
+        },
+        /**
+         * If true, tooltip isn't shown
+         */
+        hideTooltip: {
+          type: Boolean,
+          value: false,
+        },
+        /**
+         * If true, legend isn't shown
+         */
+        showLegend: {
+          type: Boolean,
+          value: false,
+        },
+        /**
+         * Displayed data time bounds
+         */
+        timeBounds: {
+          type: Object,
+          notify: true,
+        },
+        /**
+         * Displayed data value bounds
+         */
+        valueBounds: {
+          type: Object,
+          notify: true,
+        },
+        /**
+         * The chart area
+         */
+        chartArea: {
+          type: Array,
+          notify: true,
+        },
+
+        timezone: {
+          type: String,
+        },
+        /**
+         * The tooltip
+         */
+        tooltip: {
+          type: String,
+          observer: 'tooltipChanged',
+          notify: true,
+          value: '',
+        },
+        /**
+         * y-lower-bound and y-lower-bound attributes set the minimal vertical span of the Y axis
+         */
+        yLowerBound: {
+          type: Number,
+        },
+        /**
+         * y-lower-bound and y-lower-bound attributes set the minimal vertical span of the Y axis
+         */
+        yUpperBound: {
+          type: Number,
+        },
+        /**
+         * If true, X scale will be in timestamp
+         */
+        timestamps: {
+          type: Boolean,
+          value: false,
+        },
+        /**
+         * If true debug logs are sent to the console
+         */
+        debug: {
           type: Boolean,
           value: true,
-      },
-
-      // Constants
-      _MIN_LINE_WIDTH: {
-        type: Number,
-        value: 1,
-      },
-      _MAX_LINE_WIDTH: {
-        type: Number,
-        value: 20,
-      },
-      _DEFAULT_HEIGHT: {
-        type: Number,
-        value: 320,
-      },
-      _params: {
-        type: Object,
-        value: function() {
-          return {};
         },
-      },
-    },
-    observers: [
-      'dataChanged(data.*, timestamps)',
-    ],
+        _params: {
+          type: Object,
+          value: function() {
+            return {};
+          },
+        },
+        // Constants
+        _MIN_LINE_WIDTH: {
+          type: Number,
+          value: 1,
+        },
+        _MAX_LINE_WIDTH: {
+          type: Number,
+          value: 20,
+        },
+        _DEFAULT_WIDTH: {
+          type: Number,
+          value: 480,
+        },
+        _DEFAULT_HEIGHT: {
+          type: Number,
+          value: 320,
+        },
+      };
+    }
 
-    listeners: {
-      'iron-resize': '_onIronResize',
-        'resize': '_onIronResize',
-    },
+    static get observers() {
+      return ['dataChanged(data.*, timestamps)'];
+    }
+
 
     // *************************************************************************
     // Listeners
     // *************************************************************************
-    _onIronResize: function() {
-      if (this.debug) {
-        console.log('[warp10-display-behavior] _onIronResize - OMG, I got resized!');
-      }
-    },
 
-
-    // *************************************************************************
-    // Lifecycle methods
-    // *************************************************************************
-    created: function() {
-      if (this.debug) {
-        console.log('[warp10-display-behavior] created');
-      }
-    },
-    ready: function() {
-      if (this.debug) {
-        console.log('[warp10-display-behavior] ready - begin', {width: this.style.width, height: this.style.height});
-      }
-
-      this.isReady = true;
-            if (this.data !== null) {
-        this.dataChanged();
-      }
-      if (this.debug) {
-        console.log('[warp10-display-behavior] ready - end');
-      }
-    },
-    attached: function() {
-    if (this.debug) {
-      console.log('[warp10-display-behavior] attached -  clientHeight', this.clientHeight);
+    ready() {
+      super.ready();
+      this.addEventListener('iron-resize', e => this._onIronResize(e));
+      this.addEventListener('resize', e => this._onIronResize(e));
     }
-    this.configure();
-    },
 
+    connectedCallback() {
+      super.connectedCallback();
+      Polymer.RenderStatus.beforeNextRender(this, function() {
+        if (this.debug) {
+          console.log('[warp10-display-mixin] connectedCallback -  clientHeight', this.clientHeight);
+        }
+        this.configure();
+        this.isReady = true;
+        if (this.data !== null) {
+          this.dataChanged();
+        }
+      });
+    }
+
+    _onIronResize() {
+      if (this.debug) {
+        console.log('[warp10-display-mixin] _onIronResize - OMG, I got resized!');
+      }
+    }
 
     //* ************************************************************************
     // Observers
@@ -197,20 +193,19 @@
     /**
      * Refresh chart when data changes
      */
-    dataChanged: function() {
+    dataChanged() {
       if (!this.isReady) {
         // Component not ready yet
         return;
       }
       let context = this;
-      this.debounce('dataChanged', function() {
+      this._debouncer = Polymer.Debouncer.debounce(this._debouncer, Polymer.Async.timeOut.after(100), () => {
         if (context.debug) {
-          console.log('[warp10-display-behavior] dataChanged() - ', context.data);
+          console.log('[warp10-display-mixin] dataChanged() - ', context.data);
         }
         context._dataToChart();
-      }, 100);
-    },
-
+      });
+    }
 
     //* ************************************************************************
     // Instance methods
@@ -219,18 +214,18 @@
     /**
      * Initial settings
      */
-    configure: function() {
+    configure() {
       if (this.debug) {
-        console.log('[warp10-display-behavior] configure');
+        console.log('[warp10-display-mixin] configure');
       }
 
       // Dimensions
-            if (this.clientWidth === 0) {
+      if (this.clientWidth === 0) {
         this.updateStyles({
           '--default-width': this._DEFAULT_WIDTH + 'px',
         });
       }
-            if (this.clientHeight === 0) {
+      if (this.clientHeight === 0) {
         this.updateStyles({
           '--default-height': this._DEFAULT_HEIGHT + 'px',
         });
@@ -238,44 +233,44 @@
 
       // tooltip key width
       this.updateStyles({
-        '--tooltip-width': Math.max(400, this.$.chart.getBoundingClientRect().width * 2 / 3).toString() + 'px',
+        '--tooltip-width': Math.max(400, this.getChart().getBoundingClientRect().width * 2 / 3).toString() + 'px',
       });
 
-  
+
       // Line width
       if (this.lineWidth < this._MIN_LINE_WIDTH || this.lineWidth > this._MAX_LINE_WIDTH) {
         this.lineWidth = 1.5;
       }
       if (this.debug) {
-        console.log('[warp10-display-behavior] configure -lineWidth', this.lineWidth);
+        console.log('[warp10-display-mixin] configure -lineWidth', this.lineWidth);
       }
-    },
+    }
 
     /**
      * Remove chart when no data is present
      */
-    _removeChartData: function() {
+    _removeChartData() {
       if (this.debug) {
-        console.log('[warp10-display-behavior] _removeChartData');
+        console.log('[warp10-display-mixin] _removeChartData');
       }
       if (this.chart) {
         this.chart.destroy();
         this.chart = null;
       }
-    },
+    }
 
     /**
      * Parses data and put it in chart format
      */
-    _dataToChart: function() {
+    _dataToChart() {
       if (this.debug) {
-        console.log('[warp10-display-behavior] _dataToChart', {data: this.data});
+        console.log('[warp10-display-mixin] _dataToChart', {data: this.data});
       }
 
       // If no data, we remove the chart
       if (!this.data) {
         if (this.debug) {
-          console.log('[warp10-display-behavior] No data');
+          console.log('[warp10-display-mixin] No data');
         }
         this._removeChartData();
         return;
@@ -293,7 +288,7 @@
       }
 
       if (!quantumvizGts.isValidResponse(this.data)) {
-        // console.warn("[warp10-display-behavior] Received invalid data", this.data);
+        // console.warn("[warp10-display-mixin] Received invalid data", this.data);
         this._removeChartData();
         return;
       }
@@ -302,7 +297,7 @@
       response = quantumvizGts.getValidResponse(this.data);
 
       if (this.debug) {
-        console.log('[warp10-display-behavior] _dataToChart - Data to plot', response);
+        console.log('[warp10-display-mixin] _dataToChart - Data to plot', response);
       }
 
       let range = quantumvizGts.getGtsListRange(response.gts);
@@ -315,7 +310,7 @@
         this.timeBounds = {min: range[0], max: range[1]};
       }
       if (this.debug) {
-        console.log('[warp10-display-behavior] _dataToChart - timeBounds', this.timeBounds);
+        console.log('[warp10-display-mixin] _dataToChart - timeBounds', this.timeBounds);
       }
 
       let filteredResponse = {
@@ -327,8 +322,8 @@
       // We filter to keep only the plottable gts
       for (let i = 0; i < response.gts.length; i++) {
         if (this.debug) {
-          console.log('[warp10-display-behavior] _dataToChart - gtsTools.isGtsToPlot',
-            gtsTools.isGtsToPlot(response.gts[i]), response.gts[i]);
+          console.log('[warp10-display-mixin] _dataToChart - gtsTools.isGtsToPlot',
+              gtsTools.isGtsToPlot(response.gts[i]), response.gts[i]);
         }
         if (gtsTools.isGtsToPlot(response.gts[i])) {
           filteredResponse.gts.push(response.gts[i]);
@@ -337,33 +332,33 @@
       }
 
       if (this.debug) {
-        console.log('[warp10-display-behavior] _dataToChart - Filtered data to plot', filteredResponse);
+        console.log('[warp10-display-mixin] _dataToChart - Filtered data to plot', filteredResponse);
       }
 
       if (filteredResponse.gts.length === 0) {
-        // console.warn("[warp10-display-behavior] _dataToChart - Empty data set", filteredResponse);
+        // console.warn("[warp10-display-mixin] _dataToChart - Empty data set", filteredResponse);
         this._removeChartData();
         return;
       }
       this._getParamsFromData(filteredResponse);
       this._dataToChartLib(filteredResponse);
-    },
+    }
 
-    _getParamsFromData: function(quantumvizObj) {
+    _getParamsFromData(quantumvizObj) {
       let labels = [];
       let colors = [];
       let interpolate = [];
       let strokeWidth = [];
       for (let i = 0; i < quantumvizObj.params.length; i++) {
         if (this.debug) {
-          console.log('[warp10-display-chart]  quantumvizObj.gts', quantumvizObj.gts[i]);
-          console.log('[warp10-display-chart]  quantumvizObj.params', quantumvizObj.params[i]);
+          console.log('[warp10-display-mixin]  quantumvizObj.gts', quantumvizObj.gts[i]);
+          console.log('[warp10-display-mixin]  quantumvizObj.params', quantumvizObj.params[i]);
         }
 
 
         if (quantumvizObj.gts[i].a !== undefined) {
           let attributes = quantumvizObj.gts[i].a;
-          for ( let j in attributes) {
+          for (let j in attributes) {
             if (attributes.hasOwnProperty(j)
                 && ['string', 'number'].indexOf(typeof attributes[j]) >= 0
                 && j.startsWith('quantum-')) {
@@ -377,7 +372,7 @@
             quantumParams = looseJSON.parse(quantumvizObj.gts[i].a.quantumParams);
           }
 
-          for ( let j in quantumParams) {
+          for (let j in quantumParams) {
             if (quantumParams.hasOwnProperty(j)) {
               quantumvizObj.params[i][j] = quantumParams[j];
             }
@@ -388,7 +383,7 @@
           labels[i] = quantumvizObj.params[i].key;
         } else {
           if (this.debug) {
-            console.log('[warp10-display-chart] _dataToChart -  key', quantumvizObj.gts[i]);
+            console.log('[warp10-display-mixin] _dataToChart -  key', quantumvizObj.gts[i]);
           }
           labels[i] = gtsTools.serializeGtsMetadata(quantumvizObj.gts[i]);
         }
@@ -429,21 +424,13 @@
         tickList: tickList,
       };
       if (this.debug) {
-        console.log('[warp10-display-chart] _dataToChart - _params',
+        console.log('[warp10-display-mixin] _dataToChart - _params',
             quantumvizObj.globalParams, this._params);
       }
 
       if (quantumvizObj.globalParams.timestamps) {
         this.timestamps = true;
       }
-    },
-
+    }
   };
-
-  /**
-   * Behavior to display Warp10 graphs
-   *
-   * @polymerBehavior
-   */
-  window.Warp10DisplayBehavior = [Polymer.IronResizableBehavior, window.Warp10DisplayBehaviorImpl];
 </script>

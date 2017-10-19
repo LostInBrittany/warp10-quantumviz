@@ -5,7 +5,7 @@
 -->
 <link rel="import" href=" ../polymer/polymer.html">
 
-<link rel="import" href="./warp10-display-behavior.html">
+<link rel="import" href="./warp10-display-mixin.html">
 <link rel="import" href="../granite-c3/granite-c3.html">
 
 <dom-module id="warp10-display-chart">
@@ -57,7 +57,7 @@
 
 <script>
 
-  class Warp10DisplayC3Chart extends Polymer.mixinBehaviors([Warp10DisplayBehavior], Polymer.Element) {
+  class Warp10DisplayC3Chart extends Warp10DisplayMixin(Polymer.Element) {
     static get is() {
       return 'warp10-display-chart'
     }
@@ -147,6 +147,10 @@
         console.debug('[warp10-display-chart] _gtsToC3Data', data);
       }
       return data;
+    }
+
+    getChart() {
+      return this.$.chart;
     }
 
     /**
@@ -274,7 +278,5 @@
 
   }
 
-  customElements.define(Warp10DisplayC3Chart.is, Warp10DisplayC3Chart);
-
-
+  window.customElements.define(Warp10DisplayC3Chart.is, Warp10DisplayC3Chart);
 </script>
