@@ -30,7 +30,7 @@
     "Leaflet.MakiMarkers": "LostInBrittany/Leaflet.MakiMarkers#~1.0.1",
     "c3": "^0.4.11",
     "d3": "^3.5.17",
-    "warp10-iron": "cityzendata/warp10-iron#^1.4.14",
+    "warp10-iron": "cityzendata/warp10-iron#^2.0.0-a1",
     "granite-spinner": "LostInBrittany/granite-spinner#^2.1.0",
     "leaflet-map": "Giwi/leaflet-map#v1.2.0-9",
     "granite-c3": "LostInBrittany/granite-c3#^2.2.1",
@@ -44,11 +44,11 @@
     "iron-icon": "PolymerElements/iron-icon#^2.0.0",
     "iron-icons": "PolymerElements/iron-icons#^2.0.0",
     "iron-test-helpers": "PolymerElements/iron-test-helpers#^2.0.0",
-    "test-fixture": "PolymerElements/test-fixture#^3.0.0-rc.1",
+    "test-fixture": "PolymerElements/test-fixture#^3.0.0",
     "web-component-tester": "^6.0.0",
     "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0",
     "prism": "PrismJS/prism#^1.8.1",
-    "bootstrap": "twbs/bootstrap#^4.0.0-beta"
+    "bootstrap": "twbs/bootstrap#4.0.0-beta"
   },
   "resolutions": {
     "webcomponentsjs": "^v1.0.2",
