@@ -140,9 +140,8 @@ Viz-only version of Quantum widget
   <script>
     // Extend Polymer.Element base class
     class Warp10Quantumviz extends Polymer.Element {
-
       static get is() {
-        return 'warp10-quantumviz'
+        return 'warp10-quantumviz';
       }
 
       static get properties() {
@@ -293,7 +292,8 @@ Viz-only version of Quantum widget
 
       _isReadyToCall() {
         if (this.debug) {
-          console.log('[warp10-quantumviz] _isReadyToCall ', (this.host.length > 0) && (this._rawWarpscriptScript.length > 0), (!this._usingProxy));
+          console.log('[warp10-quantumviz] _isReadyToCall ',
+              (this.host.length > 0) && (this._rawWarpscriptScript.length > 0), (!this._usingProxy));
         }
         return ((!this.noAuto) && (this.isCallerAttached) && (!this._usingProxy) && (this._rawWarpscriptScript.length > 0));
       }
@@ -471,7 +471,8 @@ Viz-only version of Quantum widget
           }
         }
 
-        let inputWarpScriptVariables = `${Math.max(Math.floor(this.getBoundingClientRect().width, this._DEFAULT_WIDTH))} 'width' STORE `;
+        let inputWarpScriptVariables =
+            `${Math.max(Math.floor(this.getBoundingClientRect().width, this._DEFAULT_WIDTH))} 'width' STORE `;
 
         if (this.debug) {
           console.log('[warp10-quantumviz] generateWarpScript - about to change warpscriptScript',

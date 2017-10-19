@@ -11,12 +11,12 @@
 <script>
   /* eslint no-unused-vars: "off" */
   /* global looseJSON, quantumvizGts, gtsTools, warp10ColorTools */
-  const Warp10DisplayMixin = (superClass) => class extends Polymer.mixinBehaviors([Polymer.IronResizableBehavior], superClass) {
-
+  const Warp10DisplayMixin = (superClass) => class extends
+    Polymer.mixinBehaviors([Polymer.IronResizableBehavior], superClass) {
     /**
      * Properties
      *
-     * @returns {{}}
+     * @return {{}}
      */
     static get properties() {
       return {
@@ -162,13 +162,13 @@
 
     ready() {
       super.ready();
-      this.addEventListener('iron-resize', e => this._onIronResize(e));
-      this.addEventListener('resize', e => this._onIronResize(e));
+      this.addEventListener('iron-resize', (e) => this._onIronResize(e));
+      this.addEventListener('resize', (e) => this._onIronResize(e));
     }
 
     connectedCallback() {
       super.connectedCallback();
-      Polymer.RenderStatus.beforeNextRender(this, function() {
+      Polymer.RenderStatus.beforeNextRender(this, () => {
         if (this.debug) {
           console.log('[warp10-display-mixin] connectedCallback -  clientHeight', this.clientHeight);
         }
@@ -199,12 +199,13 @@
         return;
       }
       let context = this;
-      this._debouncer = Polymer.Debouncer.debounce(this._debouncer, Polymer.Async.timeOut.after(100), () => {
-        if (context.debug) {
-          console.log('[warp10-display-mixin] dataChanged() - ', context.data);
-        }
-        context._dataToChart();
-      });
+      this._debouncer = Polymer.Debouncer.debounce(this._debouncer, Polymer.Async.timeOut.after(100),
+        () => {
+          if (context.debug) {
+            console.log('[warp10-display-mixin] dataChanged() - ', context.data);
+          }
+          context._dataToChart();
+        });
     }
 
     //* ************************************************************************

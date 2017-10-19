@@ -121,10 +121,11 @@
 
 
   <script>
+    /* eslint new-cap: "off" */
     /* global Warp10DisplayMixin, d3, moment, Dygraph, smoothPlotter */
     class Warp10DisplayDyChart extends Warp10DisplayMixin(Polymer.Element) {
       static get is() {
-        return 'warp10-display-chart'
+        return 'warp10-display-chart';
       }
 
       static get properties() {
@@ -160,9 +161,12 @@
           }
           let chain = Promise.resolve();
 
-          chain.then(this._getDependency(this._getDependencyPromiseResolve(
-              'moment', `${this.importPath}../moment/moment.js`))).then(this._getDependency(this._getDependencyPromiseResolve(
-              'moment.tz', `${this.importPath}../moment-timezone/builds/moment-timezone-with-data.min.js`))).then(this.domReady.bind(this));
+          chain.
+              then(this._getDependency(this._getDependencyPromiseResolve(
+                  'moment', `${this.importPath}../moment/moment.js`))).
+              then(this._getDependency(this._getDependencyPromiseResolve(
+                  'moment.tz', `${this.importPath}../moment-timezone/builds/moment-timezone-with-data.min.js`))).
+              then(this.domReady.bind(this));
         } else {
           this.domReady.bind(this);
         }
@@ -297,7 +301,7 @@
         }
 
         if (null === this.tooltip || '' === this.tooltip) {
-          this.root.querySelector(".chart-tooltip").innerHTML = this.tooltip;
+          this.root.querySelector('.chart-tooltip').innerHTML = this.tooltip;
         } else {
           if (this.debug) {
             console.log('[warp10-display-chart] tooltipChanged', this.tooltip);
@@ -486,7 +490,8 @@
         console.debug('[warp10-display-chart] _tooltipContent - html', html);
         if (this.debug) {
           console.log('[warp10-display-chart] _tooltipContent - window.innerWidth', window.innerWidth);
-          console.log('[warp10-display-chart] _tooltipContent - chart width', this.root.querySelector('#chart').style.width);
+          console.log('[warp10-display-chart] _tooltipContent - chart width',
+              this.root.querySelector('#chart').style.width);
           console.log('[warp10-display-chart] _tooltipContent - chart getBoundingClientRect()',
               this.root.querySelector('#chart').getBoundingClientRect().width);
           console.log('[warp10-display-chart] _tooltipContent - chart getBoundingClientRect()',
@@ -667,7 +672,7 @@
       }
 
       _dataToChartLib(filteredResponse) {
-        if(this.debug) {
+        if (this.debug) {
           console.log('[warp10-display-chart] _data2dygraphs - filteredResponse', filteredResponse);
           console.log('[warp10-display-chart] _data2dygraphs - timezone', this.timezone);
         }

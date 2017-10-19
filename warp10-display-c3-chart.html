@@ -56,10 +56,12 @@
 
 
 <script>
+  /* eslint new-cap: "off" */
+  /* global Warp10DisplayMixin */
 
   class Warp10DisplayC3Chart extends Warp10DisplayMixin(Polymer.Element) {
     static get is() {
-      return 'warp10-display-chart'
+      return 'warp10-display-chart';
     }
 
     /**
@@ -75,16 +77,16 @@
 
     /**
      *
-     * @param oldValue
-     * @param newValue
+     * @param {{String}} oldValue
+     * @param {{String}} newValue
      */
     tooltipChanged(oldValue, newValue) {
     }
 
     /**
      *
-     * @param tooltip
-     * @returns {string}
+     * @param {{String}}  tooltip
+     * @return {{String}}  
      * @private
      */
     _isTooltipHidden(tooltip) {
@@ -100,8 +102,8 @@
 
     /**
      *
-     * @param gtsList
-     * @returns {{xs: {}, types: {}, names: {}, colors: {}, columns: Array}}
+     * @param  {{Array}}  gtsList
+     * @return {{xs: {}, types: {}, names: {}, colors: {}, columns: Array}}
      * @private
      */
     _gtsToC3Data(gtsList) {
@@ -112,18 +114,18 @@
         colors: {},
         columns: [],
       };
-      for (let i in gtsList) {
+      gtsList.forEach((gts, i) => {
         let x = ['X' + i];
         let y = ['Y' + i];
-        for (let j in gtsList[i].v) {
-          let ts = gtsList[i].v[j][0];
-          let value = gtsList[i].v[j][gtsList[i].v[j].length - 1];
+        gts.v.forEach((val, j) => {
+          let ts = val[0];
+          let value = val[val.length - 1];
           if (!this.timestamp) {
             ts = Math.round(ts / 1000);
           }
           x.push(ts);
-          y.push(value)
-        }
+          y.push(value);
+        });
         data.xs['Y' + i] = 'X' + i;
         switch (this._params.interpolate[i]) {
           case 'linear':
@@ -142,7 +144,7 @@
         data.colors['Y' + i] = this._params.colors[i];
         data.columns.push(x);
         data.columns.push(y);
-      }
+      });
       if (this.debug) {
         console.debug('[warp10-display-chart] _gtsToC3Data', data);
       }
@@ -155,7 +157,7 @@
 
     /**
      *
-     * @param filteredResponse
+     * @param {{Array}} filteredResponse
      * @private
      */
     _dataToChartLib(filteredResponse) {
@@ -169,25 +171,24 @@
           expand: {
             enabled: true,
             r: 4,
-          }
-        }
+          },
+        },
       };
 
       let line = {
         step: {
-          type: 'step-before'
-        }
+          type: 'step-before',
+        },
       };
       let axis = {
         x: {
-          tick: {}
+          tick: {},
         },
         y: {},
       };
       if (this.hideAxis) {
         axis.x.show = false;
         axis.y.show = false;
-
       } else {
         axis.x.show = true;
         axis.y.show = true;
@@ -196,7 +197,7 @@
           count: 5,
           outer: false,
           culling: {max: 4},
-          fit: true
+          fit: true,
         };
         if (this.timestamps) {
           axis.x.type = 'indexed';
@@ -209,7 +210,7 @@
               return formattedIntPart;
             }
             return formattedIntPart + '.' + formattedDecimalPart;
-          }
+          };
         } else {
           axis.x.type = 'timeseries';
           axis.x.tick.format = '%Y-%m-%d %H:%M:%S';
@@ -227,25 +228,25 @@
               return formattedIntPart;
             }
             return formattedIntPart + '.' + formattedDecimalPart;
-          }
+          },
         };
       }
       let legend = {
         hide: true,
       };
       let padding = {
-        right: 30
+        right: 30,
       };
       let tooltip = {
         format: {},
-        grouped: false // Default true
+        grouped: false, // Default true
       };
       let grid = {
         x: {
-          show: true
+          show: true,
         },
         y: {
-          show: true
+          show: true,
         },
       };
       let context = this;
@@ -268,14 +269,13 @@
             min: context.c3Chart.axis.min().y,
             max: context.c3Chart.axis.max().y,
           };
-        }
+        },
       };
       if (this.debug) {
         console.debug('[warp10-display-chart] _dataToChart - c3Data', c3Data);
       }
       this.chart = c3Data;
     }
-
   }
 
   window.customElements.define(Warp10DisplayC3Chart.is, Warp10DisplayC3Chart);

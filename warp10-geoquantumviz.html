@@ -60,9 +60,8 @@
 <script>
   // Extend Polymer.Element base class
   class Warp10GeoQuantumviz extends Polymer.Element {
-
     static get is() {
-      return 'warp10-geoquantumviz'
+      return 'warp10-geoquantumviz';
     }
 
     static get properties() {
@@ -169,32 +168,33 @@
         return;
       }
       let warpscript = '';
-      if(this.mapLat) {
+      if (this.mapLat) {
         warpscript += ` ${this.mapLat} 'lat' STORE `;
       }
-      if(this.mapLon) {
+      if (this.mapLon) {
         warpscript += ` ${this.mapLon} 'lon' STORE `;
       }
-      if(this.mapZoom) {
+      if (this.mapZoom) {
         warpscript += ` ${this.mapZoom} 'zoom' STORE `;
       }
       if (this.warpscript !== undefined && this.warpscript.length > 0) {
         if (this.debug) {
-          console.debug("[warp10-geoquantumviz] _getWarpScript - attribute warpscript found", this.warpscript);
+          console.debug('[warp10-geoquantumviz] _getWarpScript - attribute warpscript found', this.warpscript);
         }
         warpscript += this.warpscript.trim();
       } else {
         if (this.debug) {
-          console.debug("[warp10-geoquantumviz] _getWarpScript - attribute warpscript not found");
+          console.debug('[warp10-geoquantumviz] _getWarpScript - attribute warpscript not found');
         }
         if (this.content !== undefined && this.content.length > 0) {
           if (this.debug) {
-            console.debug("[warp10-geoquantumviz] _getWarpScript - using content for WarpScript", this.content);
+            console.debug('[warp10-geoquantumviz] _getWarpScript - using content for WarpScript', this.content);
           }
           warpscript += this.content.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').trim();
         } else {
           if (this.debug) {
-            console.debug("[warp10-geoquantumviz] _getWarpScript - content not found, using innerHTML", Polymer.dom(this).innerHTML);
+            console.debug('[warp10-geoquantumviz] _getWarpScript - content not found, using innerHTML',
+                Polymer.dom(this).innerHTML);
           }
           warpscript += Polymer.dom(this).innerHTML.replace(/&lt;/g, '<').replace(/&gt;/g, '>').trim();
         }
@@ -202,7 +202,7 @@
 
       // Setting lat, lon and zoom as script variables
       if (this.debug) {
-        console.debug("[warp10-geoquantumviz] _getWarpScript - Generated warpscript: ", warpscript);
+        console.debug('[warp10-geoquantumviz] _getWarpScript - Generated warpscript: ', warpscript);
       }
       this._warpscript = warpscript;
       return warpscript;

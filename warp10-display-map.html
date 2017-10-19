@@ -45,9 +45,8 @@
   /* global warp10ColorTools, warp10DisplayMapTools, L */
   // Extend Polymer.Element base class
   class Warp10DisplayMap extends Polymer.Element {
-
     static get is() {
-      return 'warp10-display-map'
+      return 'warp10-display-map';
     }
 
     static get properties() {
@@ -256,7 +255,7 @@
           longitude: this.$.map.longitude,
           latitude: this.$.map.latitude,
           zoom: this.$.map.zoom,
-          size: {w: this.$.map.style.width, h: this.$.map.style.height}
+          size: {w: this.$.map.style.width, h: this.$.map.style.height},
         });
       }
       this.mapLoaded = true;
@@ -273,7 +272,7 @@
           longitude: this.$.map.longitude,
           latitude: this.$.map.latitude,
           zoom: this.$.map.zoom,
-          size: {w: this.$.map.style.width, h: this.$.map.style.height}
+          size: {w: this.$.map.style.width, h: this.$.map.style.height},
         });
       }
       this.mapReady = true;
@@ -292,7 +291,7 @@
           longitude: this.$.map.longitude,
           latitude: this.$.map.latitude,
           zoom: this.$.map.zoom,
-          size: {w: this.$.map.style.width, h: this.$.map.style.height}
+          size: {w: this.$.map.style.width, h: this.$.map.style.height},
         });
       }
     }
@@ -305,7 +304,7 @@
           longitude: this.$.map.longitude,
           latitude: this.$.map.latitude,
           zoom: this.$.map.zoom,
-          size: {w: this.$.map.style.width, h: this.$.map.style.height}
+          size: {w: this.$.map.style.width, h: this.$.map.style.height},
         });
       }
     }
@@ -433,7 +432,7 @@
           }
           map.invalidateSize();
           this.configure();
-        },1000);
+        }, 1000);
       }
     }
 

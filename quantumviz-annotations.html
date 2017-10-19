@@ -40,11 +40,11 @@
 </dom-module>
 
 <script>
+  /* globals quantumvizGts */
   // Extend Polymer.Element base class
   class Warp10QuantumvizAnnotations extends Polymer.Element {
-
     static get is() {
-      return 'quantumviz-annotations'
+      return 'quantumviz-annotations';
     }
 
     static get properties() {
@@ -53,29 +53,29 @@
          * The data of the chart
          */
         data: {
-          type: Object
+          type: Object,
         },
         annotations: {
-          computed: "getAnnotations(data,_newData, timestamps)"
+          computed: 'getAnnotations(data,_newData, timestamps)',
         },
         /**
          * Displayed data time bounds
          */
         timeBounds: {
-          type: Object
+          type: Object,
         },
         chartArea: {
-          type: Array
+          type: Array,
         },
         vertGuide: {
           type: Number,
-          notify: true
+          notify: true,
         },
         selectedTimestamp: {
           type: Number,
           notify: true,
-          observer: "_selectedTimestampChanged",
-          value: -1
+          observer: '_selectedTimestampChanged',
+          value: -1,
         },
 
         /**
@@ -83,7 +83,7 @@
          */
         timestamps: {
           type: Boolean,
-          value: false
+          value: false,
         },
 
         debug: {
@@ -92,8 +92,8 @@
         },
         _newData: {
           type: Number,
-          value: 0
-        }
+          value: 0,
+        },
       };
     }
 
@@ -105,42 +105,42 @@
       super.connectedCallback();
       this.attached = true;
       if (this.debug) {
-        console.debug("[quantumviz-annotations] width", this.width);
+        console.debug('[quantumviz-annotations] width', this.width);
       }
     }
 
     _selectedTimestampChanged() {
       if (this.debug) {
-        console.debug("[quantumviz-annotations] _selectedTimestampChanged", this.selectedTimestamp);
+        console.debug('[quantumviz-annotations] _selectedTimestampChanged', this.selectedTimestamp);
       }
     }
 
     contentChanged() {
       if (this.debug) {
-        console.debug("[quantumviz-annotations] - contentChanged()");
+        console.debug('[quantumviz-annotations] - contentChanged()');
       }
       if (!this.attached) {
         return;
       }
 
       if (this.debug) {
-        console.debug("[quantumviz-annotations] bounds", this.timeBounds);
-        console.debug("[quantumviz-annotations] annotations offset", this.$.annotations.offsetTop);
+        console.debug('[quantumviz-annotations] bounds', this.timeBounds);
+        console.debug('[quantumviz-annotations] annotations offset', this.$.annotations.offsetTop);
       }
     }
 
 
     getAnnotations() {
-      let annotations = quantumvizGts.getAnnotations(this.data, this.timestamps)
+      let annotations = quantumvizGts.getAnnotations(this.data, this.timestamps);
       if (this.debug) {
-        console.debug("[quantumviz-annotations] getAnnotations", annotations);
+        console.debug('[quantumviz-annotations] getAnnotations', annotations);
       }
       return annotations;
     }
 
     dataChanged() {
       if (this.debug) {
-        console.debug("[quantumviz-annotations] dataChanged", this.data);
+        console.debug('[quantumviz-annotations] dataChanged', this.data);
       }
       this._newData++;
     }
