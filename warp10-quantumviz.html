@@ -61,6 +61,15 @@ Viz-only version of Quantum widget
         display: flex;
         flex-direction: row;
       }
+
+      .error {
+        color: #721c24;
+        background-color: #f8d7da;
+        padding: .75rem 1.25rem;
+        margin-bottom: 1rem;
+        border: 1px solid #f5c6cb;
+        border-radius: .25rem;
+      }
     </style>
     <div class="widget">
 
@@ -123,6 +132,9 @@ Viz-only version of Quantum widget
         ></warp10-warpscript-request-gatherer>
       </template>
     </div>
+    <template is="dom-if" if="[[errorMsg]]" restamp>
+      <div class="error">[[errorMsg]]</div>
+    </template>
   </template>
 
   <script>
@@ -258,6 +270,10 @@ Viz-only version of Quantum widget
           _readyToCall: {
             type: Boolean,
             computed: '_isReadyToCall(host, _rawWarpscriptScript, noAuto, _usingProxy, isCallerAttached)',
+          },
+          _DEFAULT_WIDTH: {
+            type: Number,
+            value: 480,
           },
           _DEFAULT_HEIGHT: {
             type: Number,
@@ -407,7 +423,7 @@ Viz-only version of Quantum widget
         if (this.debug) {
           console.log('[warp10-quantumviz] generateRequest');
         }
-        this.$$('#warpscriptcaller').generateRequest();
+        this.root.querySelector('#warpscriptcaller').generateRequest();
       }
 
       configure() {
@@ -427,6 +443,7 @@ Viz-only version of Quantum widget
       }
 
       generateWarpScript() {
+        this.errorMsg = undefined;
         if (this.debug) {
           console.log('[warp10-quantumviz] generateWarpScript', this.warpscript);
         }
@@ -454,8 +471,7 @@ Viz-only version of Quantum widget
           }
         }
 
-       // console.log('[warp10-quantumviz] generateWarpScript - getBoundingClientRect',this.getBoundingClientRect().width);
-        let inputWarpScriptVariables = `${Math.floor(this.getBoundingClientRect().width)} 'width' STORE `;
+        let inputWarpScriptVariables = `${Math.max(Math.floor(this.getBoundingClientRect().width, this._DEFAULT_WIDTH))} 'width' STORE `;
 
         if (this.debug) {
           console.log('[warp10-quantumviz] generateWarpScript - about to change warpscriptScript',
@@ -467,10 +483,6 @@ Viz-only version of Quantum widget
         if (this.debug) {
           console.log('[warp10-quantumviz] generateWarpScript - _rawWarpscriptScript', this._rawWarpscriptScript);
         }
-      }
-
-      $$(slctr) {
-        return this.root.querySelector(slctr);
       }
     }
 

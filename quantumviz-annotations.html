@@ -98,9 +98,7 @@
     }
 
     static get observers() {
-      return [
-        'dataChanged(data.*)'
-      ]
+      return ['dataChanged(data.*)'];
     }
 
     connectedCallback() {
@@ -133,7 +131,7 @@
 
 
     getAnnotations() {
-      var annotations = quantumvizGts.getAnnotations(this.data, this.timestamps)
+      let annotations = quantumvizGts.getAnnotations(this.data, this.timestamps)
       if (this.debug) {
         console.debug("[quantumviz-annotations] getAnnotations", annotations);
       }
@@ -146,7 +144,7 @@
       }
       this._newData++;
     }
-  };
+  }
   // Register custom element definition using standard platform API
   customElements.define(Warp10QuantumvizAnnotations.is, Warp10QuantumvizAnnotations);
 </script>
