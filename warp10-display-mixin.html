@@ -151,13 +151,15 @@
       return ['dataChanged(data.*, timestamps)'];
     }
 
+
     // *************************************************************************
     // Listeners
     // *************************************************************************
-    onIronResize() {
-      if (this.debug) {
-        console.log('[warp10-display-mixin] _onIronResize - OMG, I got resized!');
-      }
+
+    ready() {
+      super.ready();
+      this.addEventListener('iron-resize', e => this._onIronResize(e));
+      this.addEventListener('resize', e => this._onIronResize(e));
     }
 
     connectedCallback() {
@@ -172,6 +174,12 @@
           this.dataChanged();
         }
       });
+    }
+
+    _onIronResize() {
+      if (this.debug) {
+        console.log('[warp10-display-mixin] _onIronResize - OMG, I got resized!');
+      }
     }
 
     //* ************************************************************************
@@ -220,9 +228,9 @@
       }
 
       // tooltip key width
- /*     this.updateStyles({
+      this.updateStyles({
         '--tooltip-width': Math.max(400, this.getChart().getBoundingClientRect().width * 2 / 3).toString() + 'px',
-      });*/
+      });
 
 
       // Line width

@@ -5,7 +5,7 @@
 -->
 <link rel="import" href=" ../polymer/polymer.html">
 
-<link rel="import" href="./warp10-display-behavior.html">
+<link rel="import" href="./warp10-display-mixin.html">
 <link rel="import" href="../granite-c3/granite-c3.html">
 
 <dom-module id="warp10-display-bar-chart">
@@ -27,7 +27,7 @@
         --c3-gauge-max-color: var(--fg-color);
         --c3-gauge-min-color: var(--fg-color);
         --c3-gauge-units-color: var(--fg-color);
-        --c3-chart-arc text: var(--fg-color);
+        --c3-chart-arc-text: var(--fg-color);
         display: inline-block;
       }
 
@@ -56,7 +56,7 @@
 
 
 <script>
-  class Warp10DisplayC3BarChart extends Polymer.mixinBehaviors([Warp10DisplayBehavior], Polymer.Element) {
+  class Warp10DisplayC3BarChart extends Warp10DisplayMixin(Polymer.Element) {
     static get is() {
       return 'warp10-display-bar-chart'
     }
@@ -64,19 +64,20 @@
     /**
      *
      */
-    currentValuesChanged () {
+    currentValuesChanged() {
       if (null !== this.isReady) {
         if (this.debug) {
           console.debug('[warp10-display-bar-chart] currentValuesChanged() - currentValues', this.currentValues);
         }
       }
     }
+
     /**
      *
      * @param oldValue
      * @param newValue
      */
-    tooltipChanged (oldValue, newValue) {
+    tooltipChanged(oldValue, newValue) {
     }
 
     _getBarOptions() {
@@ -93,7 +94,7 @@
      * @returns {string}
      * @private
      */
-    _isTooltipHidden (tooltip) {
+    _isTooltipHidden(tooltip) {
       return 'hidden';
     }
 
@@ -144,6 +145,10 @@
       return data;
     }
 
+    getChart() {
+      return this.$.chart;
+    }
+
     /**
      *
      * @param filteredResponse
@@ -192,7 +197,7 @@
         };
         if (this.timestamps) {
           axis.x.type = 'indexed';
-          axis.x.format = function (y) {
+          axis.x.format = function(y) {
             let value = y.toFixed(5);
             let splittedValue = value.split('.');
             let formattedIntPart = splittedValue[0].replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
@@ -210,7 +215,7 @@
           centered: true,
           outer: false,
           fit: true,
-          format: function (y) {
+          format: function(y) {
             let value = y.toFixed(5);
             let splittedValue = value.split('.');
             let formattedIntPart = splittedValue[0].replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
