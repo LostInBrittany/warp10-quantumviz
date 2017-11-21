@@ -40,13 +40,143 @@
     <h1>Quantumviz - Warpscript image</h1>
 
     <div class="layout-center">
-      <warp10-img 
-          width="300" height="300" reload="0" 
-          old-path="" host="https://warp.cityzendata.net/dist/api/v0">
-        200 'width' CSTORE 200 'height' CSTORE 
-        $width $height '2D' PGraphics Ppixels
-        <% DROP DROP RAND 0xFFFFFFFF * TOLONG %> LMAP 
-        PupdatePixels Pencode
+      <warp10-img  debug
+          width="1024" height="600" reload="5"
+          old-path="" host="https://warp.cityzendata.net/api/v0">
+        'yQ5hlCF6VYUpUrxOTABcLBvFo05UvH7.ooD_6I77o6eS7cgGbDa6KD1jba.q7aYr7OSwXe8cB3MrMsKEgWrneRHicBU2nsUJN_O08WBVAHG8ZvC8NRjSx.c9ZD7uSFS5yJ4E6P4HKaB' 'token' STORE
+        $token AUTHENTICATE 100000000 MAXOPS
+        [
+        0xffffeded 0xffffe0e0 0xffffd1d1 0xffffc1c1 0xffffb0b0 0xffff9f9f 0xffff8e8e 0xffff7e7e
+        0xffff6e6e 0xffff5e5e 0xffff5151 0xffff4343 0xffff3838 0xffff2e2e 0xffff2525 0xffff1d1d
+        0xffff1717 0xffff1212 0xffff0e0e 0xffff0b0b 0xffff0808 0xffff0606 0xffff0505 0xffff0303
+        0xffff0202 0xffff0202 0xffff0101 0xffff0101 0xffff0000 0xffff0000 0xffff0000 0xffff0000
+        0xffff0000 0xffff0000 0xffff0000 0xffff0000 0xffff0100 0xffff0400 0xffff0600 0xffff0a00
+        0xffff0e00 0xffff1200 0xffff1600 0xffff1a00 0xffff1f00 0xffff2400 0xffff2900 0xffff2d00
+        0xffff3300 0xffff3900 0xffff3e00 0xffff4400 0xffff4a00 0xffff5100 0xffff5600 0xffff5d00
+        0xffff6300 0xffff6900 0xffff6f00 0xffff7600 0xffff7c00 0xffff8300 0xffff8900 0xffff9000
+        0xffff9600 0xffff9c00 0xffffa300 0xffffa900 0xffffaf00 0xffffb500 0xffffbb00 0xffffc000
+        0xffffc600 0xffffcb00 0xffffd000 0xffffd500 0xffffda00 0xffffde00 0xffffe300 0xffffe800
+        0xffffeb00 0xffffee00 0xfffff200 0xfffff500 0xfffff700 0xfffffa00 0xfffffb00 0xfffdfc00
+        0xfffafc01 0xfff8fc02 0xfff4fc02 0xfff1fc03 0xffedfc03 0xffe9fc03 0xffe5fc04 0xffe1fc04
+        0xffdcfc05 0xffd8fc05 0xffd3fc06 0xffcefc07 0xffc9fc07 0xffc5fc08 0xffbffb08 0xffb9f909
+        0xffb4f709 0xffaef60a 0xffa9f40b 0xffa4f20b 0xff9ef00c 0xff97ee0d 0xff92ec0e 0xff8ce90e
+        0xff86e70f 0xff80e410 0xff7ae211 0xff74df12 0xff6edd13 0xff69da14 0xff63d815 0xff5dd616
+        0xff58d317 0xff52d118 0xff4ccf19 0xff47cc1a 0xff42ca1c 0xff3cc81e 0xff37c61f 0xff32c421
+        0xff2dc222 0xff28bf23 0xff24be25 0xff1fbc27 0xff1bbb28 0xff17b92b 0xff13b82c 0xff0fb72e
+        0xff0cb630 0xff09b533 0xff06b535 0xff03b437 0xff01b439 0xff00b43c 0xff00b43e 0xff00b441
+        0xff00b544 0xff00b646 0xff00b64a 0xff00b74d 0xff00b850 0xff00b854 0xff00ba58 0xff00bb5c
+        0xff00bc5f 0xff00be63 0xff00bf68 0xff00c16c 0xff00c270 0xff00c474 0xff00c678 0xff00c87d
+        0xff00c981 0xff00cb86 0xff00cd8a 0xff00cf8f 0xff00d193 0xff00d397 0xff00d59c 0xff00d7a0
+        0xff00d8a5 0xff00dbab 0xff00deb2 0xff00e0b8 0xff00e3be 0xff00e5c5 0xff00e7cb 0xff00e9d1
+        0xff00ead6 0xff00eadc 0xff00eae1 0xff00eae6 0xff00eaea 0xff00eaee 0xff00eaf2 0xff00eaf6
+        0xff00eaf8 0xff00eafb 0xff00eafe 0xff00eaff 0xff00e8ff 0xff00e4ff 0xff00e0ff 0xff00dbff
+        0xff00d6fe 0xff00d0fc 0xff00cafa 0xff00c3f7 0xff00bcf4 0xff00b4f0 0xff00adec 0xff00a4e8
+        0xff009ce4 0xff0093de 0xff008bda 0xff0082d5 0xff007ad0 0xff0075cd 0xff0070cb 0xff006bc7
+        0xff0063c4 0xff005dc1 0xff0056bd 0xff004eb8 0xff0047b4 0xff0041af 0xff003aab 0xff0034a7
+        0xff002ea2 0xff00289d 0xff002398 0xff001e93 0xff001a8e 0xff001688 0xff001283 0xff000f7e
+        0xff000c78 0xff000973 0xff01086e 0xff01066a 0xff010565 0xff020461 0xff03045c 0xff040559
+        0xff050555 0xff060652 0xff07074f 0xff08084d 0xff0a0a4d 0xff0c0c4d 0xff0e0e4c 0xff10104a
+        0xff131349 0xff151548 0xff181847 0xff1a1a45 0xff1d1d46 0xff202045 0xff232344 0xff252543
+        0xff282843 0xff2a2a41 0xff2c2c41 0xff2e2e40 0xff30303f 0xff31323e 0xff33333d 0x0035343d
+        ] REVERSE
+
+        'palette' STORE
+
+
+        //
+        // Fetch FFT spectra
+        //
+        [ $token 'samples' { 'freq' '9615' } NOW -128 ] FETCH
+        0 GET DUP SIZE 'seconds' STORE
+        DUP $seconds 1 - ATINDEX 4 GET 'last' STORE
+        //
+        // Create image
+        //
+
+        4 'dotwidth' STORE
+
+        40 'offset' STORE
+
+        '<%25 '
+        0 $dotwidth 1 -
+        <%
+        TOSTRING ' $x !$dotwidth * %2B !$seconds 1 - $i - !$offset 2 %2B %2B Ppoint ' + +
+        %> FOR
+        ' %25>' + EVAL 'dots' STORE
+        128 $dotwidth * $seconds $offset 2 + + '2D' PGraphics
+        'RGB' 255 PcolorMode
+        255.0 0.0 Pcolor Pbackground
+        'MULTIPLY' PblendMode
+        1.01 PstrokeWeight
+
+        'pg' STORE
+
+        128.0 'max' STORE
+        0 'i' STORE
+
+        [ SWAP <%
+        // Unwrap FFT spectrum
+        7 GET UNWRAP
+        // Remove values at index 0 and 1
+        127 126 TIMECLIP
+        // Normalize if each line should show colors independently of the others
+        //NORMALIZE
+        SORT
+        VALUES
+        FLATTEN
+        $pg  SWAP
+        <%
+        1 + 'x' STORE
+        // Compute y value
+        $max / <% DUP 1.0 > %> <% DROP 1.0 %> IFT
+        'y' STORE
+        128 $y 255.0 * Pcolor Pstroke
+        @dots
+        NULL
+        %> LMAP DROP
+        $i 1 + 'i' STORE
+        'pg' STORE
+        0 NaN NaN NaN NULL
+        %> MACROMAPPER
+        0 0 0 ] MAP
+        DROP
+
+        //
+        // Add latest FFT
+        //
+
+        $offset 0 !=
+        <%
+        $last UNWRAP
+        127 126 TIMECLIP
+        NORMALIZE
+        SORT VALUES
+        $pg
+        50.0 50.0  Pcolor Pstroke
+        SWAP
+        <%
+        1 + 'x' STORE
+        // Compute y value
+        //$max / <% DUP 1.0 > %> <% DROP 1.0 %> IFT
+        'y' STORE
+        0 $dotwidth 1 -
+        <%
+        $x $dotwidth * + 'xx' STORE
+        50.0 50.0  Pcolor Pstroke
+        $xx $offset $xx 1.0 $y - $offset * Pline
+        128.0 128.0 Pcolor Pstroke
+        $xx 1.0 $y - $offset 1 - * Ppoint
+        %> FOR
+        NULL
+        %> LMAP DROP
+        %> IFT
+
+        // Colorize
+        $pg Ppixels
+        <% DROP Palpha $palette SWAP GET %> LMAP
+        PupdatePixels
+
+        Pencode
       </warp10-img>
     </div>
 
@@ -55,10 +185,7 @@
       <warp10-img 
           width="300" height="300" reload="0" 
           old-path="" host="https://warp.cityzendata.net/dist/api/v0">
-        200 'width' CSTORE 200 'height' CSTORE 
-        $width $height '2D' PGraphics Ppixels
-        <% DROP DROP RAND 0xFFFFFFFF * TOLONG %> LMAP 
-        PupdatePixels Pencode
+    <!-- your WarpScript -->
       </warp10-img>
     </script>
 

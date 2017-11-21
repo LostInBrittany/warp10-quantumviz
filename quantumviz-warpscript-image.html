@@ -18,9 +18,7 @@
         height: var(--height, auto);
       }
     </style>
-    <template is="dom-if" if="{{!loading}}">
       <iron-image id="img" src="[[img]]" sizing="contain"></iron-image>
-    </template>
     <warp10-warpscript-caller
         id="warpscript-caller"
         url="{{baseURL}}" warpscript="{{warpscriptScript}}"
@@ -95,7 +93,7 @@
         debug: {
           type: Boolean,
           value: false,
-        },'POLYGON ((7.05 43.60, 7.02 43.62, 7.09 43.64, 7.11 43.62, 7.05 43.60))' 0.01 false GEO.WKT
+        },
       };
     }
 
