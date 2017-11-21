@@ -5,7 +5,6 @@
 -->
 <link rel="import" href=" ../polymer/polymer.html">
 <link rel="import" href=" ../iron-image/iron-image.html">
-<link rel="import" href=" ../granite-spinner/granite-spinner.html">
 <link rel="import" href="../warp10-iron/warp10-warpscript-caller.html">
 
 <dom-module id="warp10-img">
@@ -19,11 +18,6 @@
         height: var(--height, auto);
       }
     </style>
-    <granite-spinner
-        color="#ff4081"
-        line-width="0.5em"
-        size="50"
-        active="{{loading}}"></granite-spinner>
     <template is="dom-if" if="{{!loading}}">
       <iron-image id="img" src="[[img]]" sizing="contain"></iron-image>
     </template>
@@ -32,6 +26,7 @@
         url="{{baseURL}}" warpscript="{{warpscriptScript}}"
         on-response="_handleData"
         reload="{{reload}}"
+        debug="{{debug}}"
         block-calls="{{blockCalls}}" call="{{call}}"
         loading="{{loading}}" auto>
     </warp10-warpscript-caller>
@@ -97,6 +92,10 @@
           type: Boolean,
           value: true,
         },
+        debug: {
+          type: Boolean,
+          value: false,
+        },'POLYGON ((7.05 43.60, 7.02 43.62, 7.09 43.64, 7.11 43.62, 7.05 43.60))' 0.01 false GEO.WKT
       };
     }
 
