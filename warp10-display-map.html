@@ -469,11 +469,13 @@
       let positions = [];
       let icon;
 
+      console.log('hahaah' ,gts)
       switch (gts.render) {
         case 'marker':
           icon = L.MakiMarkers.icon({icon: gts.marker, color: gts.color, size: 'm'});
           for (let j = 0; j < gts.path.length; j++) {
             let marker = L.marker(gts.path[j], {icon: icon, opacity: 1});
+            console.log('hahaah' ,gts.path[j].val)
             marker.bindPopup(gts.path[j].val.toString());
             this.layerGroup.addLayer(marker);
             positions.push(marker);
