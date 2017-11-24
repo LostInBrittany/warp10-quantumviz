@@ -31,7 +31,8 @@
         id="warpscript-caller"
         url="{{baseURL}}" warpscript="{{warpscriptScript}}"
         on-response="_handleData"
-        reload="{{reload}}"
+        reload="[[reload]]"
+        debug="[[debug]]"
         block-calls="{{blockCalls}}" call="{{call}}"
         loading="{{loading}}" auto>
     </warp10-warpscript-caller>
