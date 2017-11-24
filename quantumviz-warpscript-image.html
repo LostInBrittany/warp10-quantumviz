@@ -19,14 +19,14 @@
         height: var(--height, auto);
       }
     </style>
-    <granite-spinner
-        color="#ff4081"
-        line-width="0.5em"
-        size="50"
-        active="{{loading}}"></granite-spinner>
-    <template is="dom-if" if="{{!loading}}">
-      <iron-image id="img" src="[[img]]" sizing="contain"></iron-image>
+    <template is="dom-if" if="{{!spinner}}">
+      <granite-spinner
+          color="#ff4081"
+          line-width="0.5em"
+          size="50"
+          active="{{loading}}"></granite-spinner>
     </template>
+    <iron-image id="img" src="[[img]]" sizing="contain"></iron-image>
     <warp10-warpscript-caller
         id="warpscript-caller"
         url="{{baseURL}}" warpscript="{{warpscriptScript}}"
@@ -96,6 +96,10 @@
         loading: {
           type: Boolean,
           value: true,
+        },
+        spinner: {
+          type: Boolean,
+          value: false,
         },
       };
     }
