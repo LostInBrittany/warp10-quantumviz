@@ -30,34 +30,25 @@
 
   <h1>GeoQuantumviz</h1>
 
-<warp10-geoquantumviz
-      show-axis="false" tooltip="false" line-width="2" reload="0"
-      host="https://warp.cityzendata.net/dist/api/v0" old-path="" debug>
-    '~telemetry.redlion.gps'  { 'edgeID' 'AVI40445' } NOW -1 @dashboard/sdmo/fetch
-    [ SWAP mapper.tostring 0 0 0 ] MAP
-  'gtsList' STORE
-     { 'gts' $gtsList 'params' [ { 'render' 'marker' 'marker' 'fuel' } ] }
-  </warp10-geoquantumviz>
-
-  <!--<warp10-geoquantumviz
-      show-axis="true" tooltip="true" line-width="2" reload="0"
-      host="https://warp.cityzendata.net/dist/api/v0" old-path="" debug>
-    NOW '_NOW' STORE
-    51.40 '_BASE_LAT' STORE
-    0.00 '_BASE_LON' STORE
-    <% 10000000 * $_NOW SWAP - %> 'getTimestamp' STORE
-    <% 10.0 / 2 * PI * SIN 0.1 * $_BASE_LAT + %> 'getLat' STORE
-    <% -0.01 * $_BASE_LON + %> 'getLon' STORE
-    <% 10.0 / 2 * PI * COS 10 * %> 'getValue' STORE
-    <%
-    'i' STORE
-    $i @getTimestamp
-    $i @getLat
-    $i @getLon
-    1000
-    $i @getValue
-    ADDVALUE
-    %> 'generateGts' STORE
+    <warp10-geoquantumviz
+            show-axis="true" tooltip="true" line-width="2" reload="0"
+            host="https://warp.cityzendata.net/dist/api/v0" old-path="" debug>
+        NOW '_NOW' STORE
+        51.40 '_BASE_LAT' STORE
+        0.00 '_BASE_LON' STORE
+        <% 10000000 * $_NOW SWAP - %> 'getTimestamp' STORE
+        <% 10.0 / 2 * PI * SIN 0.1 * $_BASE_LAT + %> 'getLat' STORE
+        <% -0.01 * $_BASE_LON + %> 'getLon' STORE
+        <% 10.0 / 2 * PI * COS 10 * %> 'getValue' STORE
+        <%
+        'i' STORE
+        $i @getTimestamp
+        $i @getLat
+        $i @getLon
+        1000
+        $i @getValue
+        ADDVALUE
+        %> 'generateGts' STORE
 
     NEWGTS
     1 10 $generateGts FOR
@@ -135,7 +126,7 @@
     'params' $params
     'globalParams' $globalParams
     }
-  </warp10-geoquantumviz>-->
+  </warp10-geoquantumviz>
   <p>By <a href="http://cityzendata.com">Cityzen Data</a></p>
 </div>
 </body>
