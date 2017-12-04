@@ -7,7 +7,7 @@
 <link rel="import" href="../warp10-iron/warp10-warpscript-caller.html">
 <link rel="import" href=" ../warp10-iron/warp10-warpscript-request-gatherer.html">
 <link rel="import" href=" ../granite-spinner/granite-spinner.html">
-<link rel="import" href="./warp10-display-c3-chart.html">
+<link rel="import" href="./warp10-display-dy-chart.html">
 <link rel="import" href="./quantumviz-tools.html">
 <link rel="import" href="./quantumviz-annotations.html">
 
@@ -104,8 +104,7 @@ Viz-only version of Quantum widget
             show-legend="{{showLegend}}"
             time-bounds="{{timeBounds}}"
             chart-area="{{chartArea}}"
-            debug
-        ></warp10-display-chart>
+            debug="[[debug]]"></warp10-display-chart>
       </div>
 
       <template is="dom-if" if="[[!_usingProxy]]" restamp>
@@ -345,9 +344,7 @@ Viz-only version of Quantum widget
       connectedCallback() {
         super.connectedCallback();
         if (this.debug) {
-          console.log('[warp10-quantumviz] attached - calling configure()');
-        }
-        if (this.debug) {
+          console.log('[warp10-quantumviz] attached - calling configure()'); 
           console.log('[warp10-quantumviz] attached -  clientHeight', this.clientHeight);
         }
         this.isAttached = true;
@@ -429,7 +426,7 @@ Viz-only version of Quantum widget
       configure() {
         // Dimensions
         if (this.debug) {
-          console.log('[test-quantumviz] configure', this.clientWidth, this.clientHeight);
+          console.log(`[test-quantumviz] configure - clientWidth=${this.clientWidth}, clientHeight=${this.clientHeight}`);
         }
         if (this.clientWidth === 0) {
           this.updateStyles({'--default-width': this._DEFAULT_WIDTH + 'px'});
