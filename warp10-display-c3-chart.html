@@ -39,7 +39,17 @@
         fill: --fg-color;
       }
     </style>
-    <div id="chart"></div>
+    <granite-c3  id="chart"
+        color="[[chart.color]]"
+        legend="[[chart.legend]]"
+        line="[[chart.line]]"
+        grid="[[chart.grid]]"
+        padding="[[chart.padding]]"
+        point="[[chart.point]]"
+        tooltip="[[chart.tooltip]]"
+        data="[[chart.data]]"
+        chart="{{c3Chart}}"
+        axis="[[chart.axis]]"></granite-c3>
   </template>
 </dom-module>
 
