@@ -12,9 +12,10 @@
   <template>
     <style>
       :host {
-        display: block;
+        display: inline-block;
         width: 100%;
         height: 100%;
+        line-height: 0px;
       }
 
       :host {
@@ -49,7 +50,8 @@
         tooltip="[[chart.tooltip]]"
         data="[[chart.data]]"
         chart="{{c3Chart}}"
-        axis="[[chart.axis]]"></granite-c3>
+        axis="[[chart.axis]]" 
+        debug></granite-c3>
   </template>
 </dom-module>
 
@@ -63,13 +65,18 @@
       return 'warp10-display-chart';
     }
 
+    connectedCallback() {
+      super.connectedCallback();
+      console.debug(`[warp10-display-c3-chart] - clientWidth=${this.clientWidth}, clientHeight=${this.clientHeight}`);
+    }
+
     /**
      *
      */
     currentValuesChanged() {
       if (null !== this.isReady) {
         if (this.debug) {
-          console.debug('[warp10-display-chart] currentValuesChanged() - currentValues', this.currentValues);
+          console.debug('[warp10-display-c3-chart] currentValuesChanged() - currentValues', this.currentValues);
         }
       }
     }
@@ -145,7 +152,7 @@
         data.columns.push(y);
       });
       if (this.debug) {
-        console.debug('[warp10-display-chart] _gtsToC3Data', data);
+        console.debug('[warp10-display-c3-chart] _gtsToC3Data', data);
       }
       return data;
     }
@@ -162,7 +169,7 @@
     _dataToChartLib(filteredResponse) {
       let data = this._gtsToC3Data(filteredResponse.gts);
       if (this.debug) {
-        console.debug('[warp10-display-chart] _dataToChart - data', data);
+        console.debug('[warp10-display-c3-chart] _dataToChart - data', data);
       }
       let point = {
         r: 0.5,
@@ -271,10 +278,14 @@
         },
       };
       if (this.debug) {
-        console.debug('[warp10-display-chart] _dataToChart - c3Data', c3Data);
+        console.debug('[warp10-display-c3-chart] _dataToChart - c3Data', c3Data);
       }
       this.chart = c3Data;
     }
+    ready() {
+        super.ready();
+        console.log('[warp10-display-c3-chart] ready', this.clientHeight);
+      }
   }
 
   window.customElements.define(Warp10DisplayC3Chart.is, Warp10DisplayC3Chart);
