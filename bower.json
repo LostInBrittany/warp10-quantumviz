@@ -33,7 +33,7 @@
     "warp10-iron": "cityzendata/warp10-iron#^2.0.0-b4",
     "granite-spinner": "LostInBrittany/granite-spinner#^2.1.0",
     "leaflet-map": "Giwi/leaflet-map#v1.2.0-9",
-    "granite-c3": "LostInBrittany/granite-c3#^2.2.1",
+    "granite-c3": "LostInBrittany/granite-c3#^2.2.2",
     "moment-timezone": "^0.5.13",
     "moment": "^2.18.1",
     "granite-js-dependencies-grabber": "LostInBrittany/granite-js-dependencies-grabber#^1.1.0"
