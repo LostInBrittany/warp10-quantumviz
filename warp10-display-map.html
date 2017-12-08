@@ -5,6 +5,8 @@
 -->
 <link rel="import" href=" ../polymer/polymer.html">
 
+<link rel="import" href="../iron-resizable-behavior/iron-resizable-behavior.html">
+
 <link rel="import" href="./warp10-display-map-tools.html">
 <link rel="import" href="../leaflet-map/leaflet-map.html">
 <script src="../Leaflet.MakiMarkers/Leaflet.MakiMarkers.js"></script>
@@ -14,16 +16,17 @@
     <style>
       :host {
         display: block;
-        width: var(--default-width, 100%);
-        height: var(--default-height, 100%);
+        width: 100%;
+        height: 100%;
         position: relative;
+        min-width: 480px;
         min-height: 480px;
       }
 
       #map {
-        width: 100%;
+        width: var(--map-width, 100%);
+        height: var(--map-height, 100%);
         min-width: 480px;
-        height: 100%;
         min-height: 480px;
       }
     </style>
@@ -47,7 +50,7 @@
 
   /* global warp10ColorTools, warp10DisplayMapTools, L */
   // Extend Polymer.Element base class
-  class Warp10DisplayMap extends Polymer.Element {
+  class Warp10DisplayMap extends Polymer.mixinBehaviors([Polymer.IronResizableBehavior], Polymer.Element) {
     static get is() {
       return 'warp10-display-map';
     }
@@ -124,6 +127,10 @@
           type: Boolean,
           value: false,
         },
+        _DEFAULT_WIDTH: {
+          type: Number,
+          value: 640,
+        },
         _DEFAULT_HEIGHT: {
           type: Number,
           value: 480,
@@ -136,10 +143,23 @@
     // Livecycle
     // *************************************************************************
 
+    ready() {
+      super.ready();
+      this.addEventListener('resize', (e) => this._onIronResize(e));
+      this.addEventListener('iron-resize', (e) => this._onIronResize(e));
+
+      if (this.debug) {
+        console.log('[warp10-display-map] ready - style',
+          this.style);
+        console.log('[warp10-display-map] ready',
+          `clientWidth: ${this.clientWidth}, clientHeight:${this.clientHeight}`);
+      }
+    }
+
     connectedCallback() {
       super.connectedCallback();
       if (this.debug) {
-        console.log('[warp10-display-map] created');
+        console.log('[warp10-display-map] connectedCallback');
       }
 
       // GTS paths
@@ -155,9 +175,8 @@
       this.positionArraysMarkers = [];
       window.warp10DisplayMapTools.debug = this.debug;
       if (this.debug) {
-        console.log('[warp10-display-map] attached');
+        console.log('[warp10-display-map] connectedCallback - attached');
       }
-      this.configure();
       this.isAttached = true;
       if (this.data !== null) {
         this._dataChanged();
@@ -250,6 +269,19 @@
     // Event listeners
     // *************************************************************************
 
+    _onIronResize(evt) {
+      this.resize();
+      if (this.debug) {
+        console.log('[warp10-display-map]_onIronResize', evt);
+        console.log('[warp10-display-map] _onIronResize - element clientSizes',
+            this.clientWidth, this.clientHeight);
+        console.log('[warp10-display-map] _onIronResize - map clientSizes',
+            this.$.map.clientWidth, this.$.map.clientHeight);
+        console.log('[warp10-display-map] _onIronResize - map dimensions',
+            this.$.map.style.width, this.$.map.style.height);
+      }
+    }
+
     _mapLoadedEvt() {
       if (this.debug) {
         console.log('[warp10-display-map] Map loaded!', {
@@ -314,28 +346,9 @@
     // Instance methods
     // *************************************************************************
 
-    configure() {
-      if (this.debug) {
-        console.log('[warp10-display-map] configure', this.clientWidth, this.clientHeight);
-        console.log('[warp10-display-map] configure', this._DEFAULT_WIDTH, this._DEFAULT_HEIGHT);
-      }
-      // Dimensions
-      if (this.clientWidth === 0) {
-        this.updateStyles({'--default-width': this._DEFAULT_WIDTH});
-      } else {
-        this.updateStyles({'--default-width': Math.max(this._DEFAULT_WIDTH, this.clientWidth) + 'px'});
-      }
-      if (this.clientHeight === 0) {
-        this.updateStyles({'--default-height': this._DEFAULT_HEIGHT + 'px'});
-      } else {
-        this.updateStyles({'--default-height': Math.max(this._DEFAULT_HEIGHT, this.clientHeight) + 'px'});
-      }
-
-      if (this.debug) {
-        console.log('[warp10-display-map] configure', this.clientWidth, this.clientHeight);
-        console.log('[warp10-display-map] configure', this.$.map.clientWidth, this.$.map.clientHeight);
-        console.log('[warp10-display-map] Dimensions', this.$.map.style);
-      }
+    resize() {
+      this.updateStyles({'--map-height': this.clientHeight + 'px'});
+      this.updateStyles({'--map-width': this.clientWidth + 'px'});
     }
 
     _updateMapData() {
