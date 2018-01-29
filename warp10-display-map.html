@@ -150,9 +150,9 @@
 
       if (this.debug) {
         console.log('[warp10-display-map] ready - style',
-          this.style);
+            this.style);
         console.log('[warp10-display-map] ready',
-          `clientWidth: ${this.clientWidth}, clientHeight:${this.clientHeight}`);
+            `clientWidth: ${this.clientWidth}, clientHeight:${this.clientHeight}`);
       }
     }
 
@@ -426,7 +426,7 @@
           }
           // Without the timeout tiles doesn't show, see https://github.com/Leaflet/Leaflet/issues/694
           map.invalidateSize();
-          this.configure();
+          this.resize();
           if (bounds.length > 1) {
             map.fitBounds(L.latLngBounds(bounds[0], bounds[1], {padding: [20, 20]}));
             if (this.debug) {
