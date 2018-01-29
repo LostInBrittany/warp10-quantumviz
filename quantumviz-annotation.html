@@ -129,7 +129,7 @@
       this.SVG_MARGIN_RIGHT = 8;
       this.SVG_STROKE_WIDTH = 2;
       this.NVD3_CHART_RIGHT_MARGIN = 20;
-      this.MAX_MARKER_WIDTH = 10;
+      this.MAX_MARKER_WIDTH = 5;
       this.setDimensions();
       if (this.debug) {
         console.debug('[quantumviz-annotation] attached()');
@@ -225,7 +225,6 @@
 
 
       let annotationMouseover = (d) => {
-        // let annotationLeftOffset = context.$.svg.getBoundingClientRect().left;
         context.selectedTimestamp = d.x;
         d3.select(this).attr('fill', 'orange');
         annotationD3.select('.annotation-tooltip').select('.timestamp')
@@ -241,8 +240,7 @@
         annotationD3.select('.annotation-tooltip').classed('hidden', false);
 
         let tooltipWidth = annotationD3.select('.annotation-tooltip').node().getBoundingClientRect().width;
-        let xPosition = parseInt(d3.select(this).attr('x')) +
-            markerWidth / 2 + svgStrokeWidth / 2 + svgMarginLeft - tooltipWidth / 2;
+        let xPosition = scale(d.x) + markerWidth / 2 + svgStrokeWidth / 2 + svgMarginLeft - tooltipWidth / 2;
         if (xPosition < 0) {
           xPosition = 0;
         }
@@ -254,6 +252,7 @@
             .style('bottom', yPosition + 'px');
         if (this.debug) {
           console.debug('[quantumviz-annotation] annotationMouseover', {
+            xPosition: xPosition,
             x: d.x,
             scaledX: scale(d.x),
             svgMarginLeft: svgMarginLeft,
